@@ -1,0 +1,225 @@
+@import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Nunito:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400&display=swap");
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Nunito", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  /* Playful Soft Dark */
+  --color-lumora-bg: #1a1921;
+  --color-lumora-card: #23222e;
+  --color-lumora-hover: #2f2d3d;
+  --color-lumora-text: #f7f7f9;
+  --color-lumora-sub: #a8a6b5;
+  --color-lumora-accent: #fbcfe8; /* Soft pink */
+  --color-lumora-highlight: #c4b5fd; /* Soft purple */
+  --color-lumora-blue: #bae6fd; /* Soft blue */
+  --color-lumora-border: rgba(255, 255, 255, 0.08);
+
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-shimmer: shimmer 2s linear infinite;
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@layer base {
+  body {
+    @apply bg-lumora-bg text-lumora-text antialiased selection:bg-white/20;
+    /* Soft dark foundations */
+    background-color: #1a1921;
+    position: relative;
+  }
+}
+
+@layer utilities {
+  .text-glow {
+    text-shadow: 0 0 12px rgba(251, 207, 232, 0.4);
+  }
+  .glass-card {
+    @apply bg-lumora-card/70 backdrop-blur-3xl border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.2)];
+  }
+  .bento-card {
+    @apply relative overflow-hidden rounded-[32px] bg-lumora-card border border-white/[0.04] transition-all duration-300;
+  }
+  .bento-card:hover {
+    @apply bg-lumora-hover border-white/[0.08] shadow-[0_10px_30px_rgba(0,0,0,0.1)] -translate-y-1;
+  }
+  .shimmer-effect {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.03),
+      transparent
+    );
+    background-size: 200% 100%;
+    @apply animate-shimmer;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .nav-active {
+    @apply text-white bg-white/10;
+  }
+}
+
+/* Prose Styles for Articles */
+.prose-custom {
+  @apply font-sans;
+}
+.prose-custom h2 {
+  @apply font-display text-2xl md:text-3xl font-bold text-white tracking-tight;
+  margin-top: 4rem !important;
+  margin-bottom: 1.5rem !important;
+}
+.prose-custom h3 {
+  @apply font-display text-xl md:text-2xl font-bold text-white tracking-tight opacity-90;
+  margin-top: 3rem !important;
+  margin-bottom: 1rem !important;
+}
+.prose-custom p {
+  @apply text-lg text-lumora-text/80 font-light leading-relaxed;
+  margin-bottom: 2rem !important;
+}
+.prose-custom p.lead {
+  @apply text-xl text-white/90 font-serif italic;
+  margin-bottom: 3rem !important;
+}
+.prose-custom ul {
+  @apply list-none mb-12 space-y-4 pl-0;
+}
+.prose-custom li {
+  @apply text-lg text-lumora-text/80 font-light leading-relaxed pl-6 relative;
+}
+.prose-custom li::before {
+  content: "";
+  @apply absolute left-0 top-3 w-1.5 h-1.5 rounded-full bg-lumora-highlight/60;
+}
+.prose-custom blockquote {
+  @apply text-xl md:text-2xl font-serif italic text-white/60 my-16 px-8 md:px-12 py-4 border-l border-white/20;
+}
+.prose-custom img {
+  @apply w-full h-auto max-h-[500px] rounded-2xl my-10 object-cover shadow-2xl;
+  display: block;
+}
+.prose-custom code {
+  @apply font-mono text-sm bg-white/5 px-1.5 py-0.5 rounded text-white/90;
+}
+.prose-custom .code-block pre {
+  @apply bg-[#0a0a0c] border border-white/5 rounded-2xl p-6 md:p-8 overflow-x-auto my-12 shadow-inner;
+}
+.prose-custom pre code {
+  @apply bg-transparent p-0 text-white/80 block whitespace-pre font-mono text-[13px] md:text-sm leading-relaxed;
+}
+
+/* Prism Syntax Highlighting (Lumora Theme) */
+.prose-custom code[class*="language-"],
+.prose-custom pre[class*="language-"] {
+  @apply font-mono text-[13px] md:text-sm leading-relaxed;
+  color: #c0caf5; /* Default text color for code */
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  tab-size: 2;
+  hyphens: none;
+}
+
+.prose-custom .token.comment,
+.prose-custom .token.prolog,
+.prose-custom .token.doctype,
+.prose-custom .token.cdata {
+  color: #6b7280;
+  font-style: italic;
+}
+
+.prose-custom .token.punctuation {
+  color: #89ddff;
+}
+
+.prose-custom .token.property,
+.prose-custom .token.tag,
+.prose-custom .token.boolean,
+.prose-custom .token.number,
+.prose-custom .token.constant,
+.prose-custom .token.symbol,
+.prose-custom .token.deleted {
+  color: #ff9e64;
+}
+
+.prose-custom .token.selector,
+.prose-custom .token.attr-name,
+.prose-custom .token.string,
+.prose-custom .token.char,
+.prose-custom .token.builtin,
+.prose-custom .token.inserted {
+  color: #9ece6a;
+}
+
+.prose-custom .token.operator,
+.prose-custom .token.entity,
+.prose-custom .token.url,
+.prose-custom .language-css .token.string,
+.prose-custom .style .token.string {
+  color: #89ddff;
+}
+
+.prose-custom .token.atrule,
+.prose-custom .token.attr-value,
+.prose-custom .token.keyword {
+  color: #bb9af7;
+}
+
+.prose-custom .token.function,
+.prose-custom .token.class-name {
+  color: #7aa2f7;
+}
+
+.prose-custom .token.regex,
+.prose-custom .token.important,
+.prose-custom .token.variable {
+  color: #f7768e;
+}
+
+.prose-custom strong {
+  @apply text-white font-semibold;
+}
+
+/* Custom Scrollbar - Minimal & Rounded */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(192, 132, 252, 0.4);
+}
