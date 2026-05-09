@@ -57,9 +57,6 @@ export default function GNB({ currentView, onViewChange }: GNBProps) {
               if (isActive) {
                 styles = isSpecial ? 'text-pink-950 bg-pink-50 shadow-md shadow-pink-500/10' : 'text-black bg-white shadow-md';
                 iconColor = isSpecial ? 'text-pink-500' : '';
-              } else if (isSpecial) {
-                styles = 'text-white/90 hover:text-white hover:bg-white/5';
-                iconColor = 'text-lumora-highlight/80';
               }
 
               return (
@@ -126,13 +123,11 @@ export default function GNB({ currentView, onViewChange }: GNBProps) {
                       className={`text-base text-left font-display font-medium transition-colors py-1 flex justify-between items-center ${
                         isActive
                           ? 'text-lumora-accent' 
-                          : isSpecial 
-                            ? 'text-white/90 hover:text-lumora-accent'
-                            : 'text-white/60 hover:text-lumora-accent'
+                          : 'text-white/60 hover:text-lumora-accent'
                       }`}
                     >
                       {item.name}
-                      {isSpecial && <Sparkles className={`w-4 h-4 ${isActive ? 'text-lumora-accent' : 'text-lumora-highlight/50'}`} />}
+                      {isSpecial && <Sparkles className={`w-4 h-4 ${isActive ? 'text-lumora-accent' : 'opacity-40'}`} />}
                     </button>
                   );
                 })}
