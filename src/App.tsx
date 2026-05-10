@@ -22,7 +22,6 @@ import {
 import { useState, useMemo, MouseEvent, useEffect } from "react";
 
 const tools: Tool[] = [
-  // ... existing tools (I'll keep them in the ReplacementContent for consistency)
   {
     id: "1",
     name: "Lumora PDF Studio",
@@ -31,6 +30,12 @@ const tools: Tool[] = [
     icon: "FileCode",
     category: "Synthesis",
     link: "#",
+    usageSteps: [
+      { step: "Pick a template", detail: "Choose between Note, Resume, or Invoice to match your purpose." },
+      { step: "Fill in your content", detail: "Edit the fields on the left — title, body, items, and more." },
+      { step: "Preview in real time", detail: "Watch the A4 preview on the right update instantly as you type." },
+      { step: "Export as PDF", detail: "Hit 'Export PDF' and your file downloads immediately." },
+    ],
   },
   {
     id: "3",
@@ -40,6 +45,12 @@ const tools: Tool[] = [
     icon: "Paintbrush",
     category: "Design",
     link: "#",
+    usageSteps: [
+      { step: "Start with a preset", detail: "Click any swatch in Popular Presets to load a curated color combo." },
+      { step: "Adjust the color stops", detail: "Click each color node to change its hue, or hit + to add a new stop." },
+      { step: "Set the angle", detail: "Drag the Rotation Angle slider to control the gradient direction." },
+      { step: "Copy the CSS", detail: "Click 'Copy CSS' to grab production-ready gradient code for your project." },
+    ],
   },
   {
     id: "4",
@@ -49,6 +60,11 @@ const tools: Tool[] = [
     icon: "Braces",
     category: "Dev Tools",
     link: "#",
+    usageSteps: [
+      { step: "Paste your JSON", detail: "Drop any raw or minified JSON into the left input panel." },
+      { step: "Auto-format", detail: "With Auto mode on, the output is formatted and validated instantly." },
+      { step: "Copy the result", detail: "Click the copy icon to grab the clean, indented JSON output." },
+    ],
   },
   {
     id: "5",
@@ -58,6 +74,11 @@ const tools: Tool[] = [
     icon: "Edit3",
     category: "Content",
     link: "#",
+    usageSteps: [
+      { step: "Write your Markdown", detail: "Type freely in the left editor. GitHub Flavored Markdown is fully supported." },
+      { step: "See it live", detail: "The right panel renders your content in real time as you write." },
+      { step: "Copy MD or HTML", detail: "Use the MD or HTML buttons to copy the output in your preferred format." },
+    ],
   },
   {
     id: "6",
@@ -67,6 +88,11 @@ const tools: Tool[] = [
     icon: "Palette",
     category: "Analysis",
     link: "#",
+    usageSteps: [
+      { step: "Upload an image", detail: "Drag and drop any image onto the canvas, or click to browse your files." },
+      { step: "Palette extracted", detail: "The tool analyzes pixel data locally and surfaces up to 8 dominant colors." },
+      { step: "Copy any color", detail: "Click a color card to instantly copy its HEX code to your clipboard." },
+    ],
   },
 ];
 
@@ -184,8 +210,30 @@ function CursorSpotlight() {
   );
 }
 
+// Map URL paths to internal view names
+const URL_TO_VIEW: Record<string, string> = {
+  "/": "home",
+  "/utilities": "utilities",
+  "/journal": "insights",
+  "/about": "studio",
+  "/code-tiara": "code-tiara",
+};
+
+const VIEW_TO_URL: Record<string, string> = {
+  home: "/",
+  utilities: "/utilities",
+  "utility-detail": "/utilities",
+  insights: "/journal",
+  studio: "/about",
+  "code-tiara": "/code-tiara",
+};
+
 export default function App() {
-  const [currentView, setCurrentView] = useState<string>("home");
+  // Initialize from URL on first load only
+  const [currentView, setCurrentView] = useState<string>(() => {
+    const path = window.location.pathname;
+    return URL_TO_VIEW[path] ?? "home";
+  });
   const [activeCategory, setActiveCategory] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
@@ -195,7 +243,10 @@ export default function App() {
   );
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
 
+  // Sync state → URL (non-blocking, uses replaceState to avoid history stack clutter)
   useEffect(() => {
+    const url = VIEW_TO_URL[currentView] ?? "/";
+    window.history.replaceState({ view: currentView }, "", url);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [currentView]);
 
@@ -246,7 +297,9 @@ export default function App() {
         }}
       />
 
-      <GNB currentView={currentView} onViewChange={setCurrentView} />
+      <GNB currentView={currentView} onViewChange={(view) => {
+        setCurrentView(view);
+      }} />
 
       <CursorSpotlight />
 

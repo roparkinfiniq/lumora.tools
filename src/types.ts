@@ -5,6 +5,7 @@ export interface Tool {
   icon: string;
   category: string;
   link: string;
+  usageSteps?: { step: string; detail: string }[];
 }
 
 export interface BlogPost {
