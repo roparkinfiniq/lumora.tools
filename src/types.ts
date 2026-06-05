@@ -1,6 +1,7 @@
 export interface Tool {
   id: string;
   name: string;
+  slug?: string;
   description: string;
   icon: string;
   category: string;

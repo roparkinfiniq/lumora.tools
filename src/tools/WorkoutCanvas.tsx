@@ -475,7 +475,20 @@ const TRANSLATIONS = {
 };
 
 export default function WorkoutCanvas() {
-  const [lang, setLang] = useState<"ko" | "en">("en");
+  const [lang, setLang] = useState<"ko" | "en">(() => {
+    const path = window.location.pathname;
+    if (path.includes("/workout-canvas/ko")) {
+      return "ko";
+    }
+    if (path.includes("/workout-canvas/en")) {
+      return "en";
+    }
+    const savedLang = localStorage.getItem("gems_workout_lang");
+    if (savedLang === "en" || savedLang === "ko") {
+      return savedLang;
+    }
+    return "en";
+  });
   const [activeDay, setActiveDay] = useState<string>("mon");
   const [db, setDb] = useState<WorkoutDatabase>(EN_DEFAULT_DATABASE);
   const [visibleDays, setVisibleDays] = useState<string[]>(["mon", "tue", "wed", "thu", "fri", "sat", "sun"]);
@@ -531,13 +544,15 @@ export default function WorkoutCanvas() {
     setIsIframe(window.self !== window.top);
   }, []);
 
-  // Load language settings on mount
+  // Sync language changes back to URL & LocalStorage
   useEffect(() => {
-    const savedLang = localStorage.getItem("gems_workout_lang");
-    if (savedLang === "en" || savedLang === "ko") {
-      setLang(savedLang);
+    localStorage.setItem("gems_workout_lang", lang);
+    const path = window.location.pathname;
+    if (path.startsWith("/utilities/workout-canvas")) {
+      const targetUrl = `/utilities/workout-canvas/${lang}`;
+      window.history.replaceState(window.history.state, "", targetUrl);
     }
-  }, []);
+  }, [lang]);
 
   // Prevent hover shifts when modal is open
   const isAnyModalOpen = isRoutineModalOpen || isExerciseModalOpen || isSettingsOpen || isBackupOpen || isSafetyOpen || isPwaOpen || isResetConfirmOpen;

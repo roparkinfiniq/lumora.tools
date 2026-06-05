@@ -25,6 +25,7 @@ const tools: Tool[] = [
   {
     id: "1",
     name: "Lumora PDF Studio",
+    slug: "pdf-studio",
     description:
       "High-fidelity HTML to PDF synthesis. Maintain typography and layout precision with our custom rendering engine.",
     icon: "FileCode",
@@ -40,6 +41,7 @@ const tools: Tool[] = [
   {
     id: "3",
     name: "Vector Lab: Gradients",
+    slug: "gradients",
     description:
       "Visual SVG mesh and linear gradient composer. Export production-ready code with artistic precision.",
     icon: "Paintbrush",
@@ -55,6 +57,7 @@ const tools: Tool[] = [
   {
     id: "4",
     name: "Structure: JSON",
+    slug: "json",
     description:
       "Developer-grade JSON visualization and formalization. Instant syntax correction and nested mapping.",
     icon: "Braces",
@@ -69,6 +72,7 @@ const tools: Tool[] = [
   {
     id: "5",
     name: "Ether: Markdown",
+    slug: "markdown",
     description:
       "A distraction-free markdown environment. Live fluid preview with elegant Github-flavored syntax.",
     icon: "Edit3",
@@ -83,6 +87,7 @@ const tools: Tool[] = [
   {
     id: "6",
     name: "Chromatic Extractor",
+    slug: "chromatic-extractor",
     description:
       "Intelligent color identity extraction. Upload any visual and generate a harmonious 8-bit palette.",
     icon: "Palette",
@@ -97,6 +102,7 @@ const tools: Tool[] = [
   {
     id: "7",
     name: "Gems: Workout Canvas",
+    slug: "workout-canvas",
     description:
       "Log your training sessions, adjust weights/reps dynamically, and export structured, publication-ready fitness reports.",
     icon: "Dumbbell",
@@ -255,16 +261,31 @@ const VIEW_TO_URL: Record<string, string> = {
   "code-tiara": "/code-tiara",
 };
 
+const getToolSlug = (name: string) => {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+};
+
 export default function App() {
   // Initialize from URL on first load only
   const [currentView, setCurrentView] = useState<string>(() => {
     const path = window.location.pathname;
+    if (path.startsWith("/utilities/")) {
+      return "utility-detail";
+    }
     return URL_TO_VIEW[path] ?? "home";
   });
   const [activeCategory, setActiveCategory] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
-  const [selectedTool, setSelectedTool] = useState<Tool | null>(null);
+  const [selectedTool, setSelectedTool] = useState<Tool | null>(() => {
+    const path = window.location.pathname;
+    if (path.startsWith("/utilities/")) {
+      const parts = path.substring("/utilities/".length).split("/");
+      const toolSlug = parts[0];
+      return tools.find((t) => t.slug === toolSlug || getToolSlug(t.name) === toolSlug) ?? null;
+    }
+    return null;
+  });
   const [journalView, setJournalView] = useState<"journal" | "photos">(
     "journal",
   );
@@ -272,10 +293,20 @@ export default function App() {
 
   // Sync state → URL (non-blocking, uses replaceState to avoid history stack clutter)
   useEffect(() => {
-    const url = VIEW_TO_URL[currentView] ?? "/";
+    let url = VIEW_TO_URL[currentView] ?? "/";
+    if (currentView === "utility-detail" && selectedTool) {
+      const slug = selectedTool.slug || getToolSlug(selectedTool.name);
+      if (selectedTool.id === "7") {
+        const path = window.location.pathname;
+        const currentLang = path.includes("/workout-canvas/ko") ? "ko" : "en";
+        url = `/utilities/${slug}/${currentLang}`;
+      } else {
+        url = `/utilities/${slug}`;
+      }
+    }
     window.history.replaceState({ view: currentView }, "", url);
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [currentView]);
+  }, [currentView, selectedTool]);
 
   const categories = useMemo(() => {
     const cats = ["All", ...new Set(tools.map((t) => t.category))];
