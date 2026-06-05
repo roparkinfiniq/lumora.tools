@@ -291,7 +291,7 @@ export default function App() {
   );
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
 
-  // Sync state → URL (non-blocking, uses replaceState to avoid history stack clutter)
+  // Sync state → URL (non-blocking)
   useEffect(() => {
     let url = VIEW_TO_URL[currentView] ?? "/";
     if (currentView === "utility-detail" && selectedTool) {
@@ -304,9 +304,34 @@ export default function App() {
         url = `/utilities/${slug}`;
       }
     }
-    window.history.replaceState({ view: currentView }, "", url);
+    if (window.location.pathname !== url) {
+      window.history.pushState({ view: currentView }, "", url);
+    }
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [currentView, selectedTool]);
+
+  // Handle browser back/forward buttons
+  useEffect(() => {
+    const handlePopState = () => {
+      const path = window.location.pathname;
+      if (path.startsWith("/utilities/")) {
+        const parts = path.substring("/utilities/".length).split("/");
+        const toolSlug = parts[0];
+        const foundTool = tools.find((t) => t.slug === toolSlug || getToolSlug(t.name) === toolSlug) ?? null;
+        setCurrentView("utility-detail");
+        setSelectedTool(foundTool);
+      } else {
+        const view = URL_TO_VIEW[path] ?? "home";
+        setCurrentView(view);
+        setSelectedTool(null);
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
 
   const categories = useMemo(() => {
     const cats = ["All", ...new Set(tools.map((t) => t.category))];
