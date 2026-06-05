@@ -223,3 +223,13 @@ html {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(192, 132, 252, 0.4);
 }
+
+/* Prevent card translate shaking when modal is open */
+body.modal-open .bento-card {
+  transform: none !important;
+  transition: none !important;
+}
+body.modal-open .bento-card:hover {
+  transform: none !important;
+}
+

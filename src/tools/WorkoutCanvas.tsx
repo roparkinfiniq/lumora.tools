@@ -532,6 +532,20 @@ export default function WorkoutCanvas() {
     }
   }, []);
 
+  // Prevent hover shifts when modal is open
+  const isAnyModalOpen = isRoutineModalOpen || isExerciseModalOpen || isSettingsOpen || isBackupOpen || isSafetyOpen || isPwaOpen || isResetConfirmOpen;
+
+  useEffect(() => {
+    if (isAnyModalOpen) {
+      document.body.classList.add("modal-open");
+    } else {
+      document.body.classList.remove("modal-open");
+    }
+    return () => {
+      document.body.classList.remove("modal-open");
+    };
+  }, [isAnyModalOpen]);
+
   // Load from local storage
   useEffect(() => {
     const savedVisible = localStorage.getItem(`gems_visible_days_${lang}`);
