@@ -390,9 +390,11 @@ export default function App() {
         }}
       />
 
-      <GNB currentView={currentView} onViewChange={(view) => {
-        setCurrentView(view);
-      }} />
+      {currentView !== "utility-detail" && !selectedPost && (
+        <GNB currentView={currentView} onViewChange={(view) => {
+          setCurrentView(view);
+        }} />
+      )}
 
       <CursorSpotlight />
 
