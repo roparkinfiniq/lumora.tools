@@ -2421,6 +2421,120 @@ export default function WorkoutCanvas() {
         document.body
       )}
 
+      {/* More Options Modal (Mobile Menu) */}
+      {createPortal(
+        <AnimatePresence>
+          {isMoreOpen && (
+            <>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsMoreOpen(false)}
+                className="fixed inset-0 bg-[#131219]/80 backdrop-blur-sm z-[120]"
+              />
+              <div className="fixed inset-0 z-[121] flex items-end sm:items-center justify-center p-0 sm:p-4 pointer-events-none">
+                <motion.div
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: 20, opacity: 0 }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
+                  className="pointer-events-auto bg-lumora-card border-t sm:border border-white/10 w-full max-w-md sm:max-w-sm rounded-t-3xl sm:rounded-3xl flex flex-col relative shadow-2xl max-h-[92vh] sm:max-h-[85vh] overflow-hidden"
+                >
+                  {/* Header (Sticky) */}
+                  <div className="shrink-0 p-6 pb-4 relative border-b border-white/5">
+                    <button
+                      onClick={() => setIsMoreOpen(false)}
+                      className="absolute top-5 right-6 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+
+                    <div className="flex items-center space-x-3">
+                      <div className="w-9 h-9 rounded-xl bg-lumora-highlight/10 text-lumora-highlight flex items-center justify-center shrink-0">
+                        <MoreHorizontal className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-black text-white">{t.moreMenuTitle}</h3>
+                        <p className="text-[10px] text-lumora-sub">{t.moreMenuDesc}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Body (Scrollable) */}
+                  <div className="flex-1 overflow-y-auto p-6 space-y-3">
+                    <button
+                      onClick={() => {
+                        setIsMoreOpen(false);
+                        setIsSettingsOpen(true);
+                      }}
+                      className="w-full flex items-center justify-between p-4 bg-[#1a1921]/50 hover:bg-lumora-hover border border-white/5 rounded-2xl transition text-left pointer-events-auto"
+                    >
+                      <div className="flex items-center space-x-3.5">
+                        <div className="w-9 h-9 rounded-xl bg-lumora-highlight/10 text-lumora-highlight flex items-center justify-center shrink-0">
+                          <Settings className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <div className="text-xs font-bold text-white">{t.settingsTitle}</div>
+                          <div className="text-[9px] text-lumora-sub mt-0.5">{t.settingsDesc}</div>
+                        </div>
+                      </div>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setIsMoreOpen(false);
+                        openBackupModal();
+                      }}
+                      className="w-full flex items-center justify-between p-4 bg-[#1a1921]/50 hover:bg-lumora-hover border border-white/5 rounded-2xl transition text-left pointer-events-auto"
+                    >
+                      <div className="flex items-center space-x-3.5">
+                        <div className="w-9 h-9 rounded-xl bg-lumora-highlight/10 text-lumora-highlight flex items-center justify-center shrink-0">
+                          <Database className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <div className="text-xs font-bold text-white">{t.backupTitle}</div>
+                          <div className="text-[9px] text-lumora-sub mt-0.5">{t.backupDesc}</div>
+                        </div>
+                      </div>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setIsMoreOpen(false);
+                        setIsSafetyOpen(true);
+                      }}
+                      className="w-full flex items-center justify-between p-4 bg-[#1a1921]/50 hover:bg-lumora-hover border border-white/5 rounded-2xl transition text-left pointer-events-auto"
+                    >
+                      <div className="flex items-center space-x-3.5">
+                        <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-450 flex items-center justify-center shrink-0">
+                          <ShieldAlert className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <div className="text-xs font-bold text-white">{t.safetyTitle}</div>
+                          <div className="text-[9px] text-lumora-sub mt-0.5">{t.safetyDesc}</div>
+                        </div>
+                      </div>
+                    </button>
+                  </div>
+
+                  {/* Footer (Sticky) */}
+                  <div className="shrink-0 p-6 pt-4 border-t border-white/5 bg-lumora-card">
+                    <button
+                      onClick={() => setIsMoreOpen(false)}
+                      className="btn-tap w-full py-3 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:text-white font-black rounded-xl text-xs flex items-center justify-center transition pointer-events-auto"
+                  >
+                    <span>{t.btnCloseGeneral}</span>
+                  </button>
+                </div>
+              </motion.div>
+            </div>
+          </>
+        )}
+      </AnimatePresence>,
+      document.body
+    )}
+
     </div>
   );
 }
