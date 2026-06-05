@@ -1606,245 +1606,261 @@ export default function WorkoutCanvas() {
       </main>
 
       {/* Routine Metadata Edit Modal */}
-      <AnimatePresence>
-        {isRoutineModalOpen && createPortal(
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsRoutineModalOpen(false)}
-              className="fixed inset-0 bg-[#131219]/80 backdrop-blur-sm z-[120]"
-            />
-            <div className="fixed inset-0 z-[121] flex items-end sm:items-center justify-center p-0 sm:p-4 pointer-events-none">
+      {createPortal(
+        <AnimatePresence>
+          {isRoutineModalOpen && (
+            <>
               <motion.div
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: 20, opacity: 0 }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
-                className="pointer-events-auto bg-lumora-card border-t sm:border border-white/10 w-full max-w-md sm:max-w-sm rounded-t-3xl sm:rounded-3xl flex flex-col relative shadow-2xl max-h-[92vh] sm:max-h-[85vh] overflow-hidden"
-              >
-                {/* Header (Sticky) */}
-                <div className="shrink-0 p-6 pb-4 relative border-b border-white/5">
-                  <button
-                    onClick={() => setIsRoutineModalOpen(false)}
-                    className="absolute top-5 right-6 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsRoutineModalOpen(false)}
+                className="fixed inset-0 bg-[#131219]/80 backdrop-blur-sm z-[120]"
+              />
+              <div className="fixed inset-0 z-[121] flex items-end sm:items-center justify-center p-0 sm:p-4 pointer-events-none">
+                <motion.div
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: 20, opacity: 0 }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
+                  className="pointer-events-auto bg-lumora-card border-t sm:border border-white/10 w-full max-w-md sm:max-w-sm rounded-t-3xl sm:rounded-3xl flex flex-col relative shadow-2xl max-h-[92vh] sm:max-h-[85vh] overflow-hidden"
+                >
+                  {/* Header (Sticky) */}
+                  <div className="shrink-0 p-6 pb-4 relative border-b border-white/5">
+                    <button
+                      onClick={() => setIsRoutineModalOpen(false)}
+                      className="absolute top-5 right-6 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
 
-                  <div className="flex items-center space-x-3">
-                    <div className="w-9 h-9 rounded-xl bg-lumora-highlight/10 text-lumora-highlight flex items-center justify-center shrink-0">
-                      <Edit3 className="w-5 h-5" />
+                    <div className="flex items-center space-x-3">
+                      <div className="w-9 h-9 rounded-xl bg-lumora-highlight/10 text-lumora-highlight flex items-center justify-center shrink-0">
+                        <Edit3 className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-black text-white">{t.routineInfoEditTitle}</h3>
+                        <p className="text-[10px] text-lumora-sub">{t.routineInfoEditDesc}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-sm font-black text-white">{t.routineInfoEditTitle}</h3>
-                      <p className="text-[10px] text-lumora-sub">{t.routineInfoEditDesc}</p>
+                  </div>
+
+                  {/* Body (Scrollable) */}
+                  <div className="flex-1 overflow-y-auto p-6 space-y-4">
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.tabLabelInput}</label>
+                      <input
+                        type="text"
+                        value={editRoutineTabLabel}
+                        onChange={(e) => setEditRoutineTabLabel(e.target.value)}
+                        placeholder={lang === "ko" ? "예: 월 (당기기)" : "e.g. Mon (Pull)"}
+                        className="w-full bg-lumora-bg/80 border border-white/10 text-xs text-lumora-text rounded-xl px-3 py-2.5 focus:outline-none focus:border-lumora-highlight"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.mainTitleInput}</label>
+                      <input
+                        type="text"
+                        value={editRoutineTitle}
+                        onChange={(e) => setEditRoutineTitle(e.target.value)}
+                        className="w-full bg-lumora-bg/80 border border-white/10 text-xs text-lumora-text rounded-xl px-3 py-2.5 focus:outline-none focus:border-lumora-highlight"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.subTitleInput}</label>
+                      <input
+                        type="text"
+                        value={editRoutineSubTitle}
+                        onChange={(e) => setEditRoutineSubTitle(e.target.value)}
+                        className="w-full bg-lumora-bg/80 border border-white/10 text-xs text-lumora-text rounded-xl px-3 py-2.5 focus:outline-none focus:border-lumora-highlight"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.coachGuideInput}</label>
+                      <textarea
+                        value={editRoutineDirective}
+                        onChange={(e) => setEditRoutineDirective(e.target.value)}
+                        rows={3}
+                        className="w-full bg-lumora-bg/80 border border-white/10 text-xs text-lumora-text rounded-xl px-3 py-2.5 focus:outline-none focus:border-lumora-highlight resize-none"
+                      />
                     </div>
                   </div>
-                </div>
 
-                {/* Body (Scrollable) */}
-                <div className="flex-1 overflow-y-auto p-6 space-y-4">
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.tabLabelInput}</label>
-                    <input
-                      type="text"
-                      value={editRoutineTabLabel}
-                      onChange={(e) => setEditRoutineTabLabel(e.target.value)}
-                      placeholder={lang === "ko" ? "예: 월 (당기기)" : "e.g. Mon (Pull)"}
-                      className="w-full bg-lumora-bg/80 border border-white/10 text-xs text-lumora-text rounded-xl px-3 py-2.5 focus:outline-none focus:border-lumora-highlight"
-                    />
+                  {/* Footer (Sticky) */}
+                  <div className="shrink-0 p-6 pt-4 border-t border-white/5 bg-lumora-card">
+                    <button
+                      onClick={saveRoutineInfo}
+                      className="btn-tap w-full py-3 bg-lumora-highlight hover:bg-[#c4b5fd] text-slate-900 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-lg transition"
+                    >
+                      <Check className="w-4 h-4" />
+                      <span>{t.saveBtn}</span>
+                    </button>
                   </div>
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.mainTitleInput}</label>
-                    <input
-                      type="text"
-                      value={editRoutineTitle}
-                      onChange={(e) => setEditRoutineTitle(e.target.value)}
-                      className="w-full bg-lumora-bg/80 border border-white/10 text-xs text-lumora-text rounded-xl px-3 py-2.5 focus:outline-none focus:border-lumora-highlight"
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.subTitleInput}</label>
-                    <input
-                      type="text"
-                      value={editRoutineSubTitle}
-                      onChange={(e) => setEditRoutineSubTitle(e.target.value)}
-                      className="w-full bg-lumora-bg/80 border border-white/10 text-xs text-lumora-text rounded-xl px-3 py-2.5 focus:outline-none focus:border-lumora-highlight"
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.coachGuideInput}</label>
-                    <textarea
-                      value={editRoutineDirective}
-                      onChange={(e) => setEditRoutineDirective(e.target.value)}
-                      rows={3}
-                      className="w-full bg-lumora-bg/80 border border-white/10 text-xs text-lumora-text rounded-xl px-3 py-2.5 focus:outline-none focus:border-lumora-highlight resize-none"
-                    />
-                  </div>
-                </div>
-
-                {/* Footer (Sticky) */}
-                <div className="shrink-0 p-6 pt-4 border-t border-white/5 bg-lumora-card">
-                  <button
-                    onClick={saveRoutineInfo}
-                    className="btn-tap w-full py-3 bg-lumora-highlight hover:bg-[#c4b5fd] text-slate-900 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-lg transition"
-                  >
-                    <Check className="w-4 h-4" />
-                    <span>{t.saveBtn}</span>
-                  </button>
-                </div>
-              </motion.div>
-            </div>
-          </>,
-          document.body
-        )}
-      </AnimatePresence>
+                </motion.div>
+              </div>
+            </>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
 
       {/* Exercise Add/Edit Modal */}
-      <AnimatePresence>
-        {isExerciseModalOpen && createPortal(
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsExerciseModalOpen(false)}
-              className="fixed inset-0 bg-[#131219]/80 backdrop-blur-sm z-[120]"
-            />
-            <div className="fixed inset-0 z-[121] flex items-end sm:items-center justify-center p-0 sm:p-4 pointer-events-none">
+      {createPortal(
+        <AnimatePresence>
+          {isExerciseModalOpen && (
+            <>
               <motion.div
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: 20, opacity: 0 }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
-                className="pointer-events-auto bg-lumora-card border-t sm:border border-white/10 w-full max-w-md sm:max-w-sm rounded-t-3xl sm:rounded-3xl flex flex-col relative shadow-2xl max-h-[92vh] sm:max-h-[85vh] overflow-hidden"
-              >
-                {/* Header (Sticky) */}
-                <div className="shrink-0 p-6 pb-4 relative border-b border-white/5">
-                  <button
-                    onClick={() => setIsExerciseModalOpen(false)}
-                    className="absolute top-5 right-6 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsExerciseModalOpen(false)}
+                className="fixed inset-0 bg-[#131219]/80 backdrop-blur-sm z-[120]"
+              />
+              <div className="fixed inset-0 z-[121] flex items-end sm:items-center justify-center p-0 sm:p-4 pointer-events-none">
+                <motion.div
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: 20, opacity: 0 }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
+                  className="pointer-events-auto bg-lumora-card border-t sm:border border-white/10 w-full max-w-md sm:max-w-sm rounded-t-3xl sm:rounded-3xl flex flex-col relative shadow-2xl max-h-[92vh] sm:max-h-[85vh] overflow-hidden"
+                >
+                  {/* Header (Sticky) */}
+                  <div className="shrink-0 p-6 pb-4 relative border-b border-white/5">
+                    <button
+                      onClick={() => setIsExerciseModalOpen(false)}
+                      className="absolute top-5 right-6 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
 
-                  <div className="flex items-center space-x-3">
-                    <div className="w-9 h-9 rounded-xl bg-lumora-highlight/10 text-lumora-highlight flex items-center justify-center shrink-0">
-                      <PlusCircle className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h3 className="text-sm font-black text-white">
-                        {editingExerciseId ? t.exerciseEditTitle : t.exerciseAddTitle}
-                      </h3>
-                      <p className="text-[10px] text-lumora-sub">
-                        {editingExerciseId ? t.exerciseEditDesc : t.exerciseAddDesc}
-                      </p>
+                    <div className="flex items-center space-x-3">
+                      <div className="w-9 h-9 rounded-xl bg-lumora-highlight/10 text-lumora-highlight flex items-center justify-center shrink-0">
+                        <PlusCircle className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-black text-white">
+                          {editingExerciseId ? t.exerciseEditTitle : t.exerciseAddTitle}
+                        </h3>
+                        <p className="text-[10px] text-lumora-sub">
+                          {editingExerciseId ? t.exerciseEditDesc : t.exerciseAddDesc}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Body (Scrollable) */}
-                <div className="flex-1 overflow-y-auto p-6 space-y-4">
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.exNameInput}</label>
-                    <input
-                      type="text"
-                      value={editExName}
-                      onChange={(e) => setEditExName(e.target.value)}
-                      placeholder={lang === "ko" ? "예: 시티드 로우" : "e.g. Seated Row"}
-                      className="w-full bg-lumora-bg/80 border border-white/10 text-xs text-lumora-text rounded-xl px-3 py-2.5 focus:outline-none focus:border-lumora-highlight"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2">
+                  {/* Body (Scrollable) */}
+                  <div className="flex-1 overflow-y-auto p-6 space-y-4">
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.categoryInput}</label>
-                      <select
-                        value={editExCategory}
-                        onChange={(e) => setEditExCategory(e.target.value)}
-                        className="w-full bg-lumora-bg/80 border border-white/10 text-xs text-lumora-text rounded-xl px-2 py-2.5 focus:outline-none focus:border-lumora-highlight"
-                      >
-                        {lang === "ko" ? (
-                          <>
-                            <option value="등">등</option>
-                            <option value="가슴">가슴</option>
-                            <option value="하체">하체</option>
-                            <option value="어깨">어깨</option>
-                            <option value="이두">이두</option>
-                            <option value="삼두">삼두</option>
-                            <option value="코어">코어</option>
-                            <option value="웜업">웜업</option>
-                            <option value="유산소">유산소</option>
-                          </>
-                        ) : (
-                          <>
-                            <option value="Back">Back</option>
-                            <option value="Chest">Chest</option>
-                            <option value="Lower">Lower</option>
-                            <option value="Shoulders">Shoulders</option>
-                            <option value="Biceps">Biceps</option>
-                            <option value="Triceps">Triceps</option>
-                            <option value="Core">Core</option>
-                            <option value="Warmup">Warmup</option>
-                            <option value="Cardio">Cardio</option>
-                          </>
-                        )}
-                      </select>
+                      <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.exNameInput}</label>
+                      <input
+                        type="text"
+                        value={editExName}
+                        onChange={(e) => setEditExName(e.target.value)}
+                        placeholder={lang === "ko" ? "예: 시티드 로우" : "e.g. Seated Row"}
+                        className="w-full bg-lumora-bg/80 border border-white/10 text-xs text-lumora-text rounded-xl px-3 py-2.5 focus:outline-none focus:border-lumora-highlight"
+                      />
                     </div>
-                    <div className="space-y-1.5">
-                      <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.setCountInput}</label>
-                      <select
-                        value={editExSetsCount}
-                        onChange={(e) => setEditExSetsCount(parseInt(e.target.value, 10))}
-                        className="w-full bg-lumora-bg/80 border border-white/10 text-xs text-lumora-text rounded-xl px-2 py-2.5 focus:outline-none focus:border-lumora-highlight"
-                      >
-                        <option value={1}>1 {lang === "ko" ? "세트" : "Set"}</option>
-                        <option value={2}>2 {lang === "ko" ? "세트" : "Sets"}</option>
-                        <option value={3}>3 {lang === "ko" ? "세트" : "Sets"}</option>
-                        <option value={4}>4 {lang === "ko" ? "세트" : "Sets"}</option>
-                        <option value={5}>5 {lang === "ko" ? "세트" : "Sets"}</option>
-                        <option value={6}>6 {lang === "ko" ? "세트" : "Sets"}</option>
-                      </select>
-                    </div>
-                  </div>
 
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.exTypeInput}</label>
-                    <div className="grid grid-cols-3 gap-2">
-                      {(["normal", "bodyweight", "cardio"] as const).map((tType) => {
-                        const isSelected = editExType === tType;
-                        const labelText = tType === "normal" ? t.exTypeNormal : tType === "bodyweight" ? t.exTypeBodyweight : t.exTypeCardio;
-                        return (
-                          <button
-                            key={tType}
-                            type="button"
-                            onClick={() => setEditExType(tType)}
-                            className={`flex items-center justify-center p-2 rounded-xl cursor-pointer select-none border transition-all text-[10px] font-bold ${
-                              isSelected
-                                ? "bg-lumora-highlight/10 border-lumora-highlight text-lumora-highlight"
-                                : "bg-lumora-bg/80 border-white/5 text-lumora-sub"
-                            }`}
-                          >
-                            {labelText}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  {editExType === "normal" && (
                     <div className="grid grid-cols-2 gap-2">
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.baseWeightInput}</label>
-                        <input
-                          type="number"
-                          value={editExWeight}
-                          onChange={(e) => setEditExWeight(parseFloat(e.target.value) || 0)}
-                          className="w-full bg-lumora-bg/80 border border-white/10 text-xs text-lumora-text rounded-xl px-3 py-2.5 focus:outline-none focus:border-lumora-highlight"
-                        />
+                        <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.categoryInput}</label>
+                        <select
+                          value={editExCategory}
+                          onChange={(e) => setEditExCategory(e.target.value)}
+                          className="w-full bg-lumora-bg/80 border border-white/10 text-xs text-lumora-text rounded-xl px-2 py-2.5 focus:outline-none focus:border-lumora-highlight"
+                        >
+                          {lang === "ko" ? (
+                            <>
+                              <option value="등">등</option>
+                              <option value="가슴">가슴</option>
+                              <option value="하체">하체</option>
+                              <option value="어깨">어깨</option>
+                              <option value="이두">이두</option>
+                              <option value="삼두">삼두</option>
+                              <option value="코어">코어</option>
+                              <option value="웜업">웜업</option>
+                              <option value="유산소">유산소</option>
+                            </>
+                          ) : (
+                            <>
+                              <option value="Back">Back</option>
+                              <option value="Chest">Chest</option>
+                              <option value="Lower">Lower</option>
+                              <option value="Shoulders">Shoulders</option>
+                              <option value="Biceps">Biceps</option>
+                              <option value="Triceps">Triceps</option>
+                              <option value="Core">Core</option>
+                              <option value="Warmup">Warmup</option>
+                              <option value="Cardio">Cardio</option>
+                            </>
+                          )}
+                        </select>
                       </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.setCountInput}</label>
+                        <select
+                          value={editExSetsCount}
+                          onChange={(e) => setEditExSetsCount(parseInt(e.target.value, 10))}
+                          className="w-full bg-lumora-bg/80 border border-white/10 text-xs text-lumora-text rounded-xl px-2 py-2.5 focus:outline-none focus:border-lumora-highlight"
+                        >
+                          <option value={1}>1 {lang === "ko" ? "세트" : "Set"}</option>
+                          <option value={2}>2 {lang === "ko" ? "세트" : "Sets"}</option>
+                          <option value={3}>3 {lang === "ko" ? "세트" : "Sets"}</option>
+                          <option value={4}>4 {lang === "ko" ? "세트" : "Sets"}</option>
+                          <option value={5}>5 {lang === "ko" ? "세트" : "Sets"}</option>
+                          <option value={6}>6 {lang === "ko" ? "세트" : "Sets"}</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.exTypeInput}</label>
+                      <div className="grid grid-cols-3 gap-2">
+                        {(["normal", "bodyweight", "cardio"] as const).map((tType) => {
+                          const isSelected = editExType === tType;
+                          const labelText = tType === "normal" ? t.exTypeNormal : tType === "bodyweight" ? t.exTypeBodyweight : t.exTypeCardio;
+                          return (
+                            <button
+                              key={tType}
+                              type="button"
+                              onClick={() => setEditExType(tType)}
+                              className={`flex items-center justify-center p-2 rounded-xl cursor-pointer select-none border transition-all text-[10px] font-bold ${
+                                isSelected
+                                  ? "bg-lumora-highlight/10 border-lumora-highlight text-lumora-highlight"
+                                  : "bg-lumora-bg/80 border-white/5 text-lumora-sub"
+                              }`}
+                            >
+                              {labelText}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {editExType === "normal" && (
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="space-y-1.5">
+                          <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.baseWeightInput}</label>
+                          <input
+                            type="number"
+                            value={editExWeight}
+                            onChange={(e) => setEditExWeight(parseFloat(e.target.value) || 0)}
+                            className="w-full bg-lumora-bg/80 border border-white/10 text-xs text-lumora-text rounded-xl px-3 py-2.5 focus:outline-none focus:border-lumora-highlight"
+                          />
+                        </div>
+                        <div className="space-y-1.5">
+                          <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.baseRepsInput}</label>
+                          <input
+                            type="number"
+                            value={editExReps}
+                            onChange={(e) => setEditExReps(parseInt(e.target.value, 10) || 0)}
+                            className="w-full bg-lumora-bg/80 border border-white/10 text-xs text-lumora-text rounded-xl px-3 py-2.5 focus:outline-none focus:border-lumora-highlight"
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {editExType === "bodyweight" && (
                       <div className="space-y-1.5">
                         <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.baseRepsInput}</label>
                         <input
@@ -1854,527 +1870,525 @@ export default function WorkoutCanvas() {
                           className="w-full bg-lumora-bg/80 border border-white/10 text-xs text-lumora-text rounded-xl px-3 py-2.5 focus:outline-none focus:border-lumora-highlight"
                         />
                       </div>
-                    </div>
-                  )}
+                    )}
 
-                  {editExType === "bodyweight" && (
+                    {editExType === "cardio" && (
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.baseDurationInput}</label>
+                        <input
+                          type="number"
+                          value={editExDuration}
+                          onChange={(e) => setEditExDuration(parseInt(e.target.value, 10) || 0)}
+                          className="w-full bg-lumora-bg/80 border border-white/10 text-xs text-lumora-text rounded-xl px-3 py-2.5 focus:outline-none focus:border-lumora-highlight"
+                        />
+                      </div>
+                    )}
+
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.baseRepsInput}</label>
+                      <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.exGuideInput}</label>
                       <input
-                        type="number"
-                        value={editExReps}
-                        onChange={(e) => setEditExReps(parseInt(e.target.value, 10) || 0)}
+                        type="text"
+                        value={editExTarget}
+                        onChange={(e) => setEditExTarget(e.target.value)}
+                        placeholder={
+                          editExType === "cardio"
+                            ? (lang === "ko" ? "예: 10분 빠른 걷기" : "e.g. 10 min fast walk")
+                            : editExType === "bodyweight"
+                            ? (lang === "ko" ? "예: 맨몸 x 12회" : "e.g. bodyweight x 12 reps")
+                            : (lang === "ko" ? "예: 30kg x 12회" : "e.g. 30kg x 12 reps")
+                        }
                         className="w-full bg-lumora-bg/80 border border-white/10 text-xs text-lumora-text rounded-xl px-3 py-2.5 focus:outline-none focus:border-lumora-highlight"
                       />
                     </div>
-                  )}
 
-                  {editExType === "cardio" && (
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.baseDurationInput}</label>
+                      <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.exTipInput}</label>
                       <input
-                        type="number"
-                        value={editExDuration}
-                        onChange={(e) => setEditExDuration(parseInt(e.target.value, 10) || 0)}
+                        type="text"
+                        value={editExTip}
+                        onChange={(e) => setEditExTip(e.target.value)}
+                        placeholder={lang === "ko" ? "예: 무릎 방향 정렬 엄수" : "e.g. Keep knees aligned with feet"}
                         className="w-full bg-lumora-bg/80 border border-white/10 text-xs text-lumora-text rounded-xl px-3 py-2.5 focus:outline-none focus:border-lumora-highlight"
                       />
                     </div>
-                  )}
-
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.exGuideInput}</label>
-                    <input
-                      type="text"
-                      value={editExTarget}
-                      onChange={(e) => setEditExTarget(e.target.value)}
-                      placeholder={
-                        editExType === "cardio"
-                          ? (lang === "ko" ? "예: 10분 빠른 걷기" : "e.g. 10 min fast walk")
-                          : editExType === "bodyweight"
-                          ? (lang === "ko" ? "예: 맨몸 x 12회" : "e.g. bodyweight x 12 reps")
-                          : (lang === "ko" ? "예: 30kg x 12회" : "e.g. 30kg x 12 reps")
-                      }
-                      className="w-full bg-lumora-bg/80 border border-white/10 text-xs text-lumora-text rounded-xl px-3 py-2.5 focus:outline-none focus:border-lumora-highlight"
-                    />
                   </div>
 
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.exTipInput}</label>
-                    <input
-                      type="text"
-                      value={editExTip}
-                      onChange={(e) => setEditExTip(e.target.value)}
-                      placeholder={lang === "ko" ? "예: 무릎 방향 정렬 엄수" : "e.g. Keep knees aligned with feet"}
-                      className="w-full bg-lumora-bg/80 border border-white/10 text-xs text-lumora-text rounded-xl px-3 py-2.5 focus:outline-none focus:border-lumora-highlight"
-                    />
+                  {/* Footer (Sticky) */}
+                  <div className="shrink-0 p-6 pt-4 border-t border-white/5 bg-lumora-card">
+                    <button
+                      onClick={saveExercise}
+                      className="btn-tap w-full py-3 bg-lumora-highlight hover:bg-[#c4b5fd] text-slate-900 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-lg transition"
+                    >
+                      <Check className="w-4 h-4" />
+                      <span>{t.saveGeneralBtn}</span>
+                    </button>
                   </div>
-                </div>
-
-                {/* Footer (Sticky) */}
-                <div className="shrink-0 p-6 pt-4 border-t border-white/5 bg-lumora-card">
-                  <button
-                    onClick={saveExercise}
-                    className="btn-tap w-full py-3 bg-lumora-highlight hover:bg-[#c4b5fd] text-slate-900 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-lg transition"
-                  >
-                    <Check className="w-4 h-4" />
-                    <span>{t.saveGeneralBtn}</span>
-                  </button>
-                </div>
-              </motion.div>
-            </div>
-          </>,
-          document.body
-        )}
-      </AnimatePresence>
+                </motion.div>
+              </div>
+            </>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
 
       {/* Settings Modal (Visible Days Toggle) */}
-      <AnimatePresence>
-        {isSettingsOpen && createPortal(
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsSettingsOpen(false)}
-              className="fixed inset-0 bg-[#131219]/80 backdrop-blur-sm z-[120]"
-            />
-            <div className="fixed inset-0 z-[121] flex items-end sm:items-center justify-center p-0 sm:p-4 pointer-events-none">
+      {createPortal(
+        <AnimatePresence>
+          {isSettingsOpen && (
+            <>
               <motion.div
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: 20, opacity: 0 }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
-                className="pointer-events-auto bg-lumora-card border-t sm:border border-white/10 w-full max-w-md sm:max-w-sm rounded-t-3xl sm:rounded-3xl flex flex-col relative shadow-2xl max-h-[92vh] sm:max-h-[85vh] overflow-hidden"
-              >
-                {/* Header (Sticky) */}
-                <div className="shrink-0 p-6 pb-4 relative border-b border-white/5">
-                  <button
-                    onClick={() => setIsSettingsOpen(false)}
-                    className="absolute top-5 right-6 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsSettingsOpen(false)}
+                className="fixed inset-0 bg-[#131219]/80 backdrop-blur-sm z-[120]"
+              />
+              <div className="fixed inset-0 z-[121] flex items-end sm:items-center justify-center p-0 sm:p-4 pointer-events-none">
+                <motion.div
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: 20, opacity: 0 }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
+                  className="pointer-events-auto bg-lumora-card border-t sm:border border-white/10 w-full max-w-md sm:max-w-sm rounded-t-3xl sm:rounded-3xl flex flex-col relative shadow-2xl max-h-[92vh] sm:max-h-[85vh] overflow-hidden"
+                >
+                  {/* Header (Sticky) */}
+                  <div className="shrink-0 p-6 pb-4 relative border-b border-white/5">
+                    <button
+                      onClick={() => setIsSettingsOpen(false)}
+                      className="absolute top-5 right-6 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
 
-                  <div className="flex items-center space-x-3">
-                    <div className="w-9 h-9 rounded-xl bg-lumora-highlight/10 text-lumora-highlight flex items-center justify-center shrink-0">
-                      <Settings className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h3 className="text-sm font-black text-white">{t.settingsTitle}</h3>
-                      <p className="text-[10px] text-lumora-sub">{t.settingsDesc}</p>
+                    <div className="flex items-center space-x-3">
+                      <div className="w-9 h-9 rounded-xl bg-lumora-highlight/10 text-lumora-highlight flex items-center justify-center shrink-0">
+                        <Settings className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-black text-white">{t.settingsTitle}</h3>
+                        <p className="text-[10px] text-lumora-sub">{t.settingsDesc}</p>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Body (Scrollable) */}
-                <div className="flex-1 overflow-y-auto p-6 space-y-4">
-                  <p className="text-[11px] text-lumora-sub font-semibold">{t.settingsWarn}</p>
+                  {/* Body (Scrollable) */}
+                  <div className="flex-1 overflow-y-auto p-6 space-y-4">
+                    <p className="text-[11px] text-lumora-sub font-semibold">{t.settingsWarn}</p>
 
-                  <div className="space-y-2">
-                    {DAY_ORDER.map((day) => {
-                      const isChecked = visibleDays.includes(day);
-                      return (
-                        <label
-                          key={day}
-                          className="flex items-center justify-between p-3 bg-lumora-bg/85 hover:bg-lumora-hover border border-white/5 rounded-2xl cursor-pointer transition"
-                        >
-                          <span className="text-xs font-semibold text-slate-200">
-                            {day === "mon"
-                              ? t.monLabel
-                              : day === "tue"
-                              ? t.tueLabel
-                              : day === "wed"
-                              ? t.wedLabel
-                              : day === "thu"
-                              ? t.thuLabel
-                              : day === "fri"
-                              ? t.friLabel
-                              : day === "sat"
-                              ? t.satLabel
-                              : t.sunLabel}
-                          </span>
-                          <input
-                            type="checkbox"
-                            value={day}
-                            checked={isChecked}
-                            onChange={(e) => {
-                              const checked = e.target.checked;
-                              let updated = [...visibleDays];
-                              if (checked) {
-                                if (!updated.includes(day)) updated.push(day);
-                              } else {
-                                updated = updated.filter((d) => d !== day);
-                              }
-                              // Limit: must have at least 1 day
-                              if (updated.length > 0) {
-                                setVisibleDays(updated);
-                              }
-                            }}
-                            className="w-4 h-4 accent-[#c4b5fd]"
-                          />
-                        </label>
-                      );
-                    })}
+                    <div className="space-y-2">
+                      {DAY_ORDER.map((day) => {
+                        const isChecked = visibleDays.includes(day);
+                        return (
+                          <label
+                            key={day}
+                            className="flex items-center justify-between p-3 bg-lumora-bg/85 hover:bg-lumora-hover border border-white/5 rounded-2xl cursor-pointer transition"
+                          >
+                            <span className="text-xs font-semibold text-slate-200">
+                              {day === "mon"
+                                ? t.monLabel
+                                : day === "tue"
+                                ? t.tueLabel
+                                : day === "wed"
+                                ? t.wedLabel
+                                : day === "thu"
+                                ? t.thuLabel
+                                : day === "fri"
+                                ? t.friLabel
+                                : day === "sat"
+                                ? t.satLabel
+                                : t.sunLabel}
+                            </span>
+                            <input
+                              type="checkbox"
+                              value={day}
+                              checked={isChecked}
+                              onChange={(e) => {
+                                const checked = e.target.checked;
+                                let updated = [...visibleDays];
+                                if (checked) {
+                                  if (!updated.includes(day)) updated.push(day);
+                                } else {
+                                  updated = updated.filter((d) => d !== day);
+                                }
+                                // Limit: must have at least 1 day
+                                if (updated.length > 0) {
+                                  setVisibleDays(updated);
+                                }
+                              }}
+                              className="w-4 h-4 accent-[#c4b5fd]"
+                            />
+                          </label>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
 
-                {/* Footer (Sticky) */}
-                <div className="shrink-0 p-6 pt-4 border-t border-white/5 bg-lumora-card">
-                  <button
-                    onClick={() => applyVisibleDays(visibleDays)}
-                    className="btn-tap w-full py-3 bg-lumora-highlight hover:bg-[#c4b5fd] text-slate-900 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-lg transition"
-                  >
-                    <Check className="w-4 h-4" />
-                    <span>{t.applyBtn}</span>
-                  </button>
-                </div>
-              </motion.div>
-            </div>
-          </>,
-          document.body
-        )}
-      </AnimatePresence>
+                  {/* Footer (Sticky) */}
+                  <div className="shrink-0 p-6 pt-4 border-t border-white/5 bg-lumora-card">
+                    <button
+                      onClick={() => applyVisibleDays(visibleDays)}
+                      className="btn-tap w-full py-3 bg-lumora-highlight hover:bg-[#c4b5fd] text-slate-900 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-lg transition"
+                    >
+                      <Check className="w-4 h-4" />
+                      <span>{t.applyBtn}</span>
+                    </button>
+                  </div>
+                </motion.div>
+              </div>
+            </>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
 
       {/* Backup & Restore Modal */}
-      <AnimatePresence>
-        {isBackupOpen && createPortal(
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsBackupOpen(false)}
-              className="fixed inset-0 bg-[#131219]/80 backdrop-blur-sm z-[120]"
-            />
-            <div className="fixed inset-0 z-[121] flex items-end sm:items-center justify-center p-0 sm:p-4 pointer-events-none">
+      {createPortal(
+        <AnimatePresence>
+          {isBackupOpen && (
+            <>
               <motion.div
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: 20, opacity: 0 }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
-                className="pointer-events-auto bg-lumora-card border-t sm:border border-white/10 w-full max-w-md sm:max-w-sm rounded-t-3xl sm:rounded-3xl flex flex-col relative shadow-2xl max-h-[92vh] sm:max-h-[85vh] overflow-hidden"
-              >
-                {/* Header (Sticky) */}
-                <div className="shrink-0 p-6 pb-4 relative border-b border-white/5">
-                  <button
-                    onClick={() => setIsBackupOpen(false)}
-                    className="absolute top-5 right-6 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsBackupOpen(false)}
+                className="fixed inset-0 bg-[#131219]/80 backdrop-blur-sm z-[120]"
+              />
+              <div className="fixed inset-0 z-[121] flex items-end sm:items-center justify-center p-0 sm:p-4 pointer-events-none">
+                <motion.div
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: 20, opacity: 0 }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
+                  className="pointer-events-auto bg-lumora-card border-t sm:border border-white/10 w-full max-w-md sm:max-w-sm rounded-t-3xl sm:rounded-3xl flex flex-col relative shadow-2xl max-h-[92vh] sm:max-h-[85vh] overflow-hidden"
+                >
+                  {/* Header (Sticky) */}
+                  <div className="shrink-0 p-6 pb-4 relative border-b border-white/5">
+                    <button
+                      onClick={() => setIsBackupOpen(false)}
+                      className="absolute top-5 right-6 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
 
-                  <div className="flex items-center space-x-3">
-                    <div className="w-9 h-9 rounded-xl bg-lumora-highlight/10 text-lumora-highlight flex items-center justify-center shrink-0">
-                      <Database className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h3 className="text-sm font-black text-white">{t.backupTitle}</h3>
-                      <p className="text-[10px] text-lumora-sub">{t.backupDesc}</p>
+                    <div className="flex items-center space-x-3">
+                      <div className="w-9 h-9 rounded-xl bg-lumora-highlight/10 text-lumora-highlight flex items-center justify-center shrink-0">
+                        <Database className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-black text-white">{t.backupTitle}</h3>
+                        <p className="text-[10px] text-lumora-sub">{t.backupDesc}</p>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Body (Scrollable) */}
-                <div className="flex-1 overflow-y-auto p-6 space-y-4">
-                  {/* Export Segment */}
-                  <div className="space-y-2">
-                    <label className="text-[11px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.backupGenTitle}</label>
-                    <p className="text-[10px] text-lumora-sub">{t.backupGenDesc}</p>
-                    <div className="relative mt-1">
+                  {/* Body (Scrollable) */}
+                  <div className="flex-1 overflow-y-auto p-6 space-y-4">
+                    {/* Export Segment */}
+                    <div className="space-y-2">
+                      <label className="text-[11px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.backupGenTitle}</label>
+                      <p className="text-[10px] text-lumora-sub">{t.backupGenDesc}</p>
+                      <div className="relative mt-1">
+                        <textarea
+                          readOnly
+                          value={exportCode}
+                          className="w-full h-16 bg-lumora-bg/85 border border-white/5 text-[10px] text-lumora-sub rounded-xl p-2.5 focus:outline-none resize-none font-mono break-all"
+                        />
+                        <button
+                          onClick={() => {
+                            navigator.clipboard.writeText(exportCode).then(() => {
+                              triggerToastBanner(lang === "ko" ? "백업용 보안 코드가 복사되었습니다! 안전한 곳에 기록해 두세요." : "Backup token copied! Keep it in a safe place.");
+                            });
+                          }}
+                          className="btn-tap absolute right-2 bottom-2 px-2.5 py-1.5 bg-lumora-highlight text-slate-900 font-extrabold text-[10px] rounded-lg shadow-md flex items-center gap-1"
+                        >
+                          <Copy className="w-3 h-3" /> {t.btnCopyCode}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Import Segment */}
+                    <div className="space-y-2 border-t border-white/5 pt-4">
+                      <label className="text-[11px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.backupRestoreTitle}</label>
+                      <p className="text-[10px] text-lumora-sub">{t.backupRestoreDesc}</p>
                       <textarea
-                        readOnly
-                        value={exportCode}
-                        className="w-full h-16 bg-lumora-bg/85 border border-white/5 text-[10px] text-lumora-sub rounded-xl p-2.5 focus:outline-none resize-none font-mono break-all"
+                        value={importCode}
+                        onChange={(e) => setImportCode(e.target.value)}
+                        placeholder={lang === "ko" ? "여기에 백업 보안 코드를 붙여넣으세요..." : "Paste your backup token here..."}
+                        className="w-full h-16 mt-1 bg-lumora-bg/85 border border-white/5 text-[10px] text-lumora-text rounded-xl p-2.5 focus:outline-none focus:border-lumora-highlight resize-none font-mono break-all placeholder:text-slate-600"
                       />
                       <button
-                        onClick={() => {
-                          navigator.clipboard.writeText(exportCode).then(() => {
-                            triggerToastBanner(lang === "ko" ? "백업용 보안 코드가 복사되었습니다! 안전한 곳에 기록해 두세요." : "Backup token copied! Keep it in a safe place.");
-                          });
-                        }}
-                        className="btn-tap absolute right-2 bottom-2 px-2.5 py-1.5 bg-lumora-highlight text-slate-900 font-extrabold text-[10px] rounded-lg shadow-md flex items-center gap-1"
+                        onClick={importBackupCode}
+                        className="btn-tap w-full py-2.5 bg-lumora-highlight hover:bg-[#c4b5fd] text-slate-900 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-lg transition"
                       >
-                        <Copy className="w-3 h-3" /> {t.btnCopyCode}
+                        <Upload className="w-4 h-4" />
+                        <span>{t.btnRestoreApply}</span>
+                      </button>
+                    </div>
+
+                    {/* Safe Smart Wipe Reset Button */}
+                    <div className="text-center pt-2 border-t border-white/5">
+                      <button
+                        onClick={resetAllData}
+                        className={`btn-tap text-[10px] font-extrabold transition-all duration-200 ${
+                          resetConfirmActive ? "text-amber-500 font-black" : "text-rose-500 hover:text-rose-400 underline"
+                        }`}
+                      >
+                        {resetConfirmActive ? (lang === "ko" ? "⚠️ 한번 더 클릭 시 정말 전체 초기화!" : "⚠️ Click once more to WIPE ALL!") : t.btnResetAll}
                       </button>
                     </div>
                   </div>
 
-                  {/* Import Segment */}
-                  <div className="space-y-2 border-t border-white/5 pt-4">
-                    <label className="text-[11px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.backupRestoreTitle}</label>
-                    <p className="text-[10px] text-lumora-sub">{t.backupRestoreDesc}</p>
-                    <textarea
-                      value={importCode}
-                      onChange={(e) => setImportCode(e.target.value)}
-                      placeholder={lang === "ko" ? "여기에 백업 보안 코드를 붙여넣으세요..." : "Paste your backup token here..."}
-                      className="w-full h-16 mt-1 bg-lumora-bg/85 border border-white/5 text-[10px] text-lumora-text rounded-xl p-2.5 focus:outline-none focus:border-lumora-highlight resize-none font-mono break-all placeholder:text-slate-600"
-                    />
+                  {/* Footer (Sticky) */}
+                  <div className="shrink-0 p-6 pt-4 border-t border-white/5 bg-lumora-card">
                     <button
-                      onClick={importBackupCode}
-                      className="btn-tap w-full py-2.5 bg-lumora-highlight hover:bg-[#c4b5fd] text-slate-900 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-lg transition"
-                    >
-                      <Upload className="w-4 h-4" />
-                      <span>{t.btnRestoreApply}</span>
-                    </button>
-                  </div>
-
-                  {/* Safe Smart Wipe Reset Button */}
-                  <div className="text-center pt-2 border-t border-white/5">
-                    <button
-                      onClick={resetAllData}
-                      className={`btn-tap text-[10px] font-extrabold transition-all duration-200 ${
-                        resetConfirmActive ? "text-amber-500 font-black" : "text-rose-500 hover:text-rose-400 underline"
-                      }`}
-                    >
-                      {resetConfirmActive ? (lang === "ko" ? "⚠️ 한번 더 클릭 시 정말 전체 초기화!" : "⚠️ Click once more to WIPE ALL!") : t.btnResetAll}
-                    </button>
-                  </div>
-                </div>
-
-                {/* Footer (Sticky) */}
-                <div className="shrink-0 p-6 pt-4 border-t border-white/5 bg-lumora-card">
-                  <button
-                    onClick={() => setIsBackupOpen(false)}
-                    className="btn-tap w-full py-3 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:text-white font-black rounded-xl text-xs flex items-center justify-center transition"
-                  >
-                    <span>{t.btnCloseGeneral}</span>
-                  </button>
-                </div>
-              </motion.div>
-            </div>
-          </>,
-          document.body
-        )}
-      </AnimatePresence>
-
-      {/* Injury Risk Specs Modal */}
-      <AnimatePresence>
-        {isSafetyOpen && createPortal(
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsSafetyOpen(false)}
-              className="fixed inset-0 bg-[#131219]/80 backdrop-blur-sm z-[120]"
-            />
-            <div className="fixed inset-0 z-[121] flex items-end sm:items-center justify-center p-0 sm:p-4 pointer-events-none">
-              <motion.div
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: 20, opacity: 0 }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
-                className="pointer-events-auto bg-lumora-card border-t sm:border border-white/10 w-full max-w-md sm:max-w-sm rounded-t-3xl sm:rounded-3xl flex flex-col relative shadow-2xl max-h-[92vh] sm:max-h-[85vh] overflow-hidden"
-              >
-                {/* Header (Sticky) */}
-                <div className="shrink-0 p-6 pb-4 relative border-b border-white/5">
-                  <button
-                    onClick={() => setIsSafetyOpen(false)}
-                    className="absolute top-5 right-6 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-
-                  <div className="flex items-center space-x-3">
-                    <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-450 flex items-center justify-center shrink-0">
-                      <ShieldAlert className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h3 className="text-sm font-black text-white">{t.safetyTitle}</h3>
-                      <p className="text-[10px] text-lumora-sub">{t.safetyDesc}</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Body (Scrollable) */}
-                <div className="flex-1 overflow-y-auto p-6 space-y-3">
-                  <div className="p-3.5 bg-[#1a1921]/50 rounded-2xl border border-white/5 flex items-start gap-3">
-                    <span className="px-2 py-0.5 bg-rose-500/10 text-rose-450 font-extrabold text-[10px] rounded border border-rose-500/20 mt-0.5 shrink-0">{t.wristTitle}</span>
-                    <p className="text-[11px] text-lumora-text/80 leading-relaxed font-semibold">
-                      {t.wristBody}
-                    </p>
-                  </div>
-                  <div className="p-3.5 bg-[#1a1921]/50 rounded-2xl border border-white/5 flex items-start gap-3">
-                    <span className="px-2 py-0.5 bg-amber-500/10 text-amber-450 font-extrabold text-[10px] rounded border border-amber-500/20 mt-0.5 shrink-0">{t.kneeTitle}</span>
-                    <p className="text-[11px] text-lumora-text/80 leading-relaxed font-semibold">
-                      {t.kneeBody}
-                    </p>
-                  </div>
-                  <div className="p-3.5 bg-[#1a1921]/50 rounded-2xl border border-white/5 flex items-start gap-3">
-                    <span className="px-2 py-0.5 bg-teal-500/10 text-teal-450 font-extrabold text-[10px] rounded border border-teal-500/20 mt-0.5 shrink-0">{t.shoulderTitle}</span>
-                    <p className="text-[11px] text-lumora-text/80 leading-relaxed font-semibold">
-                      {t.shoulderBody}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Footer (Sticky) */}
-                <div className="shrink-0 p-6 pt-4 border-t border-white/5 bg-lumora-card">
-                  <button
-                    onClick={() => setIsSafetyOpen(false)}
-                    className="btn-tap w-full py-3 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:text-white font-black rounded-xl text-xs flex items-center justify-center transition"
-                  >
-                    <span>{t.btnCloseGeneral}</span>
-                  </button>
-                </div>
-              </motion.div>
-            </div>
-          </>,
-          document.body
-        )}
-      </AnimatePresence>
-
-      {/* PWA Install Guide Modal */}
-      <AnimatePresence>
-        {isPwaOpen && createPortal(
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsPwaOpen(false)}
-              className="fixed inset-0 bg-[#131219]/80 backdrop-blur-sm z-[120]"
-            />
-            <div className="fixed inset-0 z-[121] flex items-end sm:items-center justify-center p-0 sm:p-4 pointer-events-none">
-              <motion.div
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: 20, opacity: 0 }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
-                className="pointer-events-auto bg-lumora-card border-t sm:border border-white/10 w-full max-w-md sm:max-w-sm rounded-t-3xl sm:rounded-3xl flex flex-col relative shadow-2xl max-h-[92vh] sm:max-h-[85vh] overflow-hidden"
-              >
-                {/* Header (Sticky) */}
-                <div className="shrink-0 p-6 pb-4 relative border-b border-white/5">
-                  <button
-                    onClick={() => setIsPwaOpen(false)}
-                    className="absolute top-5 right-6 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-
-                  <div className="flex items-center space-x-3">
-                    <div className="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-450 flex items-center justify-center shrink-0">
-                      <Smartphone className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h3 className="text-sm font-black text-white">{t.pwaTitle}</h3>
-                      <p className="text-[10px] text-lumora-sub">{t.pwaDesc}</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Body (Scrollable) */}
-                <div className="flex-1 overflow-y-auto p-6 space-y-4">
-                  <div className="space-y-2.5">
-                    <span className="px-2.5 py-1 bg-emerald-500/10 text-emerald-450 font-extrabold text-[11px] rounded-lg border border-emerald-500/20 inline-block">{t.androidPwaTitle}</span>
-                    <ol className="text-xs text-lumora-text/80 space-y-2 list-decimal list-inside pl-1 font-semibold leading-relaxed">
-                      {t.androidPwaSteps.map((step, idx) => (
-                        <li key={idx}>{step}</li>
-                      ))}
-                    </ol>
-                  </div>
-
-                  <div className="space-y-2.5 border-t border-white/5 pt-4">
-                    <span className="px-2.5 py-1 bg-teal-500/10 text-teal-450 font-extrabold text-[11px] rounded-lg border border-teal-500/20 inline-block">{t.iosPwaTitle}</span>
-                    <ol className="text-xs text-lumora-text/80 space-y-2 list-decimal list-inside pl-1 font-semibold leading-relaxed">
-                      {t.iosPwaSteps.map((step, idx) => (
-                        <li key={idx}>{step}</li>
-                      ))}
-                    </ol>
-                  </div>
-
-                  <div className="p-3 bg-[#1a1921]/50 rounded-2xl border border-white/5">
-                    <p className="text-[10px] text-lumora-sub leading-relaxed font-medium">
-                      {t.pwaTip}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Footer (Sticky) */}
-                <div className="shrink-0 p-6 pt-4 border-t border-white/5 bg-lumora-card">
-                  <button
-                    onClick={() => setIsPwaOpen(false)}
-                    className="btn-tap w-full py-3 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:text-white font-black rounded-xl text-xs flex items-center justify-center transition"
-                  >
-                    <span>{t.btnCloseGeneral}</span>
-                  </button>
-                </div>
-              </motion.div>
-            </div>
-          </>,
-          document.body
-        )}
-      </AnimatePresence>
-
-      {/* Reset Confirmation Modal */}
-      <AnimatePresence>
-        {isResetConfirmOpen && createPortal(
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsResetConfirmOpen(false)}
-              className="fixed inset-0 bg-[#131219]/80 backdrop-blur-sm z-[120]"
-            />
-            <div className="fixed inset-0 z-[121] flex items-end sm:items-center justify-center p-0 sm:p-4 pointer-events-none">
-              <motion.div
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: 20, opacity: 0 }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
-                className="pointer-events-auto bg-lumora-card border-t sm:border border-white/10 w-full max-w-md sm:max-w-sm rounded-t-3xl sm:rounded-3xl flex flex-col relative shadow-2xl max-h-[92vh] sm:max-h-[85vh] overflow-hidden"
-              >
-                {/* Header (Sticky) */}
-                <div className="shrink-0 p-6 pb-4 relative border-b border-white/5">
-                  <button
-                    onClick={() => setIsResetConfirmOpen(false)}
-                    className="absolute top-5 right-6 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-
-                  <div className="flex items-center space-x-3">
-                    <div className="w-9 h-9 rounded-xl bg-rose-500/10 text-rose-450 flex items-center justify-center shrink-0">
-                      <RotateCcw className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h3 className="text-sm font-black text-white">{t.resetConfirmTitle}</h3>
-                      <p className="text-[10px] text-lumora-sub">{t.resetConfirmDesc}</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Body (Scrollable) */}
-                <div className="flex-1 overflow-y-auto p-6 space-y-4">
-                  <p className="text-[11px] text-lumora-text/80 leading-relaxed font-semibold">
-                    {t.resetConfirmWarn}
-                  </p>
-                </div>
-
-                {/* Footer (Sticky) */}
-                <div className="shrink-0 p-6 pt-4 border-t border-white/5 bg-lumora-card">
-                  <div className="grid grid-cols-2 gap-3">
-                    <button
-                      onClick={() => setIsResetConfirmOpen(false)}
+                      onClick={() => setIsBackupOpen(false)}
                       className="btn-tap w-full py-3 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:text-white font-black rounded-xl text-xs flex items-center justify-center transition"
                     >
-                      {t.btnCancel}
-                    </button>
-                    <button
-                      onClick={executeResetTodayRoutine}
-                      className="btn-tap w-full py-3 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-400 font-black rounded-xl text-xs flex items-center justify-center transition"
-                    >
-                      {t.btnConfirmReset}
+                      <span>{t.btnCloseGeneral}</span>
                     </button>
                   </div>
-                </div>
-              </motion.div>
-            </div>
-          </>,
-          document.body
-        )}
-      </AnimatePresence>
+                </motion.div>
+              </div>
+            </>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
+
+      {/* Injury Risk Specs Modal */}
+      {createPortal(
+        <AnimatePresence>
+          {isSafetyOpen && (
+            <>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsSafetyOpen(false)}
+                className="fixed inset-0 bg-[#131219]/80 backdrop-blur-sm z-[120]"
+              />
+              <div className="fixed inset-0 z-[121] flex items-end sm:items-center justify-center p-0 sm:p-4 pointer-events-none">
+                <motion.div
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: 20, opacity: 0 }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
+                  className="pointer-events-auto bg-lumora-card border-t sm:border border-white/10 w-full max-w-md sm:max-w-sm rounded-t-3xl sm:rounded-3xl flex flex-col relative shadow-2xl max-h-[92vh] sm:max-h-[85vh] overflow-hidden"
+                >
+                  {/* Header (Sticky) */}
+                  <div className="shrink-0 p-6 pb-4 relative border-b border-white/5">
+                    <button
+                      onClick={() => setIsSafetyOpen(false)}
+                      className="absolute top-5 right-6 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+
+                    <div className="flex items-center space-x-3">
+                      <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-450 flex items-center justify-center shrink-0">
+                        <ShieldAlert className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-black text-white">{t.safetyTitle}</h3>
+                        <p className="text-[10px] text-lumora-sub">{t.safetyDesc}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Body (Scrollable) */}
+                  <div className="flex-1 overflow-y-auto p-6 space-y-3">
+                    <div className="p-3.5 bg-[#1a1921]/50 rounded-2xl border border-white/5 flex items-start gap-3">
+                      <span className="px-2 py-0.5 bg-rose-500/10 text-rose-450 font-extrabold text-[10px] rounded border border-rose-500/20 mt-0.5 shrink-0">{t.wristTitle}</span>
+                      <p className="text-[11px] text-lumora-text/80 leading-relaxed font-semibold">
+                        {t.wristBody}
+                      </p>
+                    </div>
+                    <div className="p-3.5 bg-[#1a1921]/50 rounded-2xl border border-white/5 flex items-start gap-3">
+                      <span className="px-2 py-0.5 bg-amber-500/10 text-amber-450 font-extrabold text-[10px] rounded border border-amber-500/20 mt-0.5 shrink-0">{t.kneeTitle}</span>
+                      <p className="text-[11px] text-lumora-text/80 leading-relaxed font-semibold">
+                        {t.kneeBody}
+                      </p>
+                    </div>
+                    <div className="p-3.5 bg-[#1a1921]/50 rounded-2xl border border-white/5 flex items-start gap-3">
+                      <span className="px-2 py-0.5 bg-teal-500/10 text-teal-450 font-extrabold text-[10px] rounded border border-teal-500/20 mt-0.5 shrink-0">{t.shoulderTitle}</span>
+                      <p className="text-[11px] text-lumora-text/80 leading-relaxed font-semibold">
+                        {t.shoulderBody}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Footer (Sticky) */}
+                  <div className="shrink-0 p-6 pt-4 border-t border-white/5 bg-lumora-card">
+                    <button
+                      onClick={() => setIsSafetyOpen(false)}
+                      className="btn-tap w-full py-3 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:text-white font-black rounded-xl text-xs flex items-center justify-center transition"
+                    >
+                      <span>{t.btnCloseGeneral}</span>
+                    </button>
+                  </div>
+                </motion.div>
+              </div>
+            </>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
+
+      {/* PWA Install Guide Modal */}
+      {createPortal(
+        <AnimatePresence>
+          {isPwaOpen && (
+            <>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsPwaOpen(false)}
+                className="fixed inset-0 bg-[#131219]/80 backdrop-blur-sm z-[120]"
+              />
+              <div className="fixed inset-0 z-[121] flex items-end sm:items-center justify-center p-0 sm:p-4 pointer-events-none">
+                <motion.div
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: 20, opacity: 0 }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
+                  className="pointer-events-auto bg-lumora-card border-t sm:border border-white/10 w-full max-w-md sm:max-w-sm rounded-t-3xl sm:rounded-3xl flex flex-col relative shadow-2xl max-h-[92vh] sm:max-h-[85vh] overflow-hidden"
+                >
+                  {/* Header (Sticky) */}
+                  <div className="shrink-0 p-6 pb-4 relative border-b border-white/5">
+                    <button
+                      onClick={() => setIsPwaOpen(false)}
+                      className="absolute top-5 right-6 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+
+                    <div className="flex items-center space-x-3">
+                      <div className="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-450 flex items-center justify-center shrink-0">
+                        <Smartphone className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-black text-white">{t.pwaTitle}</h3>
+                        <p className="text-[10px] text-lumora-sub">{t.pwaDesc}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Body (Scrollable) */}
+                  <div className="flex-1 overflow-y-auto p-6 space-y-4">
+                    <div className="space-y-2.5">
+                      <span className="px-2.5 py-1 bg-emerald-500/10 text-emerald-450 font-extrabold text-[11px] rounded-lg border border-emerald-500/20 inline-block">{t.androidPwaTitle}</span>
+                      <ol className="text-xs text-lumora-text/80 space-y-2 list-decimal list-inside pl-1 font-semibold leading-relaxed">
+                        {t.androidPwaSteps.map((step, idx) => (
+                          <li key={idx}>{step}</li>
+                        ))}
+                      </ol>
+                    </div>
+
+                    <div className="space-y-2.5 border-t border-white/5 pt-4">
+                      <span className="px-2.5 py-1 bg-teal-500/10 text-teal-450 font-extrabold text-[11px] rounded-lg border border-teal-500/20 inline-block">{t.iosPwaTitle}</span>
+                      <ol className="text-xs text-lumora-text/80 space-y-2 list-decimal list-inside pl-1 font-semibold leading-relaxed">
+                        {t.iosPwaSteps.map((step, idx) => (
+                          <li key={idx}>{step}</li>
+                        ))}
+                      </ol>
+                    </div>
+
+                    <div className="p-3 bg-[#1a1921]/50 rounded-2xl border border-white/5">
+                      <p className="text-[10px] text-lumora-sub leading-relaxed font-medium">
+                        {t.pwaTip}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Footer (Sticky) */}
+                  <div className="shrink-0 p-6 pt-4 border-t border-white/5 bg-lumora-card">
+                    <button
+                      onClick={() => setIsPwaOpen(false)}
+                      className="btn-tap w-full py-3 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:text-white font-black rounded-xl text-xs flex items-center justify-center transition"
+                    >
+                      <span>{t.btnCloseGeneral}</span>
+                    </button>
+                  </div>
+                </motion.div>
+              </div>
+            </>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
+
+      {/* Reset Confirmation Modal */}
+      {createPortal(
+        <AnimatePresence>
+          {isResetConfirmOpen && (
+            <>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsResetConfirmOpen(false)}
+                className="fixed inset-0 bg-[#131219]/80 backdrop-blur-sm z-[120]"
+              />
+              <div className="fixed inset-0 z-[121] flex items-end sm:items-center justify-center p-0 sm:p-4 pointer-events-none">
+                <motion.div
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: 20, opacity: 0 }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
+                  className="pointer-events-auto bg-lumora-card border-t sm:border border-white/10 w-full max-w-md sm:max-w-sm rounded-t-3xl sm:rounded-3xl flex flex-col relative shadow-2xl max-h-[92vh] sm:max-h-[85vh] overflow-hidden"
+                >
+                  {/* Header (Sticky) */}
+                  <div className="shrink-0 p-6 pb-4 relative border-b border-white/5">
+                    <button
+                      onClick={() => setIsResetConfirmOpen(false)}
+                      className="absolute top-5 right-6 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+
+                    <div className="flex items-center space-x-3">
+                      <div className="w-9 h-9 rounded-xl bg-rose-500/10 text-rose-450 flex items-center justify-center shrink-0">
+                        <RotateCcw className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-black text-white">{t.resetConfirmTitle}</h3>
+                        <p className="text-[10px] text-lumora-sub">{t.resetConfirmDesc}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Body (Scrollable) */}
+                  <div className="flex-1 overflow-y-auto p-6 space-y-4">
+                    <p className="text-[11px] text-lumora-text/80 leading-relaxed font-semibold">
+                      {t.resetConfirmWarn}
+                    </p>
+                  </div>
+
+                  {/* Footer (Sticky) */}
+                  <div className="shrink-0 p-6 pt-4 border-t border-white/5 bg-lumora-card">
+                    <div className="grid grid-cols-2 gap-3">
+                      <button
+                        onClick={() => setIsResetConfirmOpen(false)}
+                        className="btn-tap w-full py-3 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:text-white font-black rounded-xl text-xs flex items-center justify-center transition"
+                      >
+                        {t.btnCancel}
+                      </button>
+                      <button
+                        onClick={executeResetTodayRoutine}
+                        className="btn-tap w-full py-3 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-400 font-black rounded-xl text-xs flex items-center justify-center transition"
+                      >
+                        {t.btnConfirmReset}
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+            </>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
 
     </div>
   );
