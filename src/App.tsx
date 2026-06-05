@@ -298,7 +298,17 @@ export default function App() {
       const slug = selectedTool.slug || getToolSlug(selectedTool.name);
       if (selectedTool.id === "7") {
         const path = window.location.pathname;
-        const currentLang = path.includes("/workout-canvas/ko") ? "ko" : "en";
+        let currentLang = "en";
+        if (path.includes("/workout-canvas/ko")) {
+          currentLang = "ko";
+        } else if (path.includes("/workout-canvas/en")) {
+          currentLang = "en";
+        } else {
+          const savedLang = localStorage.getItem("gems_workout_lang");
+          if (savedLang === "ko" || savedLang === "en") {
+            currentLang = savedLang;
+          }
+        }
         url = `/utilities/${slug}/${currentLang}`;
       } else {
         url = `/utilities/${slug}`;
