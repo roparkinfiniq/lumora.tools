@@ -24,7 +24,8 @@ import {
   Minus,
   Plus,
   Settings,
-  Globe
+  Globe,
+  MoreHorizontal
 } from "lucide-react";
 
 interface ExerciseSet {
@@ -332,6 +333,8 @@ const TRANSLATIONS = {
     safetyDesc: "안전하고 정교한 자극 전달을 위한 가이드",
     pwaTitle: "홈 화면 설치 가이드",
     pwaDesc: "설치해서 사용하면 절전 모드가 자동 방지됩니다!",
+    moreMenuTitle: "더 보기 메뉴",
+    moreMenuDesc: "루틴 설정, 백업 및 안전 가이드를 제공합니다",
     toastCopySuccess: "오늘의 운동 기록이 복사되었습니다. 대화창에 바로 붙여넣기 해주세요!",
     toastCopyFail: "복사에 실패했습니다. 수동 복사 부탁드립니다.",
     toastResetSuccess: "오늘의 운동 기록이 초기화되었습니다.",
@@ -432,6 +435,8 @@ const TRANSLATIONS = {
     safetyDesc: "Precise biomechanics for injury-free workout progression",
     pwaTitle: "Home Screen App Installation Guide",
     pwaDesc: "Install as a PWA to keep your screen turned on automatically!",
+    moreMenuTitle: "More Menu",
+    moreMenuDesc: "Access routine settings, backup tools, and safety guide",
     toastCopySuccess: "Today's workout report has been copied to your clipboard! Paste it to the chat.",
     toastCopyFail: "Copy failed. Please manually copy the logs.",
     toastResetSuccess: "Today's workout logs have been reset.",
@@ -485,6 +490,7 @@ export default function WorkoutCanvas() {
   const [isSafetyOpen, setIsSafetyOpen] = useState(false);
   const [isPwaOpen, setIsPwaOpen] = useState(false);
   const [isResetConfirmOpen, setIsResetConfirmOpen] = useState(false);
+  const [isMoreOpen, setIsMoreOpen] = useState(false);
 
   // Double click confirm tracking states
   const [resetConfirmActive, setResetConfirmActive] = useState(false);
@@ -1205,6 +1211,7 @@ export default function WorkoutCanvas() {
               title={isIframe ? t.wakeLockDEMO : (wakeLockStatusText === "화면 유지 ON" ? (lang === "ko" ? "화면 유지 ON" : "Wake Lock ON") : (lang === "ko" ? "화면 유지 OFF" : "Wake Lock OFF"))}
             >
               <Smartphone className="w-3.5 h-3.5" />
+              <span className="inline sm:hidden">{isWakeLockActive ? "ON" : "OFF"}</span>
               <span className="hidden sm:inline">
                 {isIframe ? t.wakeLockDEMO : (wakeLockStatusText === "화면 유지 ON" ? (lang === "ko" ? "화면 유지 ON" : "Wake Lock ON") : (lang === "ko" ? "화면 유지 OFF" : "Wake Lock OFF"))}
               </span>
@@ -1223,7 +1230,7 @@ export default function WorkoutCanvas() {
             {/* Routine Settings (Visible Days Toggle) */}
             <button
               onClick={() => setIsSettingsOpen(true)}
-              className="btn-tap p-1.5 bg-lumora-bg/60 border border-white/5 rounded-xl text-[10px] font-bold text-lumora-sub flex items-center gap-1 shrink-0"
+              className="btn-tap p-1.5 bg-lumora-bg/60 border border-white/5 rounded-xl text-[10px] font-bold text-lumora-sub hidden sm:inline-flex items-center gap-1 shrink-0"
               title="루틴 설정 및 요일 활성화"
             >
               <Settings className="w-3.5 h-3.5 text-lumora-sub" />
@@ -1232,7 +1239,7 @@ export default function WorkoutCanvas() {
             {/* Data Backup & Restore Trigger */}
             <button
               onClick={openBackupModal}
-              className="btn-tap p-1.5 bg-lumora-bg/60 border border-white/5 rounded-xl text-[10px] font-bold text-lumora-sub flex items-center gap-1 shrink-0"
+              className="btn-tap p-1.5 bg-lumora-bg/60 border border-white/5 rounded-xl text-[10px] font-bold text-lumora-sub hidden sm:inline-flex items-center gap-1 shrink-0"
               title="기록 백업/복원"
             >
               <Database className="w-3.5 h-3.5 text-lumora-sub" />
@@ -1241,10 +1248,19 @@ export default function WorkoutCanvas() {
             {/* Injury Prevention Specs */}
             <button
               onClick={() => setIsSafetyOpen(true)}
-              className="btn-tap p-1.5 bg-lumora-bg/60 border border-white/5 rounded-xl text-[10px] font-bold text-lumora-sub flex items-center gap-1 shrink-0"
+              className="btn-tap p-1.5 bg-lumora-bg/60 border border-white/5 rounded-xl text-[10px] font-bold text-lumora-sub hidden sm:inline-flex items-center gap-1 shrink-0"
               title="부상 방지 가이드"
             >
               <Info className="w-3.5 h-3.5 text-lumora-sub" />
+            </button>
+
+            {/* More Options Menu (Mobile Only) */}
+            <button
+              onClick={() => setIsMoreOpen(true)}
+              className="btn-tap p-1.5 bg-lumora-bg/60 border border-white/5 rounded-xl text-[10px] font-bold text-lumora-sub flex sm:hidden items-center gap-1 shrink-0"
+              title="더 보기"
+            >
+              <MoreHorizontal className="w-3.5 h-3.5 text-lumora-sub" />
             </button>
           </div>
         </div>
