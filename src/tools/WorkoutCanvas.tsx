@@ -21,7 +21,8 @@ import {
   Upload,
   Check,
   Minus,
-  Plus
+  Plus,
+  Settings
 } from "lucide-react";
 
 interface ExerciseSet {
@@ -842,7 +843,7 @@ export default function WorkoutCanvas() {
               <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-[#a78bfa] border-2 border-[#1e1e1e] rounded-full"></span>
             </div>
             <div>
-              <h1 class="text-[10px] font-bold text-slate-400 tracking-wider uppercase">Lumora Workout</h1>
+              <h1 className="text-[10px] font-bold text-slate-400 tracking-wider uppercase">Lumora Workout</h1>
               <p className="text-sm font-black text-white tracking-tight">스마트 모바일 운동 캔버스</p>
             </div>
           </div>
