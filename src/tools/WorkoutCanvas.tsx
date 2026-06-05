@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
 import {
   Dumbbell,
@@ -1606,7 +1607,7 @@ export default function WorkoutCanvas() {
 
       {/* Routine Metadata Edit Modal */}
       <AnimatePresence>
-        {isRoutineModalOpen && (
+        {isRoutineModalOpen && createPortal(
           <>
             <motion.div
               initial={{ opacity: 0 }}
@@ -1696,13 +1697,14 @@ export default function WorkoutCanvas() {
                 </div>
               </motion.div>
             </div>
-          </>
+          </>,
+          document.body
         )}
       </AnimatePresence>
 
       {/* Exercise Add/Edit Modal */}
       <AnimatePresence>
-        {isExerciseModalOpen && (
+        {isExerciseModalOpen && createPortal(
           <>
             <motion.div
               initial={{ opacity: 0 }}
@@ -1920,13 +1922,14 @@ export default function WorkoutCanvas() {
                 </div>
               </motion.div>
             </div>
-          </>
+          </>,
+          document.body
         )}
       </AnimatePresence>
 
       {/* Settings Modal (Visible Days Toggle) */}
       <AnimatePresence>
-        {isSettingsOpen && (
+        {isSettingsOpen && createPortal(
           <>
             <motion.div
               initial={{ opacity: 0 }}
@@ -2027,13 +2030,14 @@ export default function WorkoutCanvas() {
                 </div>
               </motion.div>
             </div>
-          </>
+          </>,
+          document.body
         )}
       </AnimatePresence>
 
       {/* Backup & Restore Modal */}
       <AnimatePresence>
-        {isBackupOpen && (
+        {isBackupOpen && createPortal(
           <>
             <motion.div
               initial={{ opacity: 0 }}
@@ -2138,13 +2142,14 @@ export default function WorkoutCanvas() {
                 </div>
               </motion.div>
             </div>
-          </>
+          </>,
+          document.body
         )}
       </AnimatePresence>
 
       {/* Injury Risk Specs Modal */}
       <AnimatePresence>
-        {isSafetyOpen && (
+        {isSafetyOpen && createPortal(
           <>
             <motion.div
               initial={{ opacity: 0 }}
@@ -2214,13 +2219,14 @@ export default function WorkoutCanvas() {
                 </div>
               </motion.div>
             </div>
-          </>
+          </>,
+          document.body
         )}
       </AnimatePresence>
 
       {/* PWA Install Guide Modal */}
       <AnimatePresence>
-        {isPwaOpen && (
+        {isPwaOpen && createPortal(
           <>
             <motion.div
               initial={{ opacity: 0 }}
@@ -2295,13 +2301,14 @@ export default function WorkoutCanvas() {
                 </div>
               </motion.div>
             </div>
-          </>
+          </>,
+          document.body
         )}
       </AnimatePresence>
 
       {/* Reset Confirmation Modal */}
       <AnimatePresence>
-        {isResetConfirmOpen && (
+        {isResetConfirmOpen && createPortal(
           <>
             <motion.div
               initial={{ opacity: 0 }}
@@ -2364,7 +2371,8 @@ export default function WorkoutCanvas() {
                 </div>
               </motion.div>
             </div>
-          </>
+          </>,
+          document.body
         )}
       </AnimatePresence>
 
