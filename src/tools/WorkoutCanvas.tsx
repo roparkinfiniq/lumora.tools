@@ -469,9 +469,9 @@ const TRANSLATIONS = {
 };
 
 export default function WorkoutCanvas() {
-  const [lang, setLang] = useState<"ko" | "en">("ko");
+  const [lang, setLang] = useState<"ko" | "en">("en");
   const [activeDay, setActiveDay] = useState<string>("mon");
-  const [db, setDb] = useState<WorkoutDatabase>(DEFAULT_DATABASE);
+  const [db, setDb] = useState<WorkoutDatabase>(EN_DEFAULT_DATABASE);
   const [visibleDays, setVisibleDays] = useState<string[]>(["mon", "tue", "wed", "thu", "fri", "sat", "sun"]);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
@@ -494,7 +494,7 @@ export default function WorkoutCanvas() {
 
   // Exercise Form State
   const [editExName, setEditExName] = useState("");
-  const [editExCategory, setEditExCategory] = useState("등");
+  const [editExCategory, setEditExCategory] = useState("Back");
   const [editExSetsCount, setEditExSetsCount] = useState(3);
   const [editExType, setEditExType] = useState<"normal" | "bodyweight" | "cardio">("normal");
   const [editExWeight, setEditExWeight] = useState(30);
@@ -961,7 +961,7 @@ export default function WorkoutCanvas() {
     setEditingExerciseId(itemId);
     if (!itemId) {
       setEditExName("");
-      setEditExCategory("등");
+      setEditExCategory(lang === "ko" ? "등" : "Back");
       setEditExSetsCount(3);
       setEditExType("normal");
       setEditExWeight(30);
@@ -1006,7 +1006,7 @@ export default function WorkoutCanvas() {
     const tip = editExTip.trim();
 
     if (!name) {
-      triggerToastBanner("운동명을 입력해 주세요.");
+      triggerToastBanner(lang === "ko" ? "운동명을 입력해 주세요." : "Please enter the exercise name.");
       return;
     }
 
