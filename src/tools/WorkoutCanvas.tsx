@@ -363,7 +363,8 @@ const TRANSLATIONS = {
     reportSets: "세트",
     reportReps: "회",
     reportFooter: "* 본 기록은 브라우저 로컬 저장소에 안전하게 유지됩니다.",
-    pwaInstallTitle: "1초 설치"
+    pwaInstallTitle: "1초 설치",
+    btnCloseGeneral: "닫기"
   },
   en: {
     headerSub: "Smart Workout Canvas",
@@ -462,7 +463,8 @@ const TRANSLATIONS = {
     reportSets: "Sets",
     reportReps: "Reps",
     reportFooter: "* This log is safely stored in your local browser storage.",
-    pwaInstallTitle: "Install"
+    pwaInstallTitle: "Install",
+    btnCloseGeneral: "Close"
   }
 };
 
@@ -1591,31 +1593,36 @@ export default function WorkoutCanvas() {
               onClick={() => setIsRoutineModalOpen(false)}
               className="fixed inset-0 bg-[#131219]/80 backdrop-blur-sm z-[120]"
             />
-            <div className="fixed inset-0 z-[121] flex items-center justify-center p-4 pointer-events-none">
+            <div className="fixed inset-0 z-[121] flex items-end sm:items-center justify-center p-0 sm:p-4 pointer-events-none">
               <motion.div
-                initial={{ scale: 0.95, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.95, opacity: 0 }}
-                className="pointer-events-auto bg-lumora-card border border-white/10 w-full max-w-sm rounded-3xl p-6 space-y-5 relative shadow-2xl"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: 20, opacity: 0 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+                className="pointer-events-auto bg-lumora-card border-t sm:border border-white/10 w-full max-w-md sm:max-w-sm rounded-t-3xl sm:rounded-3xl flex flex-col relative shadow-2xl max-h-[92vh] sm:max-h-[85vh] overflow-hidden"
               >
-                <button
-                  onClick={() => setIsRoutineModalOpen(false)}
-                  className="absolute top-5 right-5 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
-                >
-                  <X className="w-4 h-4" />
-                </button>
+                {/* Header (Sticky) */}
+                <div className="shrink-0 p-6 pb-4 relative border-b border-white/5">
+                  <button
+                    onClick={() => setIsRoutineModalOpen(false)}
+                    className="absolute top-5 right-6 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
 
-                <div className="flex items-center space-x-3 border-b border-white/5 pb-3">
-                  <div className="w-9 h-9 rounded-xl bg-lumora-highlight/10 text-lumora-highlight flex items-center justify-center">
-                    <Edit3 className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-black text-white">{t.routineInfoEditTitle}</h3>
-                    <p className="text-[10px] text-lumora-sub">{t.routineInfoEditDesc}</p>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-9 h-9 rounded-xl bg-lumora-highlight/10 text-lumora-highlight flex items-center justify-center shrink-0">
+                      <Edit3 className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-white">{t.routineInfoEditTitle}</h3>
+                      <p className="text-[10px] text-lumora-sub">{t.routineInfoEditDesc}</p>
+                    </div>
                   </div>
                 </div>
 
-                <div className="space-y-4">
+                {/* Body (Scrollable) */}
+                <div className="flex-1 overflow-y-auto p-6 space-y-4">
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.tabLabelInput}</label>
                     <input
@@ -1653,7 +1660,10 @@ export default function WorkoutCanvas() {
                       className="w-full bg-lumora-bg/80 border border-white/10 text-xs text-lumora-text rounded-xl px-3 py-2.5 focus:outline-none focus:border-lumora-highlight resize-none"
                     />
                   </div>
+                </div>
 
+                {/* Footer (Sticky) */}
+                <div className="shrink-0 p-6 pt-4 border-t border-white/5 bg-lumora-card">
                   <button
                     onClick={saveRoutineInfo}
                     className="btn-tap w-full py-3 bg-lumora-highlight hover:bg-[#c4b5fd] text-slate-900 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-lg transition"
@@ -1679,35 +1689,40 @@ export default function WorkoutCanvas() {
               onClick={() => setIsExerciseModalOpen(false)}
               className="fixed inset-0 bg-[#131219]/80 backdrop-blur-sm z-[120]"
             />
-            <div className="fixed inset-0 z-[121] flex items-center justify-center p-4 pointer-events-none">
+            <div className="fixed inset-0 z-[121] flex items-end sm:items-center justify-center p-0 sm:p-4 pointer-events-none">
               <motion.div
-                initial={{ scale: 0.95, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.95, opacity: 0 }}
-                className="pointer-events-auto bg-lumora-card border border-white/10 w-full max-w-sm rounded-3xl p-6 space-y-5 relative shadow-2xl overflow-y-auto max-h-[90%]"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: 20, opacity: 0 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+                className="pointer-events-auto bg-lumora-card border-t sm:border border-white/10 w-full max-w-md sm:max-w-sm rounded-t-3xl sm:rounded-3xl flex flex-col relative shadow-2xl max-h-[92vh] sm:max-h-[85vh] overflow-hidden"
               >
-                <button
-                  onClick={() => setIsExerciseModalOpen(false)}
-                  className="absolute top-5 right-5 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
-                >
-                  <X className="w-4 h-4" />
-                </button>
+                {/* Header (Sticky) */}
+                <div className="shrink-0 p-6 pb-4 relative border-b border-white/5">
+                  <button
+                    onClick={() => setIsExerciseModalOpen(false)}
+                    className="absolute top-5 right-6 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
 
-                <div className="flex items-center space-x-3 border-b border-white/5 pb-3">
-                  <div className="w-9 h-9 rounded-xl bg-lumora-highlight/10 text-lumora-highlight flex items-center justify-center">
-                    <PlusCircle className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-black text-white">
-                      {editingExerciseId ? t.exerciseEditTitle : t.exerciseAddTitle}
-                    </h3>
-                    <p className="text-[10px] text-lumora-sub">
-                      {editingExerciseId ? t.exerciseEditDesc : t.exerciseAddDesc}
-                    </p>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-9 h-9 rounded-xl bg-lumora-highlight/10 text-lumora-highlight flex items-center justify-center shrink-0">
+                      <PlusCircle className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-white">
+                        {editingExerciseId ? t.exerciseEditTitle : t.exerciseAddTitle}
+                      </h3>
+                      <p className="text-[10px] text-lumora-sub">
+                        {editingExerciseId ? t.exerciseEditDesc : t.exerciseAddDesc}
+                      </p>
+                    </div>
                   </div>
                 </div>
 
-                <div className="space-y-3.5 pr-1">
+                {/* Body (Scrollable) */}
+                <div className="flex-1 overflow-y-auto p-6 space-y-4">
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.exNameInput}</label>
                     <input
@@ -1871,13 +1886,16 @@ export default function WorkoutCanvas() {
                   </div>
                 </div>
 
-                <button
-                  onClick={saveExercise}
-                  className="btn-tap w-full py-3 bg-lumora-highlight hover:bg-[#c4b5fd] text-slate-900 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-lg transition"
-                >
-                  <Check className="w-4 h-4" />
-                  <span>{t.saveGeneralBtn}</span>
-                </button>
+                {/* Footer (Sticky) */}
+                <div className="shrink-0 p-6 pt-4 border-t border-white/5 bg-lumora-card">
+                  <button
+                    onClick={saveExercise}
+                    className="btn-tap w-full py-3 bg-lumora-highlight hover:bg-[#c4b5fd] text-slate-900 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-lg transition"
+                  >
+                    <Check className="w-4 h-4" />
+                    <span>{t.saveGeneralBtn}</span>
+                  </button>
+                </div>
               </motion.div>
             </div>
           </>
@@ -1895,34 +1913,39 @@ export default function WorkoutCanvas() {
               onClick={() => setIsSettingsOpen(false)}
               className="fixed inset-0 bg-[#131219]/80 backdrop-blur-sm z-[120]"
             />
-            <div className="fixed inset-0 z-[121] flex items-center justify-center p-4 pointer-events-none">
+            <div className="fixed inset-0 z-[121] flex items-end sm:items-center justify-center p-0 sm:p-4 pointer-events-none">
               <motion.div
-                initial={{ scale: 0.95, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.95, opacity: 0 }}
-                className="pointer-events-auto bg-lumora-card border border-white/10 w-full max-w-sm rounded-3xl p-6 space-y-5 relative shadow-2xl"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: 20, opacity: 0 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+                className="pointer-events-auto bg-lumora-card border-t sm:border border-white/10 w-full max-w-md sm:max-w-sm rounded-t-3xl sm:rounded-3xl flex flex-col relative shadow-2xl max-h-[92vh] sm:max-h-[85vh] overflow-hidden"
               >
-                <button
-                  onClick={() => setIsSettingsOpen(false)}
-                  className="absolute top-5 right-5 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
-                >
-                  <X className="w-4 h-4" />
-                </button>
+                {/* Header (Sticky) */}
+                <div className="shrink-0 p-6 pb-4 relative border-b border-white/5">
+                  <button
+                    onClick={() => setIsSettingsOpen(false)}
+                    className="absolute top-5 right-6 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
 
-                <div className="flex items-center space-x-3 border-b border-white/5 pb-3">
-                  <div className="w-9 h-9 rounded-xl bg-lumora-highlight/10 text-lumora-highlight flex items-center justify-center">
-                    <Settings className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-black text-white">{t.settingsTitle}</h3>
-                    <p className="text-[10px] text-lumora-sub">{t.settingsDesc}</p>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-9 h-9 rounded-xl bg-lumora-highlight/10 text-lumora-highlight flex items-center justify-center shrink-0">
+                      <Settings className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-white">{t.settingsTitle}</h3>
+                      <p className="text-[10px] text-lumora-sub">{t.settingsDesc}</p>
+                    </div>
                   </div>
                 </div>
 
-                <div className="space-y-3">
+                {/* Body (Scrollable) */}
+                <div className="flex-1 overflow-y-auto p-6 space-y-4">
                   <p className="text-[11px] text-lumora-sub font-semibold">{t.settingsWarn}</p>
 
-                  <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
+                  <div className="space-y-2">
                     {DAY_ORDER.map((day) => {
                       const isChecked = visibleDays.includes(day);
                       return (
@@ -1968,7 +1991,10 @@ export default function WorkoutCanvas() {
                       );
                     })}
                   </div>
+                </div>
 
+                {/* Footer (Sticky) */}
+                <div className="shrink-0 p-6 pt-4 border-t border-white/5 bg-lumora-card">
                   <button
                     onClick={() => applyVisibleDays(visibleDays)}
                     className="btn-tap w-full py-3 bg-lumora-highlight hover:bg-[#c4b5fd] text-slate-900 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-lg transition"
@@ -1994,31 +2020,36 @@ export default function WorkoutCanvas() {
               onClick={() => setIsBackupOpen(false)}
               className="fixed inset-0 bg-[#131219]/80 backdrop-blur-sm z-[120]"
             />
-            <div className="fixed inset-0 z-[121] flex items-center justify-center p-4 pointer-events-none">
+            <div className="fixed inset-0 z-[121] flex items-end sm:items-center justify-center p-0 sm:p-4 pointer-events-none">
               <motion.div
-                initial={{ scale: 0.95, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.95, opacity: 0 }}
-                className="pointer-events-auto bg-lumora-card border border-white/10 w-full max-w-sm rounded-3xl p-6 space-y-5 relative shadow-2xl"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: 20, opacity: 0 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+                className="pointer-events-auto bg-lumora-card border-t sm:border border-white/10 w-full max-w-md sm:max-w-sm rounded-t-3xl sm:rounded-3xl flex flex-col relative shadow-2xl max-h-[92vh] sm:max-h-[85vh] overflow-hidden"
               >
-                <button
-                  onClick={() => setIsBackupOpen(false)}
-                  className="absolute top-5 right-5 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
-                >
-                  <X className="w-4 h-4" />
-                </button>
+                {/* Header (Sticky) */}
+                <div className="shrink-0 p-6 pb-4 relative border-b border-white/5">
+                  <button
+                    onClick={() => setIsBackupOpen(false)}
+                    className="absolute top-5 right-6 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
 
-                <div className="flex items-center space-x-3 border-b border-white/5 pb-3">
-                  <div className="w-9 h-9 rounded-xl bg-lumora-highlight/10 text-lumora-highlight flex items-center justify-center">
-                    <Database className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-black text-white">{t.backupTitle}</h3>
-                    <p className="text-[10px] text-lumora-sub">{t.backupDesc}</p>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-9 h-9 rounded-xl bg-lumora-highlight/10 text-lumora-highlight flex items-center justify-center shrink-0">
+                      <Database className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-white">{t.backupTitle}</h3>
+                      <p className="text-[10px] text-lumora-sub">{t.backupDesc}</p>
+                    </div>
                   </div>
                 </div>
 
-                <div className="space-y-4">
+                {/* Body (Scrollable) */}
+                <div className="flex-1 overflow-y-auto p-6 space-y-4">
                   {/* Export Segment */}
                   <div className="space-y-2">
                     <label className="text-[11px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.backupGenTitle}</label>
@@ -2073,6 +2104,16 @@ export default function WorkoutCanvas() {
                     </button>
                   </div>
                 </div>
+
+                {/* Footer (Sticky) */}
+                <div className="shrink-0 p-6 pt-4 border-t border-white/5 bg-lumora-card">
+                  <button
+                    onClick={() => setIsBackupOpen(false)}
+                    className="btn-tap w-full py-3 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:text-white font-black rounded-xl text-xs flex items-center justify-center transition"
+                  >
+                    <span>{t.btnCloseGeneral}</span>
+                  </button>
+                </div>
               </motion.div>
             </div>
           </>
@@ -2090,31 +2131,36 @@ export default function WorkoutCanvas() {
               onClick={() => setIsSafetyOpen(false)}
               className="fixed inset-0 bg-[#131219]/80 backdrop-blur-sm z-[120]"
             />
-            <div className="fixed inset-0 z-[121] flex items-center justify-center p-4 pointer-events-none">
+            <div className="fixed inset-0 z-[121] flex items-end sm:items-center justify-center p-0 sm:p-4 pointer-events-none">
               <motion.div
-                initial={{ scale: 0.95, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.95, opacity: 0 }}
-                className="pointer-events-auto bg-lumora-card border border-white/10 w-full max-w-sm rounded-3xl p-6 space-y-5 relative shadow-2xl"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: 20, opacity: 0 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+                className="pointer-events-auto bg-lumora-card border-t sm:border border-white/10 w-full max-w-md sm:max-w-sm rounded-t-3xl sm:rounded-3xl flex flex-col relative shadow-2xl max-h-[92vh] sm:max-h-[85vh] overflow-hidden"
               >
-                <button
-                  onClick={() => setIsSafetyOpen(false)}
-                  className="absolute top-5 right-5 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
-                >
-                  <X className="w-4 h-4" />
-                </button>
+                {/* Header (Sticky) */}
+                <div className="shrink-0 p-6 pb-4 relative border-b border-white/5">
+                  <button
+                    onClick={() => setIsSafetyOpen(false)}
+                    className="absolute top-5 right-6 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
 
-                <div className="flex items-center space-x-3 border-b border-white/5 pb-3">
-                  <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center">
-                    <ShieldAlert className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-black text-white">{t.safetyTitle}</h3>
-                    <p className="text-[10px] text-lumora-sub">{t.safetyDesc}</p>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-450 flex items-center justify-center shrink-0">
+                      <ShieldAlert className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-white">{t.safetyTitle}</h3>
+                      <p className="text-[10px] text-lumora-sub">{t.safetyDesc}</p>
+                    </div>
                   </div>
                 </div>
 
-                <div className="space-y-3">
+                {/* Body (Scrollable) */}
+                <div className="flex-1 overflow-y-auto p-6 space-y-3">
                   <div className="p-3.5 bg-[#1a1921]/50 rounded-2xl border border-white/5 flex items-start gap-3">
                     <span className="px-2 py-0.5 bg-rose-500/10 text-rose-450 font-extrabold text-[10px] rounded border border-rose-500/20 mt-0.5 shrink-0">{t.wristTitle}</span>
                     <p className="text-[11px] text-lumora-text/80 leading-relaxed font-semibold">
@@ -2134,6 +2180,16 @@ export default function WorkoutCanvas() {
                     </p>
                   </div>
                 </div>
+
+                {/* Footer (Sticky) */}
+                <div className="shrink-0 p-6 pt-4 border-t border-white/5 bg-lumora-card">
+                  <button
+                    onClick={() => setIsSafetyOpen(false)}
+                    className="btn-tap w-full py-3 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:text-white font-black rounded-xl text-xs flex items-center justify-center transition"
+                  >
+                    <span>{t.btnCloseGeneral}</span>
+                  </button>
+                </div>
               </motion.div>
             </div>
           </>
@@ -2151,31 +2207,36 @@ export default function WorkoutCanvas() {
               onClick={() => setIsPwaOpen(false)}
               className="fixed inset-0 bg-[#131219]/80 backdrop-blur-sm z-[120]"
             />
-            <div className="fixed inset-0 z-[121] flex items-center justify-center p-4 pointer-events-none">
+            <div className="fixed inset-0 z-[121] flex items-end sm:items-center justify-center p-0 sm:p-4 pointer-events-none">
               <motion.div
-                initial={{ scale: 0.95, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.95, opacity: 0 }}
-                className="pointer-events-auto bg-lumora-card border border-white/10 w-full max-w-sm rounded-3xl p-6 space-y-5 relative shadow-2xl"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: 20, opacity: 0 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+                className="pointer-events-auto bg-lumora-card border-t sm:border border-white/10 w-full max-w-md sm:max-w-sm rounded-t-3xl sm:rounded-3xl flex flex-col relative shadow-2xl max-h-[92vh] sm:max-h-[85vh] overflow-hidden"
               >
-                <button
-                  onClick={() => setIsPwaOpen(false)}
-                  className="absolute top-5 right-5 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
-                >
-                  <X className="w-4 h-4" />
-                </button>
+                {/* Header (Sticky) */}
+                <div className="shrink-0 p-6 pb-4 relative border-b border-white/5">
+                  <button
+                    onClick={() => setIsPwaOpen(false)}
+                    className="absolute top-5 right-6 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
 
-                <div className="flex items-center space-x-3 border-b border-white/5 pb-3">
-                  <div className="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-450 flex items-center justify-center">
-                    <Smartphone className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-black text-white">{t.pwaTitle}</h3>
-                    <p className="text-[10px] text-lumora-sub">{t.pwaDesc}</p>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-450 flex items-center justify-center shrink-0">
+                      <Smartphone className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-white">{t.pwaTitle}</h3>
+                      <p className="text-[10px] text-lumora-sub">{t.pwaDesc}</p>
+                    </div>
                   </div>
                 </div>
 
-                <div className="space-y-4">
+                {/* Body (Scrollable) */}
+                <div className="flex-1 overflow-y-auto p-6 space-y-4">
                   <div className="space-y-2.5">
                     <span className="px-2.5 py-1 bg-emerald-500/10 text-emerald-450 font-extrabold text-[11px] rounded-lg border border-emerald-500/20 inline-block">{t.androidPwaTitle}</span>
                     <ol className="text-xs text-lumora-text/80 space-y-2 list-decimal list-inside pl-1 font-semibold leading-relaxed">
@@ -2200,6 +2261,16 @@ export default function WorkoutCanvas() {
                     </p>
                   </div>
                 </div>
+
+                {/* Footer (Sticky) */}
+                <div className="shrink-0 p-6 pt-4 border-t border-white/5 bg-lumora-card">
+                  <button
+                    onClick={() => setIsPwaOpen(false)}
+                    className="btn-tap w-full py-3 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:text-white font-black rounded-xl text-xs flex items-center justify-center transition"
+                  >
+                    <span>{t.btnCloseGeneral}</span>
+                  </button>
+                </div>
               </motion.div>
             </div>
           </>
@@ -2217,36 +2288,44 @@ export default function WorkoutCanvas() {
               onClick={() => setIsResetConfirmOpen(false)}
               className="fixed inset-0 bg-[#131219]/80 backdrop-blur-sm z-[120]"
             />
-            <div className="fixed inset-0 z-[121] flex items-center justify-center p-4 pointer-events-none">
+            <div className="fixed inset-0 z-[121] flex items-end sm:items-center justify-center p-0 sm:p-4 pointer-events-none">
               <motion.div
-                initial={{ scale: 0.95, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.95, opacity: 0 }}
-                className="pointer-events-auto bg-lumora-card border border-white/10 w-full max-w-sm rounded-3xl p-6 space-y-5 relative shadow-2xl"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: 20, opacity: 0 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+                className="pointer-events-auto bg-lumora-card border-t sm:border border-white/10 w-full max-w-md sm:max-w-sm rounded-t-3xl sm:rounded-3xl flex flex-col relative shadow-2xl max-h-[92vh] sm:max-h-[85vh] overflow-hidden"
               >
-                <button
-                  onClick={() => setIsResetConfirmOpen(false)}
-                  className="absolute top-5 right-5 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
-                >
-                  <X className="w-4 h-4" />
-                </button>
+                {/* Header (Sticky) */}
+                <div className="shrink-0 p-6 pb-4 relative border-b border-white/5">
+                  <button
+                    onClick={() => setIsResetConfirmOpen(false)}
+                    className="absolute top-5 right-6 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
 
-                <div className="flex items-center space-x-3 border-b border-white/5 pb-3">
-                  <div className="w-9 h-9 rounded-xl bg-rose-500/10 text-rose-450 flex items-center justify-center">
-                    <RotateCcw className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-black text-white">{t.resetConfirmTitle}</h3>
-                    <p className="text-[10px] text-lumora-sub">{t.resetConfirmDesc}</p>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-9 h-9 rounded-xl bg-rose-500/10 text-rose-450 flex items-center justify-center shrink-0">
+                      <RotateCcw className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-white">{t.resetConfirmTitle}</h3>
+                      <p className="text-[10px] text-lumora-sub">{t.resetConfirmDesc}</p>
+                    </div>
                   </div>
                 </div>
 
-                <div className="space-y-4">
+                {/* Body (Scrollable) */}
+                <div className="flex-1 overflow-y-auto p-6 space-y-4">
                   <p className="text-[11px] text-lumora-text/80 leading-relaxed font-semibold">
                     {t.resetConfirmWarn}
                   </p>
+                </div>
 
-                  <div className="grid grid-cols-2 gap-3 pt-2 border-t border-white/5">
+                {/* Footer (Sticky) */}
+                <div className="shrink-0 p-6 pt-4 border-t border-white/5 bg-lumora-card">
+                  <div className="grid grid-cols-2 gap-3">
                     <button
                       onClick={() => setIsResetConfirmOpen(false)}
                       className="btn-tap w-full py-3 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:text-white font-black rounded-xl text-xs flex items-center justify-center transition"
