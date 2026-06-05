@@ -22,7 +22,8 @@ import {
   Check,
   Minus,
   Plus,
-  Settings
+  Settings,
+  Globe
 } from "lucide-react";
 
 interface ExerciseSet {
@@ -163,7 +164,310 @@ const DAY_LABELS: Record<string, string> = {
   sun: "일 (휴식)"
 };
 
+const EN_DAY_LABELS: Record<string, string> = {
+  mon: "Mon (Pull)",
+  tue: "Tue (Push)",
+  wed: "Wed (Legs)",
+  thu: "Thu (Core)",
+  fri: "Fri (Upper)",
+  sat: "Sat (Legs)",
+  sun: "Sun (Rest)"
+};
+
+const EN_DEFAULT_DATABASE: WorkoutDatabase = {
+  mon: {
+    tabLabel: "Mon (Pull)",
+    mainTitle: "Monday: Pull (Back & Biceps)",
+    subTitle: "Focus on Latissimus Dorsi & Core Activation",
+    directive: "A day to develop the spinal frame for a solid posterior. Pull deep with the angle of your elbows, not forearm strength, and control the contraction's peak.",
+    items: [
+      { id: "mon-0", name: "Light Full-Body Cycling (Warmup)", category: "Warmup", target: "Moderate cardio for 10 min", isWarmup: true, duration: 10, note: "", tip: "Warmup joints", sets: [], weight: 0, reps: 0, step: 2.5 },
+      { id: "mon-1", name: "Seated Row Machine", category: "Back", target: "35kg x 12 reps", weight: 35, reps: 12, step: 5, sets: [null, null, null], note: "", tip: "Pull deep, elbows in" },
+      { id: "mon-2", name: "Lat Pulldown Machine", category: "Back", target: "30kg x 12 reps", weight: 30, reps: 12, step: 5, sets: [null, null, null], note: "", tip: "Retract scapulae down" },
+      { id: "mon-3", name: "Cable Biceps Curl", category: "Biceps", target: "15kg x 12 reps", weight: 15, reps: 12, step: 2.5, sets: [null, null, null], note: "", tip: "Anchor elbows to torso" },
+      { id: "mon-4", name: "AB Wheel", category: "Core", target: "Bodyweight x 12 reps", isBodyweight: true, weight: 0, reps: 12, step: 1, sets: [null, null, null], note: "", tip: "Squeeze abs, keep posture" }
+    ]
+  },
+  tue: {
+    tabLabel: "Tue (Push)",
+    mainTitle: "Tuesday: Push (Chest & Shoulders & Triceps)",
+    subTitle: "Progressive Overload & Shoulder Joint Safety",
+    directive: "Build a strong, stable chest and shoulders. Retract and depress your scapulae to protect rotator cuffs on all pushing movements.",
+    items: [
+      { id: "tue-0", name: "Dynamic Upper Body Stretching (Warmup)", category: "Warmup", target: "Mobility stretching for 5 min", isWarmup: true, duration: 5, note: "", tip: "Rotator cuff mobility", sets: [], weight: 0, reps: 0, step: 2.5 },
+      { id: "tue-1", name: "Chest Press Machine", category: "Chest", target: "30kg x 12 reps", weight: 30, reps: 12, step: 2.5, sets: [null, null, null], note: "", tip: "Apply bulldog grip" },
+      { id: "tue-2", name: "Pec Deck Fly Machine", category: "Chest", target: "10kg x 12 reps", weight: 10, reps: 12, step: 2.5, sets: [null, null, null], note: "", tip: "Focus on chest contraction" },
+      { id: "tue-3", name: "Shoulder Press Machine", category: "Shoulders", target: "15kg x 12 reps", weight: 15, reps: 12, step: 2.5, sets: [null, null, null], note: "", tip: "Press along scapular plane" },
+      { id: "tue-4", name: "Side Lateral Raise", category: "Shoulders", target: "4kg x 15 reps", weight: 4, reps: 15, step: 0.5, sets: [null, null, null], note: "", tip: "Avoid traps shrugging" },
+      { id: "tue-5", name: "Cable Pushdown (Rope)", category: "Triceps", target: "15kg x 12 reps", weight: 15, reps: 12, step: 5, sets: [null, null, null], note: "", tip: "Lock elbows, squeeze triceps" }
+    ]
+  },
+  wed: {
+    tabLabel: "Wed (Legs)",
+    mainTitle: "Wednesday: Lower Body (Quads & Glutes)",
+    subTitle: "Knee Stability & Posterior Chain Balance",
+    directive: "The heavy session targeting the largest muscle group in your body. Focus on loading hamstrings and glutes cleanly.",
+    items: [
+      { id: "wed-0", name: "Light Walk (Warmup)", category: "Warmup", target: "Walking for 10 min", isWarmup: true, duration: 10, note: "", tip: "Loosen lower joints", sets: [], weight: 0, reps: 0, step: 2.5 },
+      { id: "wed-1", name: "Hip Abduction Machine", category: "Lower", target: "40kg x 12 reps", weight: 40, reps: 12, step: 5, sets: [null, null, null], note: "", tip: "Push knees outward" },
+      { id: "wed-2", name: "Leg Press Machine", category: "Lower", target: "30kg x 15 reps", weight: 30, reps: 15, step: 5, sets: [null, null, null], note: "", tip: "Push through your heels" },
+      { id: "wed-3", name: "Leg Extension Machine", category: "Lower", target: "15kg x 12 reps", weight: 15, reps: 12, step: 2.5, sets: [null, null, null], note: "", tip: "Hold peak contraction" },
+      { id: "wed-4", name: "Leg Curl Machine", category: "Lower", target: "15kg x 12 reps", weight: 15, reps: 12, step: 2.5, sets: [null, null, null], note: "", tip: "Control hamstring return" }
+    ]
+  },
+  thu: {
+    tabLabel: "Thu (Core)",
+    mainTitle: "Thursday: Core & Cardio Session",
+    subTitle: "Improve Core Resistance & Aerobic Recovery",
+    directive: "Focus on dynamic core stabilization and recovery cardiovascular training to burn body fat.",
+    items: [
+      { id: "thu-0", name: "Full Body Stretching (Warmup)", category: "Warmup", target: "Stretches for 10 min", isWarmup: true, duration: 10, note: "", tip: "Prepare cardiovascular flow", sets: [], weight: 0, reps: 0, step: 2.5 },
+      { id: "thu-1", name: "Core Plank", category: "Core", target: "Bodyweight x 60s hold", isBodyweight: true, weight: 0, reps: 60, step: 1, sets: [null, null, null], note: "", tip: "Keep neutral spine & pelvis" },
+      { id: "thu-2", name: "AB Wheel Rollout", category: "Core", target: "Bodyweight x 10 reps", isBodyweight: true, weight: 0, reps: 10, step: 1, sets: [null, null, null], note: "", tip: "Resist arching lower back" },
+      { id: "thu-3", name: "Stationary Bike (Cardio)", category: "Cardio", target: "Pedaling for 30 min", isCardio: true, duration: 30, note: "", tip: "Keep resistance level 3-4", sets: [], weight: 0, reps: 0, step: 2.5 }
+    ]
+  },
+  fri: {
+    tabLabel: "Fri (Upper)",
+    mainTitle: "Friday: Upper Body Balance & Volume",
+    subTitle: "Upper Body Hypertrophy & Vector Balance",
+    directive: "A routine to balance pushing and pulling volume, targeting well-rounded upper body progression.",
+    items: [
+      { id: "fri-0", name: "Walk & Rotator Cuff Prep (Warmup)", category: "Warmup", target: "Warm up for 10 min", isWarmup: true, duration: 10, note: "", tip: "Improve joint lubrication", sets: [], weight: 0, reps: 0, step: 2.5 },
+      { id: "fri-1", name: "Chest Press Machine", category: "Chest", target: "30kg x 12 reps", weight: 30, reps: 12, step: 2.5, sets: [null, null, null], note: "", tip: "Control chest contraction" },
+      { id: "fri-2", name: "Lat Pulldown Machine", category: "Back", target: "35kg x 12 reps", weight: 35, reps: 12, step: 5, sets: [null, null, null], note: "", tip: "Squeeze latissimus dorsi" },
+      { id: "fri-3", name: "Side Lateral Raise", category: "Shoulders", target: "4kg x 15 reps", weight: 4, reps: 15, step: 0.5, sets: [null, null, null], note: "", tip: "Do not shrug shoulders" },
+      { id: "fri-4", name: "Cable Pushdown (Rope)", category: "Triceps", target: "15kg x 12 reps", weight: 15, reps: 12, step: 5, sets: [null, null, null], note: "", tip: "Extend triceps completely" }
+    ]
+  },
+  sat: {
+    tabLabel: "Sat (Legs)",
+    mainTitle: "Saturday: Lower Body & Core Focus",
+    subTitle: "Posterior Chain Loading & Glute Activation",
+    directive: "A high-density weekend workout session focusing on glutes, hamstrings, and midsection stability.",
+    items: [
+      { id: "sat-0", name: "Dynamic Foam Rolling (Warmup)", category: "Warmup", target: "Myofascial release for 10 min", isWarmup: true, duration: 10, note: "", tip: "Release muscle tension", sets: [], weight: 0, reps: 0, step: 2.5 },
+      { id: "sat-1", name: "Leg Press Machine", category: "Lower", target: "40kg x 12 reps", weight: 40, reps: 12, step: 5, sets: [null, null, null], note: "", tip: "Stimulate quadriceps fully" },
+      { id: "sat-2", name: "Dumbbell Romanian Deadlift", category: "Lower", target: "10kg x 12 reps", weight: 10, reps: 12, step: 2, sets: [null, null, null], note: "", tip: "Hinge at the hips cleanly" },
+      { id: "sat-3", name: "AB Wheel Rollout", category: "Core", target: "Bodyweight x 10 reps", isBodyweight: true, weight: 0, reps: 10, step: 1, sets: [null, null, null], note: "", tip: "Maintain rigid core alignment" },
+      { id: "sat-4", name: "Core Plank", category: "Core", target: "Bodyweight x 60s hold", isBodyweight: true, weight: 0, reps: 60, step: 1, sets: [null, null, null], note: "", tip: "Push elbows through floor" }
+    ]
+  },
+  sun: {
+    tabLabel: "Sun (Rest)",
+    mainTitle: "Sunday: Recovery & Rest",
+    subTitle: "Active Recovery & Quality Muscle Stretching",
+    directive: "Muscle synthesis and neural recovery occur only during rest. Enjoy recovery stretching to promote blood circulation.",
+    items: [
+      { id: "sun-0", name: "Full-Body Yoga Stretching (Warmup)", category: "Warmup", target: "Yoga recovery for 10 min", isWarmup: true, duration: 10, note: "", tip: "Relieve muscle fatigue", sets: [], weight: 0, reps: 0, step: 2.5 },
+      { id: "sun-1", name: "Active recovery stroll (Cardio)", category: "Cardio", target: "Light walk for 20 min", isCardio: true, duration: 20, note: "", tip: "Boost recovery metabolism", sets: [], weight: 0, reps: 0, step: 2.5 }
+    ]
+  }
+};
+
+const TRANSLATIONS = {
+  ko: {
+    headerSub: "스마트 운동 캔버스",
+    wakeLockDEMO: "제한됨 (미리보기)",
+    pwaBannerTitle: "화면이 계속 켜져있는 \"진짜 앱\" 설치",
+    pwaBannerDesc: "홈 화면에 추가하면 화면 유지 기능이 활성화됩니다!",
+    pwaBannerInstall: "1초 설치",
+    emptyRoutine: "이 요일에 설정된 운동이 없습니다. 새로운 운동을 추가해보세요.",
+    addExerciseBtn: "새로운 운동 추가하기",
+    completeLogsBtn: "오늘 운동 완료하고 기록 복사하기",
+    resetLogsBtn: "오늘 기록(완료 상태) 초기화하기",
+    copyDescText: "작성한 세션 데이터가 텍스트 형식으로 자동 복사됩니다.",
+    setLogsLabel: "실제 완료 시간",
+    setLogsLabelCardio: "수행 시간",
+    completedText: "완료됨",
+    markDoneText: "완료 체크",
+    setIndexText: "세트",
+    logSetText: "기록하기",
+    weightLabel: "중량",
+    repsLabel: "횟수",
+    feedbackPlaceholder: "통증 및 세션 특이사항 피드백 입력",
+    guidePrefix: "가이드",
+    editLabel: "수정",
+    deleteLabel: "삭제",
+    routineProgressText: "세션 진척도",
+    routineInfoEditTitle: "루틴 정보 수정",
+    routineInfoEditDesc: "해당 요일의 메인 루틴 정보 및 가이드를 변경합니다",
+    tabLabelInput: "탭 표시 이름 (Tab Label)",
+    mainTitleInput: "루틴 메인 타이틀",
+    subTitleInput: "루틴 부제목 (요약 가이드)",
+    coachGuideInput: "오늘의 트레이닝 가이드 메시지",
+    saveBtn: "수정 사항 저장",
+    exerciseEditTitle: "운동 정보 수정",
+    exerciseAddTitle: "새로운 운동 추가",
+    exerciseEditDesc: "선택한 운동 설정을 조율합니다",
+    exerciseAddDesc: "현재 요일에 새로운 운동을 설정합니다",
+    exNameInput: "운동명",
+    categoryInput: "카테고리",
+    setCountInput: "세트 수",
+    exTypeInput: "운동 특성",
+    exTypeNormal: "일반",
+    exTypeBodyweight: "맨몸",
+    exTypeCardio: "유산소/웜업",
+    baseWeightInput: "기본 중량 (kg)",
+    baseRepsInput: "기본 횟수 (reps)",
+    baseDurationInput: "기본 시간 (분)",
+    exGuideInput: "운동 목표 가이드 문구",
+    exTipInput: "운동 팁 (요약)",
+    saveGeneralBtn: "저장하기",
+    settingsTitle: "대시보드 요일 설정",
+    settingsDesc: "탭에 노출할 요일을 선택하여 루틴을 커스텀하세요",
+    settingsWarn: "최소 1개 이상의 요일은 선택되어야 합니다.",
+    applyBtn: "설정 적용하기",
+    backupTitle: "루틴 데이터 백업 & 복원",
+    backupDesc: "새로고침이 되어도 안전하게 나의 루틴을 지키세요",
+    backupGenTitle: "현재 루틴 백업 코드 생성",
+    backupGenDesc: "아래 보안 코드를 복사해 메모장에 저장하거나 기기를 변경할 때 사용하세요.",
+    btnCopyCode: "코드 복사",
+    backupRestoreTitle: "보안 코드로 기록 복원",
+    backupRestoreDesc: "복사해 둔 코드를 붙여넣으면 진행 데이터가 즉시 완벽 복원됩니다.",
+    btnRestoreApply: "기록 동기화 및 복원 적용",
+    btnResetAll: "현재 브라우저 기록 전체 초기화하기",
+    safetyTitle: "웨이트 트레이닝 부상 방지 가이드",
+    safetyDesc: "안전하고 정교한 자극 전달을 위한 가이드",
+    pwaTitle: "홈 화면 설치 가이드",
+    pwaDesc: "설치해서 사용하면 절전 모드가 자동 방지됩니다!",
+    toastCopySuccess: "오늘의 운동 기록이 복사되었습니다. 대화창에 바로 붙여넣기 해주세요!",
+    toastCopyFail: "복사에 실패했습니다. 수동 복사 부탁드립니다.",
+    toastResetSuccess: "오늘의 운동 기록이 초기화되었습니다.",
+    toastRestoreSuccess: "기록이 완벽하게 동기화 복원되었습니다!",
+    toastRestoreFail: "올바르지 않은 복원 코드입니다. 복사한 코드가 완전한지 체크해 보세요.",
+    toastSettingSuccess: "요일 노출 설정이 변경되었습니다.",
+    toastExAddSuccess: "새로운 운동이 추가되었습니다.",
+    toastExEditSuccess: "운동 정보가 수정되었습니다.",
+    toastExDeleteSuccess: "운동이 삭제되었습니다.",
+    toastTabSettingMin: "최소 하나의 요일은 활성화되어야 합니다!",
+    toastRestoreInputCode: "복원할 백업 코드를 입력해 주세요.",
+    monLabel: "월요일", tueLabel: "화요일", wedLabel: "수요일", thuLabel: "목요일", friLabel: "금요일", satLabel: "토요일", sunLabel: "일요일",
+    wristTitle: "손목 보호", wristBody: "프레스 동작 시 엄지 아랫부분의 뼈(척골 라인)에 무거운 바를 얹어 고정하는 '불독 그립'을 사용하여 손목이 뒤로 꺾여 생기는 손상을 방지합니다.",
+    kneeTitle: "무릎 제어", kneeBody: "스쿼트, 레그 프레스 시 발끝 방향과 무릎이 나아가는 궤적을 반드시 평행하게 유지합니다. 발가락이 안쪽으로 모이거나 무릎이 모이지 않게 주의하세요.",
+    shoulderTitle: "어깨 안정", shoulderBody: "레이즈 및 상체 밀기 동작 시 팔을 완전히 180도 옆으로 벌리지 않고, 몸통 전면으로 약 30도 앞(견갑면 궤적)으로 향하여 충돌 증후군을 예방하세요.",
+    androidPwaTitle: "갤럭시 / 안드로이드", androidPwaSteps: ["인터넷 주소창 우측 상단의 더보기(점 3개) 또는 공유 버튼을 터치합니다.", "메뉴 리스트에서 \"홈 화면에 추가\" 또는 \"앱 설치\"를 누르면 완료!"],
+    iosPwaTitle: "아이폰 / iOS", iosPwaSteps: ["사파리(Safari) 브라우저 하단의 공유 버튼(내보내기 모양)을 터치합니다.", "리스트를 내리다 보면 나타나는 \"홈 화면에 추가\"를 눌러주면 완료!"],
+    pwaTip: "※ 카카오톡, 네이버, 인앱 브라우저 등으로 이 창을 보고 계신가요? 우측 하단이나 상단 메뉴의 \"기본 브라우저(Chrome/Safari)로 열기\"를 한 다음, 위의 순서대로 홈 화면에 설치해 주세요!",
+    resetConfirmTitle: "운동 기록 초기화",
+    resetConfirmDesc: "오늘 진행한 완료 상태를 비웁니다",
+    resetConfirmWarn: "오늘 체크한 완료 상태와 피드백을 모두 초기화하시겠습니까? 설정된 무게와 횟수는 다음 운동을 위해 그대로 유지됩니다.",
+    btnCancel: "취소하기",
+    btnConfirmReset: "초기화 진행",
+    reportHeader: "[ LUMORA WORKOUT REPORT ]",
+    reportSession: "SESSION",
+    reportDate: "DATE",
+    reportActual: "수행 기록",
+    reportFeedback: "피드백",
+    reportConditionPass: "컨디션 조절 및 패스",
+    reportSets: "세트",
+    reportReps: "회",
+    reportFooter: "* 본 기록은 브라우저 로컬 저장소에 안전하게 유지됩니다.",
+    pwaInstallTitle: "1초 설치"
+  },
+  en: {
+    headerSub: "Smart Workout Canvas",
+    wakeLockDEMO: "Demo Viewport",
+    pwaBannerTitle: "Install as a Home Screen App",
+    pwaBannerDesc: "Add to Home Screen to activate screen wake lock feature!",
+    pwaBannerInstall: "Install",
+    emptyRoutine: "No exercises set for this day. Try adding a new exercise.",
+    addExerciseBtn: "Add New Exercise",
+    completeLogsBtn: "Finish Workout & Copy Logs",
+    resetLogsBtn: "Reset Today's Completion Logs",
+    copyDescText: "Your workout log will be copied to clipboard in text format.",
+    setLogsLabel: "Actual Completed Time",
+    setLogsLabelCardio: "Workout Duration",
+    completedText: "Done",
+    markDoneText: "Mark Done",
+    setIndexText: "Set",
+    logSetText: "Log",
+    weightLabel: "Weight",
+    repsLabel: "Reps",
+    feedbackPlaceholder: "Enter pain levels or workout feedback notes...",
+    guidePrefix: "Guide",
+    editLabel: "Edit",
+    deleteLabel: "Delete",
+    routineProgressText: "Progress",
+    routineInfoEditTitle: "Edit Routine Details",
+    routineInfoEditDesc: "Modify the main session title and coach guide for this day",
+    tabLabelInput: "Tab Display Label",
+    mainTitleInput: "Main Routine Title",
+    subTitleInput: "Subtitle (Summary Guide)",
+    coachGuideInput: "Coach Directive Message",
+    saveBtn: "Save Changes",
+    exerciseEditTitle: "Edit Exercise Info",
+    exerciseAddTitle: "Add New Exercise",
+    exerciseEditDesc: "Tune settings for this exercise",
+    exerciseAddDesc: "Add a new exercise to this day's routine",
+    exNameInput: "Exercise Name",
+    categoryInput: "Category",
+    setCountInput: "Sets Count",
+    exTypeInput: "Exercise Type",
+    exTypeNormal: "Strength",
+    exTypeBodyweight: "Bodyweight",
+    exTypeCardio: "Cardio/Warmup",
+    baseWeightInput: "Default Weight (kg)",
+    baseRepsInput: "Default Reps (reps)",
+    baseDurationInput: "Default Time (mins)",
+    exGuideInput: "Target/Goal Text",
+    exTipInput: "Exercise Tip (Short)",
+    saveGeneralBtn: "Save",
+    settingsTitle: "Dashboard Days Toggle",
+    settingsDesc: "Select active days to customize your routine dashboard",
+    settingsWarn: "At least one day must remain active.",
+    applyBtn: "Apply Settings",
+    backupTitle: "Routine Backup & Restore",
+    backupDesc: "Secure your custom routines across page reloads",
+    backupGenTitle: "Generate Backup Token",
+    backupGenDesc: "Copy the security token below to save your backup in a safe place.",
+    btnCopyCode: "Copy Code",
+    backupRestoreTitle: "Restore from Token",
+    backupRestoreDesc: "Paste your saved token code below to restore your routine data instantly.",
+    btnRestoreApply: "Apply Restore Token",
+    btnResetAll: "Wipe all Local Browser Records",
+    safetyTitle: "Injury Prevention Safety Guide",
+    safetyDesc: "Precise biomechanics for injury-free workout progression",
+    pwaTitle: "Home Screen App Installation Guide",
+    pwaDesc: "Install as a PWA to keep your screen turned on automatically!",
+    toastCopySuccess: "Today's workout report has been copied to your clipboard! Paste it to the chat.",
+    toastCopyFail: "Copy failed. Please manually copy the logs.",
+    toastResetSuccess: "Today's workout logs have been reset.",
+    toastRestoreSuccess: "Routines successfully restored and synchronized!",
+    toastRestoreFail: "Invalid restore token. Check if the token is completely copied.",
+    toastSettingSuccess: "Active days settings updated.",
+    toastExAddSuccess: "New exercise added successfully.",
+    toastExEditSuccess: "Exercise settings updated.",
+    toastExDeleteSuccess: "Exercise removed.",
+    toastTabSettingMin: "At least one day must be active!",
+    toastRestoreInputCode: "Please enter a backup token.",
+    monLabel: "Monday", tueLabel: "Tuesday", wedLabel: "Wednesday", thuLabel: "Thursday", friLabel: "Friday", satLabel: "Saturday", sunLabel: "Sunday",
+    wristTitle: "Wrist Safety", wristBody: "On pressing motions, rest the bar directly over the heel of the palm (ulnar line) using the 'bulldog grip' to prevent wrist bending and joint damage.",
+    kneeTitle: "Knee Control", kneeBody: "During squatting or pressing movements, ensure knee caps track perfectly parallel with toes. Do not let knees cave inwards.",
+    shoulderTitle: "Shoulder Placement", shoulderBody: "On lateral raises and pushing actions, raise hands about 30 degrees forward (scapular plane) instead of flat sideways to prevent impingement.",
+    androidPwaTitle: "Android / Chrome", androidPwaSteps: ["Tap the three dots (More) or share button in the top-right corner.", "Tap \"Add to Home Screen\" or \"Install App\" to complete!"],
+    iosPwaTitle: "iOS / Safari", iosPwaSteps: ["Tap the share button (Export box icon) at the bottom of Safari.", "Scroll down and tap \"Add to Home Screen\" to complete!"],
+    pwaTip: "※ Using KakaoTalk, Naver or other in-app browsers? Tap \"Open in default browser (Chrome/Safari)\" first, and then follow the steps to install it on your home screen!",
+    resetConfirmTitle: "Reset Logs",
+    resetConfirmDesc: "Clear today's completed marks",
+    resetConfirmWarn: "Are you sure you want to clear today's completed marks and comments? Your weights and reps will be saved for next session.",
+    btnCancel: "Cancel",
+    btnConfirmReset: "Reset Logs",
+    reportHeader: "[ LUMORA WORKOUT REPORT ]",
+    reportSession: "SESSION",
+    reportDate: "DATE",
+    reportActual: "Performance",
+    reportFeedback: "Feedback",
+    reportConditionPass: "Condition adjustment / Passed",
+    reportSets: "Sets",
+    reportReps: "Reps",
+    reportFooter: "* This log is safely stored in your local browser storage.",
+    pwaInstallTitle: "Install"
+  }
+};
+
 export default function WorkoutCanvas() {
+  const [lang, setLang] = useState<"ko" | "en">("ko");
   const [activeDay, setActiveDay] = useState<string>("mon");
   const [db, setDb] = useState<WorkoutDatabase>(DEFAULT_DATABASE);
   const [visibleDays, setVisibleDays] = useState<string[]>(["mon", "tue", "wed", "thu", "fri", "sat", "sun"]);
@@ -206,7 +510,7 @@ export default function WorkoutCanvas() {
   // Wake lock states
   const [isWakeLockActive, setIsWakeLockActive] = useState(false);
   const [wakeLockObj, setWakeLockObj] = useState<any>(null);
-  const [wakeLockStatusText, setWakeLockStatusText] = useState("화면 유지 대기");
+  const [wakeLockStatusText, setWakeLockStatusText] = useState("화면 유지 OFF");
   const [isIframe, setIsIframe] = useState(false);
 
   // Backup tokens states
@@ -218,9 +522,17 @@ export default function WorkoutCanvas() {
     setIsIframe(window.self !== window.top);
   }, []);
 
+  // Load language settings on mount
+  useEffect(() => {
+    const savedLang = localStorage.getItem("gems_workout_lang");
+    if (savedLang === "en" || savedLang === "ko") {
+      setLang(savedLang);
+    }
+  }, []);
+
   // Load from local storage
   useEffect(() => {
-    const savedVisible = localStorage.getItem("gems_visible_days");
+    const savedVisible = localStorage.getItem(`gems_visible_days_${lang}`);
     let initialVisible = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
     if (savedVisible) {
       try {
@@ -234,7 +546,7 @@ export default function WorkoutCanvas() {
       }
     }
 
-    const savedDay = localStorage.getItem("gems_active_day");
+    const savedDay = localStorage.getItem(`gems_active_day_${lang}`);
     if (savedDay && ["mon", "tue", "wed", "thu", "fri", "sat", "sun"].includes(savedDay)) {
       if (initialVisible.includes(savedDay)) {
         setActiveDay(savedDay);
@@ -245,11 +557,11 @@ export default function WorkoutCanvas() {
       setActiveDay(initialVisible[0] || "mon");
     }
 
-    const savedDb = localStorage.getItem("gems_workout_database_v1");
+    const savedDb = localStorage.getItem(`gems_workout_database_v1_${lang}`);
     if (savedDb) {
       try {
         const parsed = JSON.parse(savedDb);
-        const mergedDb = { ...DEFAULT_DATABASE };
+        const mergedDb = { ...(lang === "ko" ? DEFAULT_DATABASE : EN_DEFAULT_DATABASE) };
         for (const day in mergedDb) {
           if (parsed[day]) {
             mergedDb[day].tabLabel = parsed[day].tabLabel ?? mergedDb[day].tabLabel;
@@ -282,17 +594,20 @@ export default function WorkoutCanvas() {
         setDb(mergedDb);
       } catch (e) {
         console.warn("Storage data corrupted, using default template.");
+        setDb(lang === "ko" ? DEFAULT_DATABASE : EN_DEFAULT_DATABASE);
       }
+    } else {
+      setDb(lang === "ko" ? DEFAULT_DATABASE : EN_DEFAULT_DATABASE);
     }
-  }, []);
+  }, [lang]);
 
   // Save to local storage
   const saveToStorage = (updatedDb: WorkoutDatabase, day: string, daysList?: string[]) => {
     try {
-      localStorage.setItem("gems_workout_database_v1", JSON.stringify(updatedDb));
-      localStorage.setItem("gems_active_day", day);
+      localStorage.setItem(`gems_workout_database_v1_${lang}`, JSON.stringify(updatedDb));
+      localStorage.setItem(`gems_active_day_${lang}`, day);
       if (daysList) {
-        localStorage.setItem("gems_visible_days", JSON.stringify(daysList));
+        localStorage.setItem(`gems_visible_days_${lang}`, JSON.stringify(daysList));
       }
     } catch (e) {
       console.error("Local Storage save failed", e);
@@ -418,16 +733,16 @@ export default function WorkoutCanvas() {
         const wl = await (navigator as any).wakeLock.request("screen");
         setWakeLockObj(wl);
         setIsWakeLockActive(true);
-        setWakeLockStatusText("화면 유지 활성화");
+        setWakeLockStatusText("화면 유지 ON");
         wl.addEventListener("release", () => {
           setIsWakeLockActive(false);
-          setWakeLockStatusText("화면 유지 비활성화");
+          setWakeLockStatusText("화면 유지 OFF");
         });
       } else {
-        setWakeLockStatusText("미지원 기기");
+        setWakeLockStatusText("화면 유지 OFF");
       }
     } catch (err) {
-      setWakeLockStatusText("설정 대기");
+      setWakeLockStatusText("화면 유지 OFF");
     }
   };
 
@@ -443,7 +758,7 @@ export default function WorkoutCanvas() {
         }
         setWakeLockObj(null);
         setIsWakeLockActive(false);
-        setWakeLockStatusText("화면 유지 비활성화");
+        setWakeLockStatusText("화면 유지 OFF");
       } else {
         await requestWakeLock();
       }
@@ -471,16 +786,17 @@ export default function WorkoutCanvas() {
     const data = db[activeDay];
     const now = new Date();
     const dateStr = `${now.getFullYear()}. ${String(now.getMonth() + 1).padStart(2, "0")}. ${String(now.getDate()).padStart(2, "0")}`;
+    const t = TRANSLATIONS[lang];
 
-    let report = `[ LUMORA WORKOUT REPORT ]\n`;
+    let report = `${t.reportHeader}\n`;
     report += `────────────────────────────\n`;
-    report += `SESSION : ${data.mainTitle}\n`;
-    report += `DATE    : ${dateStr}\n\n`;
+    report += `${t.reportSession} : ${data.mainTitle}\n`;
+    report += `${t.reportDate}    : ${dateStr}\n\n`;
 
     data.items.forEach((it) => {
       let actual = "";
       if (it.isCardio || it.isWarmup) {
-        actual = it.isDone ? `${it.duration}분 수행` : "컨디션 조절 및 패스";
+        actual = it.isDone ? `${it.duration}${lang === "ko" ? "분 수행" : " min performed"}` : t.reportConditionPass;
       } else {
         const doneSets = it.sets.filter((s) => s !== null);
         if (doneSets.length > 0) {
@@ -488,33 +804,40 @@ export default function WorkoutCanvas() {
             .map((s, idx) => {
               if (!s) return "";
               return it.isBodyweight
-                ? `${idx + 1}SET (${s.r}회)`
-                : `${idx + 1}SET (${s.w}kg / ${s.r}회)`;
+                ? `${idx + 1}${lang === "ko" ? "세트" : "Set"} (${s.r}${t.reportReps})`
+                : `${idx + 1}${lang === "ko" ? "세트" : "Set"} (${s.w}kg / ${s.r}${t.reportReps})`;
             })
             .join(", ");
         } else {
-          actual = "컨디션 조절 및 패스";
+          actual = t.reportConditionPass;
         }
       }
       report += `■ ${it.name} (${it.category})\n`;
-      report += `  수행 기록 : ${actual}\n`;
+      report += `  ${t.reportActual} : ${actual}\n`;
       if (it.note && it.note.trim()) {
-        report += `  피드백    : ${it.note}\n`;
+        report += `  ${t.reportFeedback} : ${it.note}\n`;
       }
       report += `\n`;
     });
 
     report += `────────────────────────────\n`;
-    report += `* 본 기록은 브라우저 로컬 저장소에 안전하게 유지됩니다.`;
+    report += `${t.reportFooter}`;
 
     navigator.clipboard.writeText(report).then(
       () => {
-        triggerToastBanner("오늘의 운동 기록이 복사되었습니다. 대화창에 바로 붙여넣기 해주세요!");
+        triggerToastBanner(t.toastCopySuccess);
       },
       () => {
-        triggerToastBanner("복사에 실패했습니다. 수동 복사 부탁드립니다.");
+        triggerToastBanner(t.toastCopyFail);
       }
     );
+  };
+
+  const toggleLanguage = () => {
+    const nextLang = lang === "ko" ? "en" : "ko";
+    setLang(nextLang);
+    localStorage.setItem("gems_workout_lang", nextLang);
+    triggerToastBanner(nextLang === "ko" ? "한국어로 변경되었습니다." : "Language changed to English.");
   };
 
   // Reset completion logs only
@@ -533,7 +856,7 @@ export default function WorkoutCanvas() {
     setDb(updatedDb);
     saveToStorage(updatedDb, activeDay);
     setIsResetConfirmOpen(false);
-    triggerToastBanner("오늘의 운동 기록이 초기화되었습니다.");
+    triggerToastBanner(t.toastResetSuccess);
   };
 
   // Backup & Restore
@@ -551,7 +874,7 @@ export default function WorkoutCanvas() {
 
   const importBackupCode = () => {
     if (!importCode.trim()) {
-      triggerToastBanner("복원할 백업 코드를 입력해 주세요.");
+      triggerToastBanner(t.toastRestoreInputCode);
       return;
     }
     try {
@@ -578,9 +901,9 @@ export default function WorkoutCanvas() {
       setDb(updatedDb);
       saveToStorage(updatedDb, activeDay);
       setIsBackupOpen(false);
-      triggerToastBanner("기록이 완벽하게 동기화 복원되었습니다!");
+      triggerToastBanner(t.toastRestoreSuccess);
     } catch (e) {
-      triggerToastBanner("올바르지 않은 복원 코드입니다. 복사한 코드가 완전한지 체크해 보세요.");
+      triggerToastBanner(t.toastRestoreFail);
     }
   };
 
@@ -620,7 +943,7 @@ export default function WorkoutCanvas() {
     }
 
     const updatedDb = { ...db };
-    updatedDb[activeDay].tabLabel = tabLabel || DAY_LABELS[activeDay];
+    updatedDb[activeDay].tabLabel = tabLabel || CURRENT_DAY_LABELS[activeDay];
     updatedDb[activeDay].mainTitle = title;
     updatedDb[activeDay].subTitle = subtitle;
     updatedDb[activeDay].directive = directive;
@@ -628,7 +951,7 @@ export default function WorkoutCanvas() {
     setDb(updatedDb);
     saveToStorage(updatedDb, activeDay);
     setIsRoutineModalOpen(false);
-    triggerToastBanner("루틴 정보가 수정되었습니다.");
+    triggerToastBanner(t.toastExEditSuccess);
   };
 
   // Exercise modal trigger
@@ -768,7 +1091,7 @@ export default function WorkoutCanvas() {
     setDb(updatedDb);
     saveToStorage(updatedDb, activeDay);
     setIsExerciseModalOpen(false);
-    triggerToastBanner(editingExerciseId ? "운동 정보가 수정되었습니다." : "새로운 운동이 추가되었습니다.");
+    triggerToastBanner(editingExerciseId ? t.toastExEditSuccess : t.toastExAddSuccess);
   };
 
   const deleteExercise = (itemId: string) => {
@@ -776,7 +1099,7 @@ export default function WorkoutCanvas() {
       const newConfirm = { ...deleteConfirmActive };
       newConfirm[itemId] = true;
       setDeleteConfirmActive(newConfirm);
-      triggerToastBanner("⚠️ 한 번 더 누르면 정말 삭제됩니다!");
+      triggerToastBanner(lang === "ko" ? "⚠️ 한 번 더 누르면 정말 삭제됩니다!" : "⚠️ Tap again to delete permanently!");
       setTimeout(() => {
         setDeleteConfirmActive((prev) => ({ ...prev, [itemId]: false }));
       }, 3000);
@@ -786,14 +1109,14 @@ export default function WorkoutCanvas() {
       setDb(updatedDb);
       saveToStorage(updatedDb, activeDay);
       setDeleteConfirmActive((prev) => ({ ...prev, [itemId]: false }));
-      triggerToastBanner("운동이 삭제되었습니다.");
+      triggerToastBanner(t.toastExDeleteSuccess);
     }
   };
 
   // Settings visible days apply
   const applyVisibleDays = (selectedDays: string[]) => {
     if (selectedDays.length === 0) {
-      triggerToastBanner("최소 하나의 요일은 활성화되어야 합니다!");
+      triggerToastBanner(t.toastTabSettingMin);
       return;
     }
 
@@ -809,11 +1132,14 @@ export default function WorkoutCanvas() {
 
     saveToStorage(db, nextActive, sortedVisible);
     setIsSettingsOpen(false);
-    triggerToastBanner("요일 노출 설정이 변경되었습니다.");
+    triggerToastBanner(t.toastSettingSuccess);
   };
 
+  const t = TRANSLATIONS[lang];
+  const CURRENT_DAY_LABELS = lang === "ko" ? DAY_LABELS : EN_DAY_LABELS;
+
   return (
-    <div className="w-full max-w-[480px] mx-auto min-h-screen flex flex-col bg-[#1e1e1e] text-slate-200 border-x border-[#3a3a3a]/30 relative shadow-2xl pb-12 font-sans select-none overflow-x-hidden">
+    <div className="w-full flex flex-col bg-transparent text-lumora-text relative pb-12 font-sans select-none overflow-x-hidden">
       
       {/* Dynamic Toast Banner */}
       <AnimatePresence>
@@ -822,73 +1148,83 @@ export default function WorkoutCanvas() {
             initial={{ opacity: 0, y: 10, scale: 0.95, x: "-50%" }}
             animate={{ opacity: 1, y: 0, scale: 1, x: "-50%" }}
             exit={{ opacity: 0, y: 10, scale: 0.95, x: "-50%" }}
-            className="fixed bottom-10 left-1/2 bg-slate-900 border border-[#a78bfa]/30 text-white font-extrabold px-6 py-4 rounded-2xl text-xs shadow-2xl z-50 flex items-center gap-3 w-80 max-w-full"
+            className="fixed bottom-10 left-1/2 bg-[#131219] border border-lumora-highlight/30 text-white font-extrabold px-6 py-4 rounded-2xl text-xs shadow-2xl z-50 flex items-center gap-3 w-80 max-w-full"
           >
-            <div className="w-5 h-5 rounded-full bg-[#a78bfa]/10 text-[#a78bfa] flex items-center justify-center shrink-0">
+            <div className="w-5 h-5 rounded-full bg-lumora-highlight/10 text-lumora-highlight flex items-center justify-center shrink-0">
               <Clipboard className="w-3.5 h-3.5" />
             </div>
-            <span className="leading-tight">{toastMessage}</span>
+            <span className="leading-tight text-white">{toastMessage}</span>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Sticky Header */}
-      <header className="sticky top-0 z-40 bg-[#1e1e1e]/95 backdrop-blur-md border-b border-[#3a3a3a]/60 px-4 py-4">
-        <div className="max-w-md mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-3">
+      {/* Header */}
+      <header className="sticky top-0 z-40 bg-lumora-card/95 backdrop-blur-md border-b border-white/5 px-4 py-4">
+        <div className="w-full flex items-center justify-between">
+          <div className="flex items-center space-x-2 md:space-x-3">
             <div className="relative">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#a78bfa] to-[#8b5cf6] flex items-center justify-center text-[#1e1e1e] font-extrabold text-lg shadow-md shadow-[#a78bfa]/20">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-lumora-highlight to-lumora-highlight/85 flex items-center justify-center text-slate-900 font-extrabold text-lg shadow-md shadow-lumora-highlight/20">
                 L
               </div>
-              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-[#a78bfa] border-2 border-[#1e1e1e] rounded-full"></span>
+              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-lumora-highlight border-2 border-lumora-card rounded-full"></span>
             </div>
-            <div>
-              <h1 className="text-[10px] font-bold text-slate-400 tracking-wider uppercase">Lumora Workout</h1>
-              <p className="text-sm font-black text-white tracking-tight">스마트 모바일 운동 캔버스</p>
+            <div className="leading-tight min-w-0">
+              <h1 className="text-[11px] font-black text-white tracking-wide uppercase truncate">Lumora Workout</h1>
+              <p className="text-[9px] font-semibold text-lumora-sub tracking-tight whitespace-nowrap mt-0.5 hidden sm:block">{t.headerSub}</p>
             </div>
           </div>
 
-          <div className="flex items-center space-x-1.5">
+          <div className="flex items-center space-x-1.5 shrink-0">
             {/* Smart Screen Status Indicator (Wake Lock) */}
             <button
               onClick={triggerWakeLockAction}
-              className={`btn-tap px-2.5 py-1.5 rounded-xl text-[10px] font-bold flex items-center gap-1 transition-all ${
+              className={`btn-tap px-2.5 py-1.5 rounded-xl text-[10px] font-bold flex items-center gap-1 transition-all whitespace-nowrap shrink-0 ${
                 isIframe
-                  ? "bg-[#a78bfa]/10 border border-[#a78bfa]/20 text-[#a78bfa]"
+                  ? "bg-lumora-highlight/10 border border-lumora-highlight/20 text-lumora-highlight"
                   : isWakeLockActive
-                  ? "bg-[#a78bfa]/10 border border-[#a78bfa]/20 text-[#a78bfa]"
-                  : "bg-[#262626] border border-[#3a3a3a] text-slate-500"
+                  ? "bg-lumora-highlight/10 border border-lumora-highlight/20 text-lumora-highlight"
+                  : "bg-lumora-bg/60 border border-white/5 text-lumora-sub"
               }`}
             >
-              <ShieldAlert className="w-3.5 h-3.5" />
-              <span>{isIframe ? "제한됨 (미리보기)" : wakeLockStatusText}</span>
+              <Smartphone className="w-3.5 h-3.5" />
+              <span>{isIframe ? t.wakeLockDEMO : (wakeLockStatusText === "화면 유지 ON" ? (lang === "ko" ? "화면 유지 ON" : "Wake Lock ON") : (lang === "ko" ? "화면 유지 OFF" : "Wake Lock OFF"))}</span>
+            </button>
+
+            {/* Language Switch Toggle Button */}
+            <button
+              onClick={toggleLanguage}
+              className="btn-tap px-2 py-1.5 bg-lumora-bg/60 border border-white/5 rounded-xl text-[10px] font-bold text-lumora-highlight flex items-center gap-1 shrink-0"
+              title={lang === "ko" ? "English" : "한국어"}
+            >
+              <Globe className="w-3.5 h-3.5 text-lumora-highlight" />
+              <span className="uppercase">{lang === "ko" ? "EN" : "KO"}</span>
             </button>
 
             {/* Routine Settings (Visible Days Toggle) */}
             <button
               onClick={() => setIsSettingsOpen(true)}
-              className="btn-tap px-2 py-1.5 bg-[#262626] border border-[#3a3a3a] rounded-xl text-[10px] font-bold text-slate-400 flex items-center gap-1"
+              className="btn-tap px-2 py-1.5 bg-lumora-bg/60 border border-white/5 rounded-xl text-[10px] font-bold text-lumora-sub flex items-center gap-1 shrink-0"
               title="루틴 설정 및 요일 활성화"
             >
-              <Settings className="w-3.5 h-3.5 text-slate-400" />
+              <Settings className="w-3.5 h-3.5 text-lumora-sub" />
             </button>
 
             {/* Data Backup & Restore Trigger */}
             <button
               onClick={openBackupModal}
-              className="btn-tap px-2 py-1.5 bg-[#262626] border border-[#3a3a3a] rounded-xl text-[10px] font-bold text-slate-400 flex items-center gap-1"
+              className="btn-tap px-2 py-1.5 bg-lumora-bg/60 border border-white/5 rounded-xl text-[10px] font-bold text-lumora-sub flex items-center gap-1 shrink-0"
               title="기록 백업/복원"
             >
-              <Database className="w-3.5 h-3.5 text-slate-400" />
+              <Database className="w-3.5 h-3.5 text-lumora-sub" />
             </button>
 
             {/* Injury Prevention Specs */}
             <button
               onClick={() => setIsSafetyOpen(true)}
-              className="btn-tap px-2 py-1.5 bg-[#262626] border border-[#3a3a3a] rounded-xl text-[10px] font-bold text-slate-400 flex items-center gap-1"
+              className="btn-tap px-2 py-1.5 bg-lumora-bg/60 border border-white/5 rounded-xl text-[10px] font-bold text-lumora-sub flex items-center gap-1 shrink-0"
               title="부상 방지 가이드"
             >
-              <Info className="w-3.5 h-3.5 text-slate-400" />
+              <Info className="w-3.5 h-3.5 text-lumora-sub" />
             </button>
           </div>
         </div>
@@ -896,58 +1232,86 @@ export default function WorkoutCanvas() {
 
       {/* PWA Install Banner */}
       {isIframe && (
-        <div className="max-w-md w-full mx-auto px-4 mt-3">
-          <div className="bg-gradient-to-r from-[#a78bfa]/10 to-[#262626] border border-[#a78bfa]/30 rounded-2xl p-4 flex items-center justify-between shadow-xl">
+        <div className="w-full px-4 mt-3">
+          <div className="bg-gradient-to-r from-lumora-highlight/10 to-lumora-bg/60 border border-lumora-highlight/20 rounded-2xl p-4 flex items-center justify-between shadow-xl">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-xl bg-[#a78bfa]/10 text-[#a78bfa] flex items-center justify-center shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-lumora-highlight/10 text-lumora-highlight flex items-center justify-center shrink-0">
                 <Download className="w-5 h-5" />
               </div>
               <div>
-                <h4 className="text-xs font-black text-white">화면이 계속 켜져있는 "진짜 앱" 설치</h4>
-                <p className="text-[10px] text-slate-400 mt-0.5">홈 화면에 추가하면 화면 유지 기능이 활성화됩니다!</p>
+                <h4 className="text-xs font-black text-white">{t.pwaBannerTitle}</h4>
+                <p className="text-[10px] text-lumora-sub mt-0.5">{t.pwaBannerDesc}</p>
               </div>
             </div>
             <button
               onClick={() => setIsPwaOpen(true)}
-              className="btn-tap px-3 py-2 bg-[#a78bfa] hover:bg-[#c4b5fd] text-[#1e1e1e] font-black text-xs rounded-xl shadow-md shrink-0"
+              className="btn-tap px-3 py-2 bg-lumora-highlight hover:bg-[#c4b5fd] text-slate-900 font-black text-xs rounded-xl shadow-md shrink-0"
             >
-              1초 설치
+              {t.pwaBannerInstall}
             </button>
           </div>
         </div>
       )}
 
       {/* Main Content Flow */}
-      <main className="flex-1 max-w-md w-full mx-auto px-4 mt-4 space-y-4">
+      <main className="flex-1 w-full px-4 md:px-5 mt-5 space-y-4">
         
         {/* Segmented Tab Bar */}
-        <div className="bg-[#262626] p-1.5 rounded-2xl border border-[#3a3a3a]/80 flex flex-wrap justify-between gap-1 shadow-lg">
+        <div 
+          className="bg-lumora-bg/60 p-1.5 rounded-2xl border border-white/5 grid gap-1 shadow-lg w-full"
+          style={{ gridTemplateColumns: `repeat(${visibleDays.length}, minmax(0, 1fr))` }}
+        >
           {visibleDays.map((day) => {
             const isSelected = day === activeDay;
+            const label = db[day]?.tabLabel || CURRENT_DAY_LABELS[day] || "";
+            let dayChar = label.charAt(0);
+            let subLabel = "";
+            const match = label.match(/\(([^)]+)\)/);
+            if (match && match[1]) {
+              subLabel = match[1];
+            } else {
+              // For English Tab Labels (e.g. "Mon (Pull)")
+              const spaceIdx = label.indexOf(" ");
+              if (spaceIdx !== -1) {
+                dayChar = label.substring(0, spaceIdx);
+                const subMatch = label.match(/\(([^)]+)\)/) || label.match(/ ([^(]+)/);
+                subLabel = subMatch ? subMatch[1] : "";
+              } else {
+                subLabel = label.substring(2).replace(/[()]/g, "").trim();
+              }
+            }
+
             return (
               <button
                 key={day}
                 onClick={() => handleDayChange(day)}
-                className={`btn-tap flex-1 min-w-[70px] py-3 text-center rounded-xl text-xs transition-all duration-200 ${
+                className={`btn-tap flex flex-col items-center justify-center py-2.5 rounded-xl transition-all duration-200 border ${
                   isSelected
-                    ? "bg-[#a78bfa] text-[#1e1e1e] font-bold shadow-md shadow-[#a78bfa]/10"
-                    : "text-slate-400 hover:text-slate-200 font-semibold"
+                    ? "bg-lumora-highlight border-lumora-highlight text-slate-900 font-bold shadow-md shadow-lumora-highlight/10"
+                    : "bg-transparent border-transparent text-lumora-sub hover:text-white font-semibold"
                 }`}
               >
-                {db[day]?.tabLabel || DAY_LABELS[day]}
+                <span className="text-[13px] font-black leading-none">{dayChar}</span>
+                {subLabel && (
+                  <span className={`text-[8px] mt-1 font-bold tracking-tight opacity-80 leading-none ${
+                    isSelected ? "text-slate-800" : "text-lumora-sub/80"
+                  }`}>
+                    {subLabel}
+                  </span>
+                )}
               </button>
             );
           })}
         </div>
 
         {/* Coach Directive Panel */}
-        <div className="bg-gradient-to-b from-[#2d2d2d] to-[#262626] border border-[#3a3a3a]/80 rounded-2xl p-4 shadow-md flex items-start space-x-3.5">
-          <div className="w-8 h-8 rounded-xl bg-[#a78bfa]/10 flex items-center justify-center text-[#a78bfa] shrink-0 mt-0.5">
+        <div className="bg-gradient-to-b from-lumora-card/30 to-lumora-bg/40 border border-white/5 rounded-2xl p-4 shadow-md flex items-start space-x-3.5">
+          <div className="w-8 h-8 rounded-xl bg-lumora-highlight/10 flex items-center justify-center text-lumora-highlight shrink-0 mt-0.5">
             <MessageSquare className="w-4 h-4" />
           </div>
           <div className="space-y-1">
-            <span className="text-[9px] font-extrabold text-[#a78bfa] tracking-wider uppercase">오늘의 트레이닝 가이드</span>
-            <p className="text-xs text-slate-300 leading-relaxed font-semibold">
+            <span className="text-[9px] font-extrabold text-lumora-highlight tracking-wider uppercase">{t.guideTitle}</span>
+            <p className="text-xs text-lumora-text leading-relaxed font-semibold">
               {db[activeDay]?.directive}
             </p>
           </div>
@@ -960,61 +1324,61 @@ export default function WorkoutCanvas() {
               <h2 className="text-base font-extrabold text-white tracking-tight">{db[activeDay]?.mainTitle}</h2>
               <button
                 onClick={openRoutineModal}
-                className="btn-tap p-1 bg-[#262626] hover:bg-[#3a3a3a] border border-[#3a3a3a] rounded-lg text-slate-400 hover:text-white"
-                title="루틴 정보 수정"
+                className="btn-tap p-1 bg-lumora-bg/60 hover:bg-lumora-hover border border-white/5 rounded-lg text-lumora-sub hover:text-white"
+                title={t.editLabel}
               >
                 <Edit2 className="w-3.5 h-3.5" />
               </button>
             </div>
-            <p className="text-xs text-slate-400">{db[activeDay]?.subTitle}</p>
+            <p className="text-xs text-lumora-sub">{db[activeDay]?.subTitle}</p>
           </div>
-          <div className="bg-[#262626] px-3 py-1.5 rounded-xl border border-[#3a3a3a] text-right shrink-0">
-            <span className="text-[9px] text-slate-500 font-extrabold block uppercase tracking-wider">세션 진척도</span>
-            <span className="text-xs font-black text-[#a78bfa]">{getProgressPct()}%</span>
+          <div className="bg-[#1a1921]/40 px-3 py-1.5 rounded-xl border border-white/5 text-right shrink-0">
+            <span className="text-[9px] text-lumora-sub font-extrabold block uppercase tracking-wider">{t.routineProgressText}</span>
+            <span className="text-xs font-black text-lumora-highlight">{getProgressPct()}%</span>
           </div>
         </div>
 
         {/* Dynamic Workouts Holder */}
         <div className="space-y-4">
           {(!db[activeDay]?.items || db[activeDay].items.length === 0) ? (
-            <div className="text-center py-8 text-xs text-slate-500 border border-dashed border-[#3a3a3a] rounded-2xl">
-              이 요일에 설정된 운동이 없습니다. 새로운 운동을 추가해보세요.
+            <div className="text-center py-8 text-xs text-lumora-sub border border-dashed border-white/5 rounded-2xl">
+              {t.emptyRoutine}
             </div>
           ) : (
             db[activeDay].items.map((item) => {
-              let catColor = "bg-[#a78bfa]/10 text-[#a78bfa] border-[#a78bfa]/20";
-              if (item.category === "웜업") {
+              let catColor = "bg-lumora-highlight/10 text-lumora-highlight border-lumora-highlight/20";
+              if (item.category === "웜업" || item.category === "Warmup") {
                 catColor = "bg-amber-500/10 text-amber-400 border-amber-500/20";
               }
 
               return (
-                <div key={item.id} className="bg-[#262626] border border-[#3a3a3a] rounded-2xl p-4 space-y-4 shadow-sm">
+                <div key={item.id} className="bg-lumora-bg/40 border border-white/5 rounded-2xl p-4 space-y-4 shadow-sm">
                   {/* Exercise Card Header */}
                   <div className="flex justify-between items-start gap-3">
                     <div className="space-y-1">
                       <span className={`text-[9px] ${catColor} font-extrabold px-2 py-0.5 rounded-lg border uppercase tracking-wider`}>
-                        {item.category}
+                        {lang === "ko" ? item.category : (item.category === "웜업" ? "Warmup" : (item.category === "유산소" ? "Cardio" : item.category))}
                       </span>
                       <h3 className="text-sm font-bold text-white mt-1">{item.name}</h3>
-                      <p className="text-xs text-slate-400">가이드: {item.target}</p>
+                      <p className="text-xs text-lumora-sub">{t.guidePrefix}: {item.target}</p>
                     </div>
                     <div className="flex items-center space-x-2 shrink-0">
-                      <span className="text-[10px] text-slate-400 font-bold bg-[#1e1e1e] px-2.5 py-1 rounded-xl border border-[#3a3a3a]">
+                      <span className="text-[10px] text-lumora-sub font-bold bg-lumora-card/60 px-2.5 py-1 rounded-xl border border-white/5">
                         {item.tip}
                       </span>
                       <button
                         onClick={() => openExerciseModal(item.id)}
-                        className="btn-tap p-1 bg-[#2a2a2a] hover:bg-[#3a3a3a] rounded-lg text-slate-400 hover:text-white"
-                        title="수정"
+                        className="btn-tap p-1 bg-lumora-hover text-lumora-text hover:bg-white/10 rounded-lg"
+                        title={t.editLabel}
                       >
                         <Edit3 className="w-3.5 h-3.5" />
                       </button>
                       <button
                         onClick={() => deleteExercise(item.id)}
-                        className={`btn-tap p-1 bg-[#2a2a2a] hover:bg-rose-950 rounded-lg transition-colors ${
-                          deleteConfirmActive[item.id] ? "text-rose-400 bg-rose-950/40" : "text-slate-400 hover:text-rose-450"
+                        className={`btn-tap p-1 bg-lumora-hover rounded-lg transition-colors ${
+                          deleteConfirmActive[item.id] ? "text-red-400 bg-red-950/40" : "text-lumora-sub hover:text-red-400"
                         }`}
-                        title="삭제"
+                        title={t.deleteLabel}
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -1024,19 +1388,19 @@ export default function WorkoutCanvas() {
                   {/* Exercise Card Body */}
                   {item.isWarmup ? (
                     <div className="space-y-2">
-                      <div className="flex items-center justify-between bg-[#1e1e1e] p-3 rounded-2xl border border-[#2a2a2a] text-xs">
-                        <span className="text-slate-400 font-extrabold">실제 완료 시간</span>
-                        <div className="flex items-center space-x-3 bg-[#262626] px-3 py-1.5 rounded-xl border border-[#3a3a3a]">
+                      <div className="flex items-center justify-between bg-lumora-card/50 p-3 rounded-2xl border border-white/5 text-xs">
+                        <span className="text-lumora-sub font-extrabold">{t.setLogsLabel}</span>
+                        <div className="flex items-center space-x-3 bg-lumora-bg/40 px-3 py-1.5 rounded-xl border border-white/5">
                           <button
                             onClick={() => changeCardio(item.id, -1)}
-                            className="btn-tap p-1 bg-[#2a2a2a] text-slate-300 hover:text-white rounded-lg"
+                            className="btn-tap p-1 bg-lumora-hover text-lumora-text hover:bg-white/10 rounded-lg"
                           >
                             <Minus className="w-3.5 h-3.5" />
                           </button>
-                          <span className="font-black text-white text-sm px-2">{item.duration}분</span>
+                          <span className="font-black text-white text-sm px-2">{item.duration}{lang === "ko" ? "분" : " min"}</span>
                           <button
                             onClick={() => changeCardio(item.id, 1)}
-                            className="btn-tap p-1 bg-[#2a2a2a] text-slate-300 hover:text-white rounded-lg"
+                            className="btn-tap p-1 bg-lumora-hover text-lumora-text hover:bg-white/10 rounded-lg"
                           >
                             <Plus className="w-3.5 h-3.5" />
                           </button>
@@ -1046,34 +1410,34 @@ export default function WorkoutCanvas() {
                         onClick={() => toggleCardioDone(item.id)}
                         className={`btn-tap w-full py-2.5 rounded-xl border font-bold text-xs flex items-center justify-center transition-all ${
                           item.isDone
-                            ? "bg-[#a78bfa] text-[#1e1e1e] border-[#a78bfa] shadow-md"
-                            : "bg-[#1e1e1e] border-[#3a3a3a] text-slate-500"
+                            ? "bg-lumora-highlight text-slate-900 border-lumora-highlight shadow-md"
+                            : "bg-lumora-bg/60 border border-white/5 text-lumora-sub"
                         }`}
                       >
                         {item.isDone ? (
                           <>
-                            <Check className="w-4 h-4 mr-1" /> 완료됨
+                            <Check className="w-4 h-4 mr-1" /> {t.completedText}
                           </>
                         ) : (
-                          "완료 체크"
+                          t.markDoneText
                         )}
                       </button>
                     </div>
                   ) : item.isCardio ? (
                     <div className="space-y-2">
-                      <div className="flex items-center justify-between bg-[#1e1e1e] p-3 rounded-2xl border border-[#2a2a2a] text-xs">
-                        <span className="text-slate-400 font-extrabold">수행 시간</span>
-                        <div className="flex items-center space-x-3 bg-[#262626] px-3 py-1.5 rounded-xl border border-[#3a3a3a]">
+                      <div className="flex items-center justify-between bg-lumora-card/50 p-3 rounded-2xl border border-white/5 text-xs">
+                        <span className="text-lumora-sub font-extrabold">{t.setLogsLabelCardio}</span>
+                        <div className="flex items-center space-x-3 bg-lumora-bg/40 px-3 py-1.5 rounded-xl border border-white/5">
                           <button
                             onClick={() => changeCardio(item.id, -5)}
-                            className="btn-tap p-1 bg-[#1e1e1e] text-slate-300 hover:text-white rounded-lg"
+                            className="btn-tap p-1 bg-lumora-hover text-lumora-text hover:bg-white/10 rounded-lg"
                           >
                             <Minus className="w-3.5 h-3.5" />
                           </button>
-                          <span className="font-black text-white text-sm px-2">{item.duration}분</span>
+                          <span className="font-black text-white text-sm px-2">{item.duration}{lang === "ko" ? "분" : " min"}</span>
                           <button
                             onClick={() => changeCardio(item.id, 5)}
-                            className="btn-tap p-1 bg-[#1e1e1e] text-slate-300 hover:text-white rounded-lg"
+                            className="btn-tap p-1 bg-lumora-hover text-lumora-text hover:bg-white/10 rounded-lg"
                           >
                             <Plus className="w-3.5 h-3.5" />
                           </button>
@@ -1083,16 +1447,16 @@ export default function WorkoutCanvas() {
                         onClick={() => toggleCardioDone(item.id)}
                         className={`btn-tap w-full py-2.5 rounded-xl border font-bold text-xs flex items-center justify-center transition-all ${
                           item.isDone
-                            ? "bg-[#a78bfa] text-[#1e1e1e] border-[#a78bfa] shadow-md"
-                            : "bg-[#1e1e1e] border-[#3a3a3a] text-slate-500"
+                            ? "bg-lumora-highlight text-slate-900 border-lumora-highlight shadow-md"
+                            : "bg-lumora-bg/60 border border-white/5 text-lumora-sub"
                         }`}
                       >
                         {item.isDone ? (
                           <>
-                            <Check className="w-4 h-4 mr-1" /> 완료됨
+                            <Check className="w-4 h-4 mr-1" /> {t.completedText}
                           </>
                         ) : (
-                          "완료 체크"
+                          t.markDoneText
                         )}
                       </button>
                     </div>
@@ -1100,11 +1464,11 @@ export default function WorkoutCanvas() {
                     <>
                       {/* Set Buttons */}
                       <div className="grid grid-cols-3 gap-2 py-0.5">
-                        {item.sets.map((setVal, idx) => {
+                        {(item.sets || []).map((setVal, idx) => {
                           const completed = setVal !== null;
-                          let dispText = "기록하기";
+                          let dispText = t.logSetText;
                           if (completed) {
-                            dispText = item.isBodyweight ? `${setVal.r}회` : `${setVal.w}kg / ${setVal.r}회`;
+                            dispText = item.isBodyweight ? `${setVal.r}${lang === "ko" ? "회" : " reps"}` : `${setVal.w}kg / ${setVal.r}${lang === "ko" ? "회" : " reps"}`;
                           }
                           return (
                             <button
@@ -1112,12 +1476,12 @@ export default function WorkoutCanvas() {
                               onClick={() => toggleSetStatus(item.id, idx)}
                               className={`btn-tap py-3 rounded-2xl border font-bold text-xs flex flex-col items-center justify-center transition-all ${
                                 completed
-                                  ? "bg-[#a78bfa] text-[#1e1e1e] border-[#a78bfa] shadow-md"
-                                  : "bg-[#1e1e1e] border-[#3a3a3a] text-slate-500"
+                                  ? "bg-lumora-highlight text-slate-900 border-lumora-highlight shadow-md"
+                                  : "bg-lumora-bg/60 border border-white/5 text-lumora-sub"
                               }`}
                             >
-                              <span className={`text-[9px] ${completed ? "text-[#1e1e1e]/60" : "text-slate-650"} font-black uppercase`}>
-                                {idx + 1}세트
+                              <span className={`text-[9px] ${completed ? "text-slate-800" : "text-lumora-sub/60"} font-black uppercase`}>
+                                {idx + 1}{t.setIndexText}
                               </span>
                               <span className="text-xs font-extrabold mt-0.5">{dispText}</span>
                             </button>
@@ -1126,37 +1490,37 @@ export default function WorkoutCanvas() {
                       </div>
 
                       {/* Adjusters Layout */}
-                      <div className={`bg-[#1e1e1e] p-3 rounded-2xl border border-[#2a2a2a] grid ${item.isBodyweight ? "grid-cols-1" : "grid-cols-2"} gap-3 text-xs`}>
+                      <div className={`bg-lumora-card/50 p-3 rounded-2xl border border-white/5 grid ${item.isBodyweight ? "grid-cols-1" : "grid-cols-2"} gap-3 text-xs`}>
                         {!item.isBodyweight && (
-                          <div className="flex items-center justify-center space-x-2 bg-[#262626] px-2.5 py-2 rounded-xl border border-[#3a3a3a]">
-                            <span className="text-slate-400 font-extrabold shrink-0">중량</span>
+                          <div className="flex items-center justify-center space-x-2 bg-lumora-bg/40 px-2.5 py-2 rounded-xl border border-white/5">
+                            <span className="text-lumora-sub font-extrabold shrink-0">{t.weightLabel}</span>
                             <button
                               onClick={() => changeVal(item.id, "w", -item.step)}
-                              className="btn-tap p-1 bg-[#2a2a2a] text-slate-300 hover:text-white rounded-lg"
+                              className="btn-tap p-1 bg-lumora-hover text-lumora-text hover:bg-white/10 rounded-lg"
                             >
                               <Minus className="w-3.5 h-3.5" />
                             </button>
                             <span className="font-extrabold text-white min-w-[42px] text-center text-xs">{item.weight}kg</span>
                             <button
                               onClick={() => changeVal(item.id, "w", item.step)}
-                              className="btn-tap p-1 bg-[#2a2a2a] text-slate-300 hover:text-white rounded-lg"
+                              className="btn-tap p-1 bg-lumora-hover text-lumora-text hover:bg-white/10 rounded-lg"
                             >
                               <Plus className="w-3.5 h-3.5" />
                             </button>
                           </div>
                         )}
-                        <div className="flex items-center justify-center space-x-2 bg-[#262626] px-2.5 py-2 rounded-xl border border-[#3a3a3a]">
-                          <span className="text-slate-400 font-extrabold shrink-0">횟수</span>
+                        <div className="flex items-center justify-center space-x-2 bg-lumora-bg/40 px-2.5 py-2 rounded-xl border border-white/5">
+                          <span className="text-lumora-sub font-extrabold shrink-0">{t.repsLabel}</span>
                           <button
                             onClick={() => changeVal(item.id, "r", -1)}
-                            className="btn-tap p-1 bg-[#2a2a2a] text-slate-300 hover:text-white rounded-lg"
+                            className="btn-tap p-1 bg-lumora-hover text-lumora-text hover:bg-white/10 rounded-lg"
                           >
                             <Minus className="w-3.5 h-3.5" />
                           </button>
-                          <span className="font-extrabold text-white min-w-[28px] text-center text-xs">{item.reps}회</span>
+                          <span className="font-extrabold text-white min-w-[28px] text-center text-xs">{item.reps}{lang === "ko" ? "회" : " reps"}</span>
                           <button
                             onClick={() => changeVal(item.id, "r", 1)}
-                            className="btn-tap p-1 bg-[#2a2a2a] text-slate-300 hover:text-white rounded-lg"
+                            className="btn-tap p-1 bg-lumora-hover text-lumora-text hover:bg-white/10 rounded-lg"
                           >
                             <Plus className="w-3.5 h-3.5" />
                           </button>
@@ -1167,15 +1531,15 @@ export default function WorkoutCanvas() {
 
                   {/* Comment Feedback Input */}
                   <div className="relative">
-                    <span className="absolute left-3.5 top-3.5 text-slate-500">
+                    <span className="absolute left-3.5 top-3.5 text-lumora-sub/60">
                       <MessageSquare className="w-4 h-4" />
                     </span>
                     <input
                       type="text"
                       value={item.note || ""}
                       onChange={(e) => handleCommentChange(item.id, e.target.value)}
-                      placeholder="통증 및 세션 특이사항 피드백 입력"
-                      className="w-full bg-[#1e1e1e] border border-[#2a2a2a] text-xs text-slate-300 rounded-2xl pl-10 pr-3 py-3.5 focus:outline-none focus:border-[#a78bfa] placeholder-slate-600 transition"
+                      placeholder={t.feedbackPlaceholder}
+                      className="w-full bg-lumora-card/60 border border-white/5 text-xs text-lumora-text rounded-2xl pl-10 pr-3 py-3.5 focus:outline-none focus:border-lumora-highlight placeholder-lumora-sub/30 transition"
                     />
                   </div>
                 </div>
@@ -1187,30 +1551,30 @@ export default function WorkoutCanvas() {
         {/* Add Workout Exercise Button */}
         <button
           onClick={() => openExerciseModal(null)}
-          className="btn-tap w-full py-3.5 bg-[#262626] hover:bg-[#2d2d2d] border border-[#3a3a3a] text-[#a78bfa] font-bold rounded-2xl flex items-center justify-center space-x-2 shadow-sm text-xs"
+          className="btn-tap w-full py-3.5 bg-lumora-bg/60 hover:bg-lumora-hover border border-white/5 text-lumora-highlight font-bold rounded-2xl flex items-center justify-center space-x-2 shadow-sm text-xs"
         >
           <PlusCircle className="w-4 h-4" />
-          <span>새로운 운동 추가하기</span>
+          <span>{t.addExerciseBtn}</span>
         </button>
 
         {/* In-Flow Copy Control */}
-        <div className="pt-6 pb-8 border-t border-[#3a3a3a]/80">
+        <div className="pt-6 pb-8 border-t border-white/5">
           <button
             onClick={copyRoutineResults}
-            className="btn-tap w-full py-4 bg-gradient-to-r from-[#a78bfa] to-[#8b5cf6] text-[#1e1e1e] font-black rounded-2xl flex items-center justify-center space-x-2 shadow-lg shadow-[#a78bfa]/10 text-sm"
+            className="btn-tap w-full py-4 bg-gradient-to-r from-lumora-highlight to-lumora-highlight/85 text-slate-900 font-black rounded-2xl flex items-center justify-center space-x-2 shadow-lg shadow-lumora-highlight/10 text-sm"
           >
             <CheckCheck className="w-5 h-5" />
-            <span>오늘 운동 완료하고 기록 복사하기</span>
+            <span>{t.completeLogsBtn}</span>
           </button>
           <button
             onClick={() => setIsResetConfirmOpen(true)}
-            className="btn-tap w-full py-3 mt-3 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 font-bold rounded-2xl flex items-center justify-center space-x-2 shadow-sm text-xs transition-colors"
+            className="btn-tap w-full py-3 mt-3 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 font-bold rounded-2xl flex items-center justify-center space-x-2 shadow-sm text-xs transition-colors"
           >
             <RotateCcw className="w-4 h-4" />
-            <span>오늘 기록(완료 상태) 초기화하기</span>
+            <span>{t.resetLogsBtn}</span>
           </button>
-          <p className="text-center text-[11px] text-slate-500 mt-3 font-medium">
-            작성한 세션 데이터가 텍스트 형식으로 자동 복사됩니다.
+          <p className="text-center text-[11px] text-lumora-sub mt-3 font-medium">
+            {t.copyDescText}
           </p>
         </div>
 
@@ -1225,77 +1589,77 @@ export default function WorkoutCanvas() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsRoutineModalOpen(false)}
-              className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[120]"
+              className="fixed inset-0 bg-[#131219]/80 backdrop-blur-sm z-[120]"
             />
             <div className="fixed inset-0 z-[121] flex items-center justify-center p-4 pointer-events-none">
               <motion.div
                 initial={{ scale: 0.95, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.95, opacity: 0 }}
-                className="pointer-events-auto bg-[#262626] border border-[#3a3a3a] w-full max-w-sm rounded-3xl p-6 space-y-5 relative shadow-2xl"
+                className="pointer-events-auto bg-lumora-card border border-white/10 w-full max-w-sm rounded-3xl p-6 space-y-5 relative shadow-2xl"
               >
                 <button
                   onClick={() => setIsRoutineModalOpen(false)}
-                  className="absolute top-5 right-5 p-2 bg-[#2a2a2a] hover:bg-[#3a3a3a] rounded-xl text-slate-300 transition"
+                  className="absolute top-5 right-5 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
                 >
                   <X className="w-4 h-4" />
                 </button>
 
-                <div className="flex items-center space-x-3 border-b border-[#3a3a3a] pb-3">
-                  <div className="w-9 h-9 rounded-xl bg-[#a78bfa]/10 text-[#a78bfa] flex items-center justify-center">
+                <div className="flex items-center space-x-3 border-b border-white/5 pb-3">
+                  <div className="w-9 h-9 rounded-xl bg-lumora-highlight/10 text-lumora-highlight flex items-center justify-center">
                     <Edit3 className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-black text-white">루틴 정보 수정</h3>
-                    <p className="text-[10px] text-slate-400">해당 요일의 메인 루틴 정보 및 가이드를 변경합니다</p>
+                    <h3 className="text-sm font-black text-white">{t.routineInfoEditTitle}</h3>
+                    <p className="text-[10px] text-lumora-sub">{t.routineInfoEditDesc}</p>
                   </div>
                 </div>
 
                 <div className="space-y-4">
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-extrabold text-[#a78bfa] tracking-wider uppercase block">탭 표시 이름 (Tab Label)</label>
+                    <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.tabLabelInput}</label>
                     <input
                       type="text"
                       value={editRoutineTabLabel}
                       onChange={(e) => setEditRoutineTabLabel(e.target.value)}
-                      placeholder="예: 월 (당기기)"
-                      className="w-full bg-[#1e1e1e] border border-[#3a3a3a] text-xs text-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#a78bfa]"
+                      placeholder={lang === "ko" ? "예: 월 (당기기)" : "e.g. Mon (Pull)"}
+                      className="w-full bg-lumora-bg/80 border border-white/10 text-xs text-lumora-text rounded-xl px-3 py-2.5 focus:outline-none focus:border-lumora-highlight"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-extrabold text-[#a78bfa] tracking-wider uppercase block">루틴 메인 타이틀</label>
+                    <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.mainTitleInput}</label>
                     <input
                       type="text"
                       value={editRoutineTitle}
                       onChange={(e) => setEditRoutineTitle(e.target.value)}
-                      className="w-full bg-[#1e1e1e] border border-[#3a3a3a] text-xs text-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#a78bfa]"
+                      className="w-full bg-lumora-bg/80 border border-white/10 text-xs text-lumora-text rounded-xl px-3 py-2.5 focus:outline-none focus:border-lumora-highlight"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-extrabold text-[#a78bfa] tracking-wider uppercase block">루틴 부제목 (요약 가이드)</label>
+                    <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.subTitleInput}</label>
                     <input
                       type="text"
                       value={editRoutineSubTitle}
                       onChange={(e) => setEditRoutineSubTitle(e.target.value)}
-                      className="w-full bg-[#1e1e1e] border border-[#3a3a3a] text-xs text-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#a78bfa]"
+                      className="w-full bg-lumora-bg/80 border border-white/10 text-xs text-lumora-text rounded-xl px-3 py-2.5 focus:outline-none focus:border-lumora-highlight"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-extrabold text-[#a78bfa] tracking-wider uppercase block">오늘의 트레이닝 가이드 메시지</label>
+                    <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.coachGuideInput}</label>
                     <textarea
                       value={editRoutineDirective}
                       onChange={(e) => setEditRoutineDirective(e.target.value)}
                       rows={3}
-                      className="w-full bg-[#1e1e1e] border border-[#3a3a3a] text-xs text-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#a78bfa] resize-none"
+                      className="w-full bg-lumora-bg/80 border border-white/10 text-xs text-lumora-text rounded-xl px-3 py-2.5 focus:outline-none focus:border-lumora-highlight resize-none"
                     />
                   </div>
 
                   <button
                     onClick={saveRoutineInfo}
-                    className="btn-tap w-full py-3 bg-[#a78bfa] hover:bg-[#c4b5fd] text-[#1e1e1e] font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-lg transition"
+                    className="btn-tap w-full py-3 bg-lumora-highlight hover:bg-[#c4b5fd] text-slate-900 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-lg transition"
                   >
                     <Check className="w-4 h-4" />
-                    <span>수정 사항 저장</span>
+                    <span>{t.saveBtn}</span>
                   </button>
                 </div>
               </motion.div>
@@ -1313,99 +1677,115 @@ export default function WorkoutCanvas() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsExerciseModalOpen(false)}
-              className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[120]"
+              className="fixed inset-0 bg-[#131219]/80 backdrop-blur-sm z-[120]"
             />
             <div className="fixed inset-0 z-[121] flex items-center justify-center p-4 pointer-events-none">
               <motion.div
                 initial={{ scale: 0.95, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.95, opacity: 0 }}
-                className="pointer-events-auto bg-[#262626] border border-[#3a3a3a] w-full max-w-sm rounded-3xl p-6 space-y-5 relative shadow-2xl overflow-y-auto max-h-[90%]"
+                className="pointer-events-auto bg-lumora-card border border-white/10 w-full max-w-sm rounded-3xl p-6 space-y-5 relative shadow-2xl overflow-y-auto max-h-[90%]"
               >
                 <button
                   onClick={() => setIsExerciseModalOpen(false)}
-                  className="absolute top-5 right-5 p-2 bg-[#2a2a2a] hover:bg-[#3a3a3a] rounded-xl text-slate-300 transition"
+                  className="absolute top-5 right-5 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
                 >
                   <X className="w-4 h-4" />
                 </button>
 
-                <div className="flex items-center space-x-3 border-b border-[#3a3a3a] pb-3">
-                  <div className="w-9 h-9 rounded-xl bg-[#a78bfa]/10 text-[#a78bfa] flex items-center justify-center">
+                <div className="flex items-center space-x-3 border-b border-white/5 pb-3">
+                  <div className="w-9 h-9 rounded-xl bg-lumora-highlight/10 text-lumora-highlight flex items-center justify-center">
                     <PlusCircle className="w-5 h-5" />
                   </div>
                   <div>
                     <h3 className="text-sm font-black text-white">
-                      {editingExerciseId ? "운동 정보 수정" : "새로운 운동 추가"}
+                      {editingExerciseId ? t.exerciseEditTitle : t.exerciseAddTitle}
                     </h3>
-                    <p className="text-[10px] text-slate-400">
-                      {editingExerciseId ? "선택한 운동 설정을 조율합니다" : "현재 요일에 새로운 운동을 설정합니다"}
+                    <p className="text-[10px] text-lumora-sub">
+                      {editingExerciseId ? t.exerciseEditDesc : t.exerciseAddDesc}
                     </p>
                   </div>
                 </div>
 
                 <div className="space-y-3.5 pr-1">
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-extrabold text-[#a78bfa] tracking-wider uppercase block">운동명</label>
+                    <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.exNameInput}</label>
                     <input
                       type="text"
                       value={editExName}
                       onChange={(e) => setEditExName(e.target.value)}
-                      placeholder="예: 시티드 로우"
-                      className="w-full bg-[#1e1e1e] border border-[#3a3a3a] text-xs text-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#a78bfa]"
+                      placeholder={lang === "ko" ? "예: 시티드 로우" : "e.g. Seated Row"}
+                      className="w-full bg-lumora-bg/80 border border-white/10 text-xs text-lumora-text rounded-xl px-3 py-2.5 focus:outline-none focus:border-lumora-highlight"
                     />
                   </div>
 
                   <div className="grid grid-cols-2 gap-2">
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-extrabold text-[#a78bfa] tracking-wider uppercase block">카테고리</label>
+                      <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.categoryInput}</label>
                       <select
                         value={editExCategory}
                         onChange={(e) => setEditExCategory(e.target.value)}
-                        className="w-full bg-[#1e1e1e] border border-[#3a3a3a] text-xs text-slate-200 rounded-xl px-2 py-2.5 focus:outline-none focus:border-[#a78bfa]"
+                        className="w-full bg-lumora-bg/80 border border-white/10 text-xs text-lumora-text rounded-xl px-2 py-2.5 focus:outline-none focus:border-lumora-highlight"
                       >
-                        <option value="등">등</option>
-                        <option value="가슴">가슴</option>
-                        <option value="하체">하체</option>
-                        <option value="어깨">어깨</option>
-                        <option value="이두">이두</option>
-                        <option value="삼두">삼두</option>
-                        <option value="코어">코어</option>
-                        <option value="웜업">웜업</option>
-                        <option value="유산소">유산소</option>
+                        {lang === "ko" ? (
+                          <>
+                            <option value="등">등</option>
+                            <option value="가슴">가슴</option>
+                            <option value="하체">하체</option>
+                            <option value="어깨">어깨</option>
+                            <option value="이두">이두</option>
+                            <option value="삼두">삼두</option>
+                            <option value="코어">코어</option>
+                            <option value="웜업">웜업</option>
+                            <option value="유산소">유산소</option>
+                          </>
+                        ) : (
+                          <>
+                            <option value="Back">Back</option>
+                            <option value="Chest">Chest</option>
+                            <option value="Lower">Lower</option>
+                            <option value="Shoulders">Shoulders</option>
+                            <option value="Biceps">Biceps</option>
+                            <option value="Triceps">Triceps</option>
+                            <option value="Core">Core</option>
+                            <option value="Warmup">Warmup</option>
+                            <option value="Cardio">Cardio</option>
+                          </>
+                        )}
                       </select>
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-extrabold text-[#a78bfa] tracking-wider uppercase block">세트 수</label>
+                      <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.setCountInput}</label>
                       <select
                         value={editExSetsCount}
                         onChange={(e) => setEditExSetsCount(parseInt(e.target.value, 10))}
-                        className="w-full bg-[#1e1e1e] border border-[#3a3a3a] text-xs text-slate-200 rounded-xl px-2 py-2.5 focus:outline-none focus:border-[#a78bfa]"
+                        className="w-full bg-lumora-bg/80 border border-white/10 text-xs text-lumora-text rounded-xl px-2 py-2.5 focus:outline-none focus:border-lumora-highlight"
                       >
-                        <option value={1}>1세트</option>
-                        <option value={2}>2세트</option>
-                        <option value={3}>3세트</option>
-                        <option value={4}>4세트</option>
-                        <option value={5}>5세트</option>
-                        <option value={6}>6세트</option>
+                        <option value={1}>1 {lang === "ko" ? "세트" : "Set"}</option>
+                        <option value={2}>2 {lang === "ko" ? "세트" : "Sets"}</option>
+                        <option value={3}>3 {lang === "ko" ? "세트" : "Sets"}</option>
+                        <option value={4}>4 {lang === "ko" ? "세트" : "Sets"}</option>
+                        <option value={5}>5 {lang === "ko" ? "세트" : "Sets"}</option>
+                        <option value={6}>6 {lang === "ko" ? "세트" : "Sets"}</option>
                       </select>
                     </div>
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-extrabold text-[#a78bfa] tracking-wider uppercase block">운동 특성</label>
+                    <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.exTypeInput}</label>
                     <div className="grid grid-cols-3 gap-2">
-                      {(["normal", "bodyweight", "cardio"] as const).map((t) => {
-                        const isSelected = editExType === t;
-                        const labelText = t === "normal" ? "일반" : t === "bodyweight" ? "맨몸" : "유산소/웜업";
+                      {(["normal", "bodyweight", "cardio"] as const).map((tType) => {
+                        const isSelected = editExType === tType;
+                        const labelText = tType === "normal" ? t.exTypeNormal : tType === "bodyweight" ? t.exTypeBodyweight : t.exTypeCardio;
                         return (
                           <button
-                            key={t}
+                            key={tType}
                             type="button"
-                            onClick={() => setEditExType(t)}
+                            onClick={() => setEditExType(tType)}
                             className={`flex items-center justify-center p-2 rounded-xl cursor-pointer select-none border transition-all text-[10px] font-bold ${
                               isSelected
-                                ? "bg-[#a78bfa]/10 border-[#a78bfa] text-[#a78bfa]"
-                                : "bg-[#1e1e1e] border-[#3a3a3a] text-slate-400"
+                                ? "bg-lumora-highlight/10 border-lumora-highlight text-lumora-highlight"
+                                : "bg-lumora-bg/80 border-white/5 text-lumora-sub"
                             }`}
                           >
                             {labelText}
@@ -1418,21 +1798,21 @@ export default function WorkoutCanvas() {
                   {editExType === "normal" && (
                     <div className="grid grid-cols-2 gap-2">
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-extrabold text-[#a78bfa] tracking-wider uppercase block">기본 중량 (kg)</label>
+                        <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.baseWeightInput}</label>
                         <input
                           type="number"
                           value={editExWeight}
                           onChange={(e) => setEditExWeight(parseFloat(e.target.value) || 0)}
-                          className="w-full bg-[#1e1e1e] border border-[#3a3a3a] text-xs text-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#a78bfa]"
+                          className="w-full bg-lumora-bg/80 border border-white/10 text-xs text-lumora-text rounded-xl px-3 py-2.5 focus:outline-none focus:border-lumora-highlight"
                         />
                       </div>
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-extrabold text-[#a78bfa] tracking-wider uppercase block">기본 횟수 (reps)</label>
+                        <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.baseRepsInput}</label>
                         <input
                           type="number"
                           value={editExReps}
                           onChange={(e) => setEditExReps(parseInt(e.target.value, 10) || 0)}
-                          className="w-full bg-[#1e1e1e] border border-[#3a3a3a] text-xs text-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#a78bfa]"
+                          className="w-full bg-lumora-bg/80 border border-white/10 text-xs text-lumora-text rounded-xl px-3 py-2.5 focus:outline-none focus:border-lumora-highlight"
                         />
                       </div>
                     </div>
@@ -1440,63 +1820,63 @@ export default function WorkoutCanvas() {
 
                   {editExType === "bodyweight" && (
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-extrabold text-[#a78bfa] tracking-wider uppercase block">기본 횟수 (reps)</label>
+                      <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.baseRepsInput}</label>
                       <input
                         type="number"
                         value={editExReps}
                         onChange={(e) => setEditExReps(parseInt(e.target.value, 10) || 0)}
-                        className="w-full bg-[#1e1e1e] border border-[#3a3a3a] text-xs text-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#a78bfa]"
+                        className="w-full bg-lumora-bg/80 border border-white/10 text-xs text-lumora-text rounded-xl px-3 py-2.5 focus:outline-none focus:border-lumora-highlight"
                       />
                     </div>
                   )}
 
                   {editExType === "cardio" && (
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-extrabold text-[#a78bfa] tracking-wider uppercase block">기본 시간 (분)</label>
+                      <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.baseDurationInput}</label>
                       <input
                         type="number"
                         value={editExDuration}
                         onChange={(e) => setEditExDuration(parseInt(e.target.value, 10) || 0)}
-                        className="w-full bg-[#1e1e1e] border border-[#3a3a3a] text-xs text-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#a78bfa]"
+                        className="w-full bg-lumora-bg/80 border border-white/10 text-xs text-lumora-text rounded-xl px-3 py-2.5 focus:outline-none focus:border-lumora-highlight"
                       />
                     </div>
                   )}
 
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-extrabold text-[#a78bfa] tracking-wider uppercase block">운동 목표 가이드 문구</label>
+                    <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.exGuideInput}</label>
                     <input
                       type="text"
                       value={editExTarget}
                       onChange={(e) => setEditExTarget(e.target.value)}
                       placeholder={
                         editExType === "cardio"
-                          ? "예: 10분 빠른 걷기"
+                          ? (lang === "ko" ? "예: 10분 빠른 걷기" : "e.g. 10 min fast walk")
                           : editExType === "bodyweight"
-                          ? "예: 맨몸 x 12회"
-                          : "예: 30kg x 12회"
+                          ? (lang === "ko" ? "예: 맨몸 x 12회" : "e.g. bodyweight x 12 reps")
+                          : (lang === "ko" ? "예: 30kg x 12회" : "e.g. 30kg x 12 reps")
                       }
-                      className="w-full bg-[#1e1e1e] border border-[#3a3a3a] text-xs text-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#a78bfa]"
+                      className="w-full bg-lumora-bg/80 border border-white/10 text-xs text-lumora-text rounded-xl px-3 py-2.5 focus:outline-none focus:border-lumora-highlight"
                     />
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-extrabold text-[#a78bfa] tracking-wider uppercase block">운동 팁 (요약)</label>
+                    <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.exTipInput}</label>
                     <input
                       type="text"
                       value={editExTip}
                       onChange={(e) => setEditExTip(e.target.value)}
-                      placeholder="예: 무릎 방향 정렬 엄수"
-                      className="w-full bg-[#1e1e1e] border border-[#3a3a3a] text-xs text-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-[#a78bfa]"
+                      placeholder={lang === "ko" ? "예: 무릎 방향 정렬 엄수" : "e.g. Keep knees aligned with feet"}
+                      className="w-full bg-lumora-bg/80 border border-white/10 text-xs text-lumora-text rounded-xl px-3 py-2.5 focus:outline-none focus:border-lumora-highlight"
                     />
                   </div>
                 </div>
 
                 <button
                   onClick={saveExercise}
-                  className="btn-tap w-full py-3 bg-[#a78bfa] hover:bg-[#c4b5fd] text-[#1e1e1e] font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-lg transition"
+                  className="btn-tap w-full py-3 bg-lumora-highlight hover:bg-[#c4b5fd] text-slate-900 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-lg transition"
                 >
                   <Check className="w-4 h-4" />
-                  <span>저장하기</span>
+                  <span>{t.saveGeneralBtn}</span>
                 </button>
               </motion.div>
             </div>
@@ -1513,34 +1893,34 @@ export default function WorkoutCanvas() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsSettingsOpen(false)}
-              className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[120]"
+              className="fixed inset-0 bg-[#131219]/80 backdrop-blur-sm z-[120]"
             />
             <div className="fixed inset-0 z-[121] flex items-center justify-center p-4 pointer-events-none">
               <motion.div
                 initial={{ scale: 0.95, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.95, opacity: 0 }}
-                className="pointer-events-auto bg-[#262626] border border-[#3a3a3a] w-full max-w-sm rounded-3xl p-6 space-y-5 relative shadow-2xl"
+                className="pointer-events-auto bg-lumora-card border border-white/10 w-full max-w-sm rounded-3xl p-6 space-y-5 relative shadow-2xl"
               >
                 <button
                   onClick={() => setIsSettingsOpen(false)}
-                  className="absolute top-5 right-5 p-2 bg-[#2a2a2a] hover:bg-[#3a3a3a] rounded-xl text-slate-300 transition"
+                  className="absolute top-5 right-5 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
                 >
                   <X className="w-4 h-4" />
                 </button>
 
-                <div className="flex items-center space-x-3 border-b border-[#3a3a3a] pb-3">
-                  <div className="w-9 h-9 rounded-xl bg-[#a78bfa]/10 text-[#a78bfa] flex items-center justify-center">
+                <div className="flex items-center space-x-3 border-b border-white/5 pb-3">
+                  <div className="w-9 h-9 rounded-xl bg-lumora-highlight/10 text-lumora-highlight flex items-center justify-center">
                     <Settings className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-black text-white">대시보드 요일 설정</h3>
-                    <p className="text-[10px] text-slate-400">탭에 노출할 요일을 선택하여 루틴을 커스텀하세요</p>
+                    <h3 className="text-sm font-black text-white">{t.settingsTitle}</h3>
+                    <p className="text-[10px] text-lumora-sub">{t.settingsDesc}</p>
                   </div>
                 </div>
 
                 <div className="space-y-3">
-                  <p className="text-[11px] text-slate-400 font-semibold">최소 1개 이상의 요일은 선택되어야 합니다.</p>
+                  <p className="text-[11px] text-lumora-sub font-semibold">{t.settingsWarn}</p>
 
                   <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
                     {DAY_ORDER.map((day) => {
@@ -1548,22 +1928,22 @@ export default function WorkoutCanvas() {
                       return (
                         <label
                           key={day}
-                          className="flex items-center justify-between p-3 bg-[#1e1e1e] hover:bg-[#2a2a2a] border border-[#3a3a3a] rounded-2xl cursor-pointer transition"
+                          className="flex items-center justify-between p-3 bg-lumora-bg/85 hover:bg-lumora-hover border border-white/5 rounded-2xl cursor-pointer transition"
                         >
                           <span className="text-xs font-semibold text-slate-200">
                             {day === "mon"
-                              ? "월요일"
+                              ? t.monLabel
                               : day === "tue"
-                              ? "화요일"
+                              ? t.tueLabel
                               : day === "wed"
-                              ? "수요일"
+                              ? t.wedLabel
                               : day === "thu"
-                              ? "목요일"
+                              ? t.thuLabel
                               : day === "fri"
-                              ? "금요일"
+                              ? t.friLabel
                               : day === "sat"
-                              ? "토요일"
-                              : "일요일"}
+                              ? t.satLabel
+                              : t.sunLabel}
                           </span>
                           <input
                             type="checkbox"
@@ -1582,7 +1962,7 @@ export default function WorkoutCanvas() {
                                 setVisibleDays(updated);
                               }
                             }}
-                            className="w-4 h-4 accent-[#a78bfa]"
+                            className="w-4 h-4 accent-[#c4b5fd]"
                           />
                         </label>
                       );
@@ -1591,10 +1971,10 @@ export default function WorkoutCanvas() {
 
                   <button
                     onClick={() => applyVisibleDays(visibleDays)}
-                    className="btn-tap w-full py-3 bg-[#a78bfa] hover:bg-[#c4b5fd] text-[#1e1e1e] font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-lg transition"
+                    className="btn-tap w-full py-3 bg-lumora-highlight hover:bg-[#c4b5fd] text-slate-900 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-lg transition"
                   >
                     <Check className="w-4 h-4" />
-                    <span>설정 적용하기</span>
+                    <span>{t.applyBtn}</span>
                   </button>
                 </div>
               </motion.div>
@@ -1612,84 +1992,84 @@ export default function WorkoutCanvas() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsBackupOpen(false)}
-              className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[120]"
+              className="fixed inset-0 bg-[#131219]/80 backdrop-blur-sm z-[120]"
             />
             <div className="fixed inset-0 z-[121] flex items-center justify-center p-4 pointer-events-none">
               <motion.div
                 initial={{ scale: 0.95, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.95, opacity: 0 }}
-                className="pointer-events-auto bg-[#262626] border border-[#3a3a3a] w-full max-w-sm rounded-3xl p-6 space-y-5 relative shadow-2xl"
+                className="pointer-events-auto bg-lumora-card border border-white/10 w-full max-w-sm rounded-3xl p-6 space-y-5 relative shadow-2xl"
               >
                 <button
                   onClick={() => setIsBackupOpen(false)}
-                  className="absolute top-5 right-5 p-2 bg-[#2a2a2a] hover:bg-[#3a3a3a] rounded-xl text-slate-300 transition"
+                  className="absolute top-5 right-5 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
                 >
                   <X className="w-4 h-4" />
                 </button>
 
-                <div className="flex items-center space-x-3 border-b border-[#3a3a3a] pb-3">
-                  <div className="w-9 h-9 rounded-xl bg-[#a78bfa]/10 text-[#a78bfa] flex items-center justify-center">
+                <div className="flex items-center space-x-3 border-b border-white/5 pb-3">
+                  <div className="w-9 h-9 rounded-xl bg-lumora-highlight/10 text-lumora-highlight flex items-center justify-center">
                     <Database className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-black text-white">루틴 데이터 백업 & 복원</h3>
-                    <p className="text-[10px] text-slate-400">새로고침이 되어도 안전하게 나의 루틴을 지키세요</p>
+                    <h3 className="text-sm font-black text-white">{t.backupTitle}</h3>
+                    <p className="text-[10px] text-lumora-sub">{t.backupDesc}</p>
                   </div>
                 </div>
 
                 <div className="space-y-4">
                   {/* Export Segment */}
                   <div className="space-y-2">
-                    <label className="text-[11px] font-extrabold text-[#a78bfa] tracking-wider uppercase block">현재 루틴 백업 코드 생성</label>
-                    <p className="text-[10px] text-slate-400">아래 보안 코드를 복사해 메모장에 저장하거나 기기를 변경할 때 사용하세요.</p>
+                    <label className="text-[11px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.backupGenTitle}</label>
+                    <p className="text-[10px] text-lumora-sub">{t.backupGenDesc}</p>
                     <div className="relative mt-1">
                       <textarea
                         readOnly
                         value={exportCode}
-                        className="w-full h-16 bg-[#1e1e1e] border border-[#3a3a3a] text-[10px] text-slate-400 rounded-xl p-2.5 focus:outline-none resize-none font-mono break-all"
+                        className="w-full h-16 bg-lumora-bg/85 border border-white/5 text-[10px] text-lumora-sub rounded-xl p-2.5 focus:outline-none resize-none font-mono break-all"
                       />
                       <button
                         onClick={() => {
                           navigator.clipboard.writeText(exportCode).then(() => {
-                            triggerToastBanner("백업용 보안 코드가 복사되었습니다! 안전한 곳에 기록해 두세요.");
+                            triggerToastBanner(lang === "ko" ? "백업용 보안 코드가 복사되었습니다! 안전한 곳에 기록해 두세요." : "Backup token copied! Keep it in a safe place.");
                           });
                         }}
-                        className="btn-tap absolute right-2 bottom-2 px-2.5 py-1.5 bg-[#a78bfa] text-[#1e1e1e] font-extrabold text-[10px] rounded-lg shadow-md flex items-center gap-1"
+                        className="btn-tap absolute right-2 bottom-2 px-2.5 py-1.5 bg-lumora-highlight text-slate-900 font-extrabold text-[10px] rounded-lg shadow-md flex items-center gap-1"
                       >
-                        <Copy className="w-3 h-3" /> 코드 복사
+                        <Copy className="w-3 h-3" /> {t.btnCopyCode}
                       </button>
                     </div>
                   </div>
 
                   {/* Import Segment */}
-                  <div className="space-y-2 border-t border-[#3a3a3a] pt-4">
-                    <label className="text-[11px] font-extrabold text-[#a78bfa] tracking-wider uppercase block">보안 코드로 기록 복원</label>
-                    <p className="text-[10px] text-slate-400">복사해 둔 코드를 붙여넣으면 진행 데이터가 즉시 완벽 복원됩니다.</p>
+                  <div className="space-y-2 border-t border-white/5 pt-4">
+                    <label className="text-[11px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.backupRestoreTitle}</label>
+                    <p className="text-[10px] text-lumora-sub">{t.backupRestoreDesc}</p>
                     <textarea
                       value={importCode}
                       onChange={(e) => setImportCode(e.target.value)}
-                      placeholder="여기에 백업 보안 코드를 붙여넣으세요..."
-                      className="w-full h-16 mt-1 bg-[#1e1e1e] border border-[#3a3a3a] text-[10px] text-slate-350 rounded-xl p-2.5 focus:outline-none focus:border-[#a78bfa] resize-none font-mono break-all placeholder:text-slate-600"
+                      placeholder={lang === "ko" ? "여기에 백업 보안 코드를 붙여넣으세요..." : "Paste your backup token here..."}
+                      className="w-full h-16 mt-1 bg-lumora-bg/85 border border-white/5 text-[10px] text-lumora-text rounded-xl p-2.5 focus:outline-none focus:border-lumora-highlight resize-none font-mono break-all placeholder:text-slate-600"
                     />
                     <button
                       onClick={importBackupCode}
-                      className="btn-tap w-full py-2.5 bg-[#a78bfa] hover:bg-[#c4b5fd] text-[#1e1e1e] font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-lg transition"
+                      className="btn-tap w-full py-2.5 bg-lumora-highlight hover:bg-[#c4b5fd] text-slate-900 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-lg transition"
                     >
                       <Upload className="w-4 h-4" />
-                      <span>기록 동기화 및 복원 적용</span>
+                      <span>{t.btnRestoreApply}</span>
                     </button>
                   </div>
 
                   {/* Safe Smart Wipe Reset Button */}
-                  <div className="text-center pt-2 border-t border-[#3a3a3a]">
+                  <div className="text-center pt-2 border-t border-white/5">
                     <button
                       onClick={resetAllData}
                       className={`btn-tap text-[10px] font-extrabold transition-all duration-200 ${
                         resetConfirmActive ? "text-amber-500 font-black" : "text-rose-500 hover:text-rose-400 underline"
                       }`}
                     >
-                      {resetConfirmActive ? "⚠️ 한번 더 클릭 시 정말 전체 초기화!" : "현재 브라우저 기록 전체 초기화하기"}
+                      {resetConfirmActive ? (lang === "ko" ? "⚠️ 한번 더 클릭 시 정말 전체 초기화!" : "⚠️ Click once more to WIPE ALL!") : t.btnResetAll}
                     </button>
                   </div>
                 </div>
@@ -1708,49 +2088,49 @@ export default function WorkoutCanvas() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsSafetyOpen(false)}
-              className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[120]"
+              className="fixed inset-0 bg-[#131219]/80 backdrop-blur-sm z-[120]"
             />
             <div className="fixed inset-0 z-[121] flex items-center justify-center p-4 pointer-events-none">
               <motion.div
                 initial={{ scale: 0.95, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.95, opacity: 0 }}
-                className="pointer-events-auto bg-[#262626] border border-[#3a3a3a] w-full max-w-sm rounded-3xl p-6 space-y-5 relative shadow-2xl"
+                className="pointer-events-auto bg-lumora-card border border-white/10 w-full max-w-sm rounded-3xl p-6 space-y-5 relative shadow-2xl"
               >
                 <button
                   onClick={() => setIsSafetyOpen(false)}
-                  className="absolute top-5 right-5 p-2 bg-[#2a2a2a] hover:bg-[#3a3a3a] rounded-xl text-slate-300 transition"
+                  className="absolute top-5 right-5 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
                 >
                   <X className="w-4 h-4" />
                 </button>
 
-                <div className="flex items-center space-x-3 border-b border-[#3a3a3a] pb-3">
+                <div className="flex items-center space-x-3 border-b border-white/5 pb-3">
                   <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center">
                     <ShieldAlert className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-black text-white">웨이트 트레이닝 부상 방지 가이드</h3>
-                    <p className="text-[10px] text-slate-400">안전하고 정교한 자극 전달을 위한 가이드</p>
+                    <h3 className="text-sm font-black text-white">{t.safetyTitle}</h3>
+                    <p className="text-[10px] text-lumora-sub">{t.safetyDesc}</p>
                   </div>
                 </div>
 
                 <div className="space-y-3">
-                  <div className="p-3.5 bg-slate-950/50 rounded-2xl border border-[#3a3a3a] flex items-start gap-3">
-                    <span className="px-2 py-0.5 bg-rose-500/10 text-rose-400 font-extrabold text-[10px] rounded border border-rose-500/20 mt-0.5 shrink-0">손목 보호</span>
-                    <p className="text-[11px] text-slate-300 leading-relaxed font-semibold">
-                      프레스 동작 시 엄지 아랫부분의 뼈(척골 라인)에 무거운 바를 얹어 고정하는 <strong className="text-white">'불독 그립'</strong>을 사용하여 손목이 뒤로 꺾여 생기는 손상을 방지합니다.
+                  <div className="p-3.5 bg-[#1a1921]/50 rounded-2xl border border-white/5 flex items-start gap-3">
+                    <span className="px-2 py-0.5 bg-rose-500/10 text-rose-450 font-extrabold text-[10px] rounded border border-rose-500/20 mt-0.5 shrink-0">{t.wristTitle}</span>
+                    <p className="text-[11px] text-lumora-text/80 leading-relaxed font-semibold">
+                      {t.wristBody}
                     </p>
                   </div>
-                  <div className="p-3.5 bg-slate-950/50 rounded-2xl border border-[#3a3a3a] flex items-start gap-3">
-                    <span className="px-2 py-0.5 bg-amber-500/10 text-amber-400 font-extrabold text-[10px] rounded border border-amber-500/20 mt-0.5 shrink-0">무릎 제어</span>
-                    <p className="text-[11px] text-slate-300 leading-relaxed font-semibold">
-                      스쿼트, 레그 프레스 시 발끝 방향과 무릎이 나아가는 궤적을 반드시 평행하게 유지합니다. 발가락이 안쪽으로 모이거나 무릎이 모이지 않게 주의하세요.
+                  <div className="p-3.5 bg-[#1a1921]/50 rounded-2xl border border-white/5 flex items-start gap-3">
+                    <span className="px-2 py-0.5 bg-amber-500/10 text-amber-450 font-extrabold text-[10px] rounded border border-amber-500/20 mt-0.5 shrink-0">{t.kneeTitle}</span>
+                    <p className="text-[11px] text-lumora-text/80 leading-relaxed font-semibold">
+                      {t.kneeBody}
                     </p>
                   </div>
-                  <div className="p-3.5 bg-slate-950/50 rounded-2xl border border-[#3a3a3a] flex items-start gap-3">
-                    <span className="px-2 py-0.5 bg-teal-500/10 text-teal-400 font-extrabold text-[10px] rounded border border-teal-500/20 mt-0.5 shrink-0">어깨 안정</span>
-                    <p className="text-[11px] text-slate-300 leading-relaxed font-semibold">
-                      레이즈 및 상체 밀기 동작 시 팔을 완전히 180도 옆으로 벌리지 않고, 몸통 전면으로 약 30도 앞(견갑면 궤적)으로 향하여 충돌 증후군을 예방하세요.
+                  <div className="p-3.5 bg-[#1a1921]/50 rounded-2xl border border-white/5 flex items-start gap-3">
+                    <span className="px-2 py-0.5 bg-teal-500/10 text-teal-450 font-extrabold text-[10px] rounded border border-teal-500/20 mt-0.5 shrink-0">{t.shoulderTitle}</span>
+                    <p className="text-[11px] text-lumora-text/80 leading-relaxed font-semibold">
+                      {t.shoulderBody}
                     </p>
                   </div>
                 </div>
@@ -1769,53 +2149,54 @@ export default function WorkoutCanvas() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsPwaOpen(false)}
-              className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[120]"
+              className="fixed inset-0 bg-[#131219]/80 backdrop-blur-sm z-[120]"
             />
             <div className="fixed inset-0 z-[121] flex items-center justify-center p-4 pointer-events-none">
               <motion.div
                 initial={{ scale: 0.95, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.95, opacity: 0 }}
-                className="pointer-events-auto bg-[#262626] border border-[#3a3a3a] w-full max-w-sm rounded-3xl p-6 space-y-5 relative shadow-2xl"
+                className="pointer-events-auto bg-lumora-card border border-white/10 w-full max-w-sm rounded-3xl p-6 space-y-5 relative shadow-2xl"
               >
                 <button
                   onClick={() => setIsPwaOpen(false)}
-                  className="absolute top-5 right-5 p-2 bg-[#2a2a2a] hover:bg-[#3a3a3a] rounded-xl text-slate-300 transition"
+                  className="absolute top-5 right-5 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
                 >
                   <X className="w-4 h-4" />
                 </button>
 
-                <div className="flex items-center space-x-3 border-b border-[#3a3a3a] pb-3">
-                  <div className="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+                <div className="flex items-center space-x-3 border-b border-white/5 pb-3">
+                  <div className="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-450 flex items-center justify-center">
                     <Smartphone className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-black text-white">홈 화면 설치 가이드</h3>
-                    <p className="text-[10px] text-slate-400">설치해서 사용하면 절전 모드가 자동 방지됩니다!</p>
+                    <h3 className="text-sm font-black text-white">{t.pwaTitle}</h3>
+                    <p className="text-[10px] text-lumora-sub">{t.pwaDesc}</p>
                   </div>
                 </div>
 
                 <div className="space-y-4">
                   <div className="space-y-2.5">
-                    <span className="px-2.5 py-1 bg-emerald-500/10 text-emerald-400 font-extrabold text-[11px] rounded-lg border border-emerald-500/20 inline-block">갤럭시 / 안드로이드</span>
-                    <ol className="text-xs text-slate-300 space-y-2 list-decimal list-inside pl-1 font-semibold leading-relaxed">
-                      <li>인터넷 주소창 우측 상단의 <strong className="text-white">더보기(점 3개)</strong> 또는 공유 버튼을 터치합니다.</li>
-                      <li>메뉴 리스트에서 <strong className="text-emerald-400">"홈 화면에 추가"</strong> 또는 <strong className="text-emerald-400">"앱 설치"</strong>를 누르면 완료!</li>
+                    <span className="px-2.5 py-1 bg-emerald-500/10 text-emerald-450 font-extrabold text-[11px] rounded-lg border border-emerald-500/20 inline-block">{t.androidPwaTitle}</span>
+                    <ol className="text-xs text-lumora-text/80 space-y-2 list-decimal list-inside pl-1 font-semibold leading-relaxed">
+                      {t.androidPwaSteps.map((step, idx) => (
+                        <li key={idx}>{step}</li>
+                      ))}
                     </ol>
                   </div>
 
-                  <div className="space-y-2.5 border-t border-[#3a3a3a] pt-4">
-                    <span className="px-2.5 py-1 bg-teal-500/10 text-teal-400 font-extrabold text-[11px] rounded-lg border border-teal-500/20 inline-block">아이폰 / iOS</span>
-                    <ol className="text-xs text-slate-300 space-y-2 list-decimal list-inside pl-1 font-semibold leading-relaxed">
-                      <li>사파리(Safari) 브라우저 하단의 <strong className="text-white">공유 버튼(내보내기 모양)</strong>을 터치합니다.</li>
-                      <li>리스트를 내리다 보면 나타나는 <strong className="text-emerald-400">"홈 화면에 추가"</strong>를 눌러주면 완료!</li>
+                  <div className="space-y-2.5 border-t border-white/5 pt-4">
+                    <span className="px-2.5 py-1 bg-teal-500/10 text-teal-450 font-extrabold text-[11px] rounded-lg border border-teal-500/20 inline-block">{t.iosPwaTitle}</span>
+                    <ol className="text-xs text-lumora-text/80 space-y-2 list-decimal list-inside pl-1 font-semibold leading-relaxed">
+                      {t.iosPwaSteps.map((step, idx) => (
+                        <li key={idx}>{step}</li>
+                      ))}
                     </ol>
                   </div>
 
-                  <div className="p-3 bg-slate-950/50 rounded-2xl border border-[#3a3a3a]">
-                    <p className="text-[10px] text-slate-400 leading-relaxed font-medium">
-                      ※ 카카오톡, 네이버, 인앱 브라우저 등으로 이 창을 보고 계신가요? <br />
-                      우측 하단이나 상단 메뉴의 <strong className="text-white">"기본 브라우저(Chrome/Safari)로 열기"</strong>를 한 다음, 위의 순서대로 홈 화면에 설치해 주세요!
+                  <div className="p-3 bg-[#1a1921]/50 rounded-2xl border border-white/5">
+                    <p className="text-[10px] text-lumora-sub leading-relaxed font-medium">
+                      {t.pwaTip}
                     </p>
                   </div>
                 </div>
@@ -1834,50 +2215,49 @@ export default function WorkoutCanvas() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsResetConfirmOpen(false)}
-              className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[120]"
+              className="fixed inset-0 bg-[#131219]/80 backdrop-blur-sm z-[120]"
             />
             <div className="fixed inset-0 z-[121] flex items-center justify-center p-4 pointer-events-none">
               <motion.div
                 initial={{ scale: 0.95, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.95, opacity: 0 }}
-                className="pointer-events-auto bg-[#262626] border border-[#3a3a3a] w-full max-w-sm rounded-3xl p-6 space-y-5 relative shadow-2xl"
+                className="pointer-events-auto bg-lumora-card border border-white/10 w-full max-w-sm rounded-3xl p-6 space-y-5 relative shadow-2xl"
               >
                 <button
                   onClick={() => setIsResetConfirmOpen(false)}
-                  className="absolute top-5 right-5 p-2 bg-[#2a2a2a] hover:bg-[#3a3a3a] rounded-xl text-slate-300 transition"
+                  className="absolute top-5 right-5 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
                 >
                   <X className="w-4 h-4" />
                 </button>
 
-                <div className="flex items-center space-x-3 border-b border-[#3a3a3a] pb-3">
-                  <div className="w-9 h-9 rounded-xl bg-rose-500/10 text-rose-400 flex items-center justify-center">
+                <div className="flex items-center space-x-3 border-b border-white/5 pb-3">
+                  <div className="w-9 h-9 rounded-xl bg-rose-500/10 text-rose-450 flex items-center justify-center">
                     <RotateCcw className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-black text-white">운동 기록 초기화</h3>
-                    <p className="text-[10px] text-slate-400">오늘 진행한 완료 상태를 비웁니다</p>
+                    <h3 className="text-sm font-black text-white">{t.resetConfirmTitle}</h3>
+                    <p className="text-[10px] text-lumora-sub">{t.resetConfirmDesc}</p>
                   </div>
                 </div>
 
                 <div className="space-y-4">
-                  <p className="text-[11px] text-slate-300 leading-relaxed font-semibold">
-                    오늘 체크한 완료 상태와 피드백을 모두 초기화하시겠습니까?<br />
-                    <span className="text-rose-400 mt-1 block">※ 설정된 무게와 횟수는 다음 운동을 위해 그대로 유지됩니다.</span>
+                  <p className="text-[11px] text-lumora-text/80 leading-relaxed font-semibold">
+                    {t.resetConfirmWarn}
                   </p>
 
-                  <div className="grid grid-cols-2 gap-3 pt-2 border-t border-[#3a3a3a]">
+                  <div className="grid grid-cols-2 gap-3 pt-2 border-t border-white/5">
                     <button
                       onClick={() => setIsResetConfirmOpen(false)}
-                      className="btn-tap w-full py-3 bg-[#1e1e1e] border border-[#3a3a3a] text-slate-400 hover:text-white font-black rounded-xl text-xs flex items-center justify-center transition"
+                      className="btn-tap w-full py-3 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:text-white font-black rounded-xl text-xs flex items-center justify-center transition"
                     >
-                      취소하기
+                      {t.btnCancel}
                     </button>
                     <button
                       onClick={executeResetTodayRoutine}
-                      className="btn-tap w-full py-3 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 text-rose-400 font-black rounded-xl text-xs flex items-center justify-center transition"
+                      className="btn-tap w-full py-3 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-400 font-black rounded-xl text-xs flex items-center justify-center transition"
                     >
-                      초기화 진행
+                      {t.btnConfirmReset}
                     </button>
                   </div>
                 </div>

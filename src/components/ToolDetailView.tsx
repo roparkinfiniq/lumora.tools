@@ -76,7 +76,7 @@ export default function ToolDetailView({ tool, onBack }: ToolDetailViewProps) {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-24">
         {/* Left Column: Info & Usage */}
-        <div className="lg:col-span-4 space-y-6">
+        <div className={tool.id === "7" ? "lg:col-span-5 space-y-6" : "lg:col-span-4 space-y-6"}>
           {/* Tool Info Card */}
           <div className="bento-card p-10">
             <span className="inline-block px-3 py-1 rounded-full bg-lumora-highlight/10 text-lumora-highlight text-[10px] font-display font-bold uppercase tracking-widest mb-6">
@@ -112,8 +112,10 @@ export default function ToolDetailView({ tool, onBack }: ToolDetailViewProps) {
         </div>
 
         {/* Right Column: Execution Area */}
-        <div className="lg:col-span-8 h-full">
-          <div className="bento-card min-h-[560px] flex flex-col p-8 md:p-10 relative overflow-hidden group">
+        <div className={tool.id === "7" ? "lg:col-span-7 h-full flex justify-center" : "lg:col-span-8 h-full"}>
+          <div className={`bento-card min-h-[560px] flex flex-col relative overflow-hidden group ${
+            tool.id === "7" ? "max-w-[480px] w-full p-0" : "p-8 md:p-10"
+          }`}>
             <div className="shimmer-effect absolute inset-0 opacity-20 pointer-events-none" />
             
             {renderToolLogic()}
