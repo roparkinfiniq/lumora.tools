@@ -56,7 +56,7 @@ export default function ToolDetailView({ tool, onBack }: ToolDetailViewProps) {
   };
 
   return (
-    <div className="container mx-auto px-6 py-12">
+    <div className={`mx-auto px-6 py-12 ${tool.id === "7" ? "max-w-6xl w-full" : "container"}`}>
       {/* Navigation Header */}
       <div className="flex items-center justify-between mb-16 px-4">
         <button 
@@ -114,7 +114,7 @@ export default function ToolDetailView({ tool, onBack }: ToolDetailViewProps) {
         {/* Right Column: Execution Area */}
         <div className={tool.id === "7" ? "lg:col-span-7 h-full flex justify-center" : "lg:col-span-8 h-full"}>
           <div className={`bento-card min-h-[560px] flex flex-col relative overflow-hidden group ${
-            tool.id === "7" ? "max-w-[480px] w-full p-0" : "p-8 md:p-10"
+            tool.id === "7" ? "max-w-[500px] w-full p-0" : "p-8 md:p-10"
           }`}>
             <div className="shimmer-effect absolute inset-0 opacity-20 pointer-events-none" />
             
