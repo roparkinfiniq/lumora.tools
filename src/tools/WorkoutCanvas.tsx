@@ -1357,27 +1357,32 @@ export default function WorkoutCanvas() {
                 <div key={item.id} className="bg-lumora-bg/40 border border-white/5 rounded-2xl p-4 space-y-4 shadow-sm">
                   {/* Exercise Card Header */}
                   <div className="flex justify-between items-start gap-3">
-                    <div className="space-y-1">
-                      <span className={`text-[9px] ${catColor} font-extrabold px-2 py-0.5 rounded-lg border uppercase tracking-wider`}>
-                        {lang === "ko" ? item.category : (item.category === "웜업" ? "Warmup" : (item.category === "유산소" ? "Cardio" : item.category))}
-                      </span>
-                      <h3 className="text-sm font-bold text-white mt-1">{item.name}</h3>
-                      <p className="text-xs text-lumora-sub">{t.guidePrefix}: {item.target}</p>
+                    <div className="flex-1 min-w-0 space-y-1">
+                      <div className="flex items-center">
+                        <span className={`text-[9px] ${catColor} font-extrabold px-2 py-0.5 rounded-lg border uppercase tracking-wider`}>
+                          {lang === "ko" ? item.category : (item.category === "웜업" ? "Warmup" : (item.category === "유산소" ? "Cardio" : item.category))}
+                        </span>
+                      </div>
+                      <h3 className="text-sm font-bold text-white mt-1 break-words">{item.name}</h3>
+                      <p className="text-xs text-lumora-sub break-words">{t.guidePrefix}: {item.target}</p>
+                      {item.tip && item.tip.trim() !== "" && (
+                        <div className="flex items-start gap-1.5 mt-1.5">
+                          <span className="text-[9px] px-1.5 py-0.5 bg-lumora-highlight/10 text-lumora-highlight rounded font-extrabold shrink-0 mt-0.5">TIP</span>
+                          <p className="text-[11px] text-lumora-sub font-medium leading-relaxed break-words">{item.tip}</p>
+                        </div>
+                      )}
                     </div>
-                    <div className="flex items-center space-x-2 shrink-0">
-                      <span className="text-[10px] text-lumora-sub font-bold bg-lumora-card/60 px-2.5 py-1 rounded-xl border border-white/5">
-                        {item.tip}
-                      </span>
+                    <div className="flex items-center space-x-1.5 shrink-0 pt-0.5">
                       <button
                         onClick={() => openExerciseModal(item.id)}
-                        className="btn-tap p-1 bg-lumora-hover text-lumora-text hover:bg-white/10 rounded-lg"
+                        className="btn-tap p-1.5 bg-lumora-hover text-lumora-text hover:bg-white/10 rounded-lg transition"
                         title={t.editLabel}
                       >
                         <Edit3 className="w-3.5 h-3.5" />
                       </button>
                       <button
                         onClick={() => deleteExercise(item.id)}
-                        className={`btn-tap p-1 bg-lumora-hover rounded-lg transition-colors ${
+                        className={`btn-tap p-1.5 bg-lumora-hover rounded-lg transition-colors ${
                           deleteConfirmActive[item.id] ? "text-red-400 bg-red-950/40" : "text-lumora-sub hover:text-red-400"
                         }`}
                         title={t.deleteLabel}
