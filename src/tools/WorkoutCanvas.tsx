@@ -1163,39 +1163,42 @@ export default function WorkoutCanvas() {
       {/* Header */}
       <header className="sticky top-0 z-40 bg-lumora-card/95 backdrop-blur-md border-b border-white/5 px-4 py-4">
         <div className="w-full flex items-center justify-between">
-          <div className="flex items-center space-x-2 md:space-x-3">
-            <div className="relative">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-lumora-highlight to-lumora-highlight/85 flex items-center justify-center text-slate-900 font-extrabold text-lg shadow-md shadow-lumora-highlight/20">
+          <div className="flex items-center space-x-2 md:space-x-3 min-w-0">
+            <div className="relative shrink-0">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-lumora-highlight to-lumora-highlight/85 flex items-center justify-center text-slate-900 font-extrabold text-base sm:text-lg shadow-md shadow-lumora-highlight/20">
                 L
               </div>
               <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-lumora-highlight border-2 border-lumora-card rounded-full"></span>
             </div>
             <div className="leading-tight min-w-0">
-              <h1 className="text-[11px] font-black text-white tracking-wide uppercase truncate">Lumora Workout</h1>
+              <h1 className="text-xs sm:text-sm font-black text-white tracking-wide uppercase truncate">Lumora Workout</h1>
               <p className="text-[9px] font-semibold text-lumora-sub tracking-tight whitespace-nowrap mt-0.5 hidden sm:block">{t.headerSub}</p>
             </div>
           </div>
 
-          <div className="flex items-center space-x-1.5 shrink-0">
+          <div className="flex items-center space-x-1 sm:space-x-1.5 shrink-0">
             {/* Smart Screen Status Indicator (Wake Lock) */}
             <button
               onClick={triggerWakeLockAction}
-              className={`btn-tap px-2.5 py-1.5 rounded-xl text-[10px] font-bold flex items-center gap-1 transition-all whitespace-nowrap shrink-0 ${
+              className={`btn-tap p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl text-[10px] font-bold flex items-center gap-1 transition-all whitespace-nowrap shrink-0 ${
                 isIframe
                   ? "bg-lumora-highlight/10 border border-lumora-highlight/20 text-lumora-highlight"
                   : isWakeLockActive
                   ? "bg-lumora-highlight/10 border border-lumora-highlight/20 text-lumora-highlight"
                   : "bg-lumora-bg/60 border border-white/5 text-lumora-sub"
               }`}
+              title={isIframe ? t.wakeLockDEMO : (wakeLockStatusText === "화면 유지 ON" ? (lang === "ko" ? "화면 유지 ON" : "Wake Lock ON") : (lang === "ko" ? "화면 유지 OFF" : "Wake Lock OFF"))}
             >
               <Smartphone className="w-3.5 h-3.5" />
-              <span>{isIframe ? t.wakeLockDEMO : (wakeLockStatusText === "화면 유지 ON" ? (lang === "ko" ? "화면 유지 ON" : "Wake Lock ON") : (lang === "ko" ? "화면 유지 OFF" : "Wake Lock OFF"))}</span>
+              <span className="hidden sm:inline">
+                {isIframe ? t.wakeLockDEMO : (wakeLockStatusText === "화면 유지 ON" ? (lang === "ko" ? "화면 유지 ON" : "Wake Lock ON") : (lang === "ko" ? "화면 유지 OFF" : "Wake Lock OFF"))}
+              </span>
             </button>
 
             {/* Language Switch Toggle Button */}
             <button
               onClick={toggleLanguage}
-              className="btn-tap px-2 py-1.5 bg-lumora-bg/60 border border-white/5 rounded-xl text-[10px] font-bold text-lumora-highlight flex items-center gap-1 shrink-0"
+              className="btn-tap p-1.5 sm:px-2 sm:py-1.5 bg-lumora-bg/60 border border-white/5 rounded-xl text-[10px] font-bold text-lumora-highlight flex items-center gap-1 shrink-0"
               title={lang === "ko" ? "English" : "한국어"}
             >
               <Globe className="w-3.5 h-3.5 text-lumora-highlight" />
@@ -1205,7 +1208,7 @@ export default function WorkoutCanvas() {
             {/* Routine Settings (Visible Days Toggle) */}
             <button
               onClick={() => setIsSettingsOpen(true)}
-              className="btn-tap px-2 py-1.5 bg-lumora-bg/60 border border-white/5 rounded-xl text-[10px] font-bold text-lumora-sub flex items-center gap-1 shrink-0"
+              className="btn-tap p-1.5 bg-lumora-bg/60 border border-white/5 rounded-xl text-[10px] font-bold text-lumora-sub flex items-center gap-1 shrink-0"
               title="루틴 설정 및 요일 활성화"
             >
               <Settings className="w-3.5 h-3.5 text-lumora-sub" />
@@ -1214,7 +1217,7 @@ export default function WorkoutCanvas() {
             {/* Data Backup & Restore Trigger */}
             <button
               onClick={openBackupModal}
-              className="btn-tap px-2 py-1.5 bg-lumora-bg/60 border border-white/5 rounded-xl text-[10px] font-bold text-lumora-sub flex items-center gap-1 shrink-0"
+              className="btn-tap p-1.5 bg-lumora-bg/60 border border-white/5 rounded-xl text-[10px] font-bold text-lumora-sub flex items-center gap-1 shrink-0"
               title="기록 백업/복원"
             >
               <Database className="w-3.5 h-3.5 text-lumora-sub" />
@@ -1223,7 +1226,7 @@ export default function WorkoutCanvas() {
             {/* Injury Prevention Specs */}
             <button
               onClick={() => setIsSafetyOpen(true)}
-              className="btn-tap px-2 py-1.5 bg-lumora-bg/60 border border-white/5 rounded-xl text-[10px] font-bold text-lumora-sub flex items-center gap-1 shrink-0"
+              className="btn-tap p-1.5 bg-lumora-bg/60 border border-white/5 rounded-xl text-[10px] font-bold text-lumora-sub flex items-center gap-1 shrink-0"
               title="부상 방지 가이드"
             >
               <Info className="w-3.5 h-3.5 text-lumora-sub" />
