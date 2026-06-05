@@ -94,6 +94,21 @@ const tools: Tool[] = [
       { step: "Copy any color", detail: "Click a color card to instantly copy its HEX code to your clipboard." },
     ],
   },
+  {
+    id: "7",
+    name: "Gems: Workout Canvas",
+    description:
+      "Log your training sessions, adjust weights/reps dynamically, and export structured, publication-ready fitness reports.",
+    icon: "Dumbbell",
+    category: "Synthesis",
+    link: "#",
+    usageSteps: [
+      { step: "Select your active day", detail: "Choose your active training day from the weekly navigation tabs (customizable via Settings)." },
+      { step: "Log your weights & reps", detail: "Mark sets as completed, and adjust target values using the plus/minus controls." },
+      { step: "Add notes & comments", detail: "Write down any pain points, energy levels, or session feedback in the comment bar." },
+      { step: "Copy blog/coach report", detail: "Click 'Complete & Copy AI Coach Report' to copy a formatted text summary for your blog, coach, or AI." },
+    ],
+  },
 ];
 
 const blogPosts: BlogPost[] = [
@@ -193,19 +208,31 @@ const blogPosts: BlogPost[] = [
 
 function CursorSpotlight() {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const handleMouseMove = (e: globalThis.MouseEvent) => {
       setMousePos({ x: e.clientX, y: e.clientY });
+      setIsVisible(true);
+    };
+    const handleMouseLeave = () => {
+      setIsVisible(false);
     };
     window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseleave", handleMouseLeave);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseleave", handleMouseLeave);
+    };
   }, []);
 
   return (
     <div
-      className="pointer-events-none fixed z-[110] h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.06)_0%,transparent_70%)] mix-blend-screen"
-      style={{ left: mousePos.x, top: mousePos.y }}
+      className={`pointer-events-none fixed z-[110] h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.06)_0%,transparent_70%)] mix-blend-screen transition-opacity duration-300 ${isVisible ? 'opacity-100' : 'opacity-0'}`}
+      style={{
+        left: isVisible ? mousePos.x : -1000,
+        top: isVisible ? mousePos.y : -1000,
+      }}
     />
   );
 }
@@ -303,7 +330,7 @@ export default function App() {
 
       <CursorSpotlight />
 
-      <main className="relative z-10 pt-32 lg:pt-48">
+      <main className="relative pt-32 lg:pt-48">
         <AnimatePresence mode="wait">
           {currentView === "home" && (
             <motion.div

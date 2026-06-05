@@ -5,6 +5,7 @@ import MarkdownEther from '../tools/MarkdownEther';
 import ChromaticExtractor from '../tools/ChromaticExtractor';
 import VectorLabGradients from '../tools/VectorLabGradients';
 import PdfStudio from '../tools/PdfStudio';
+import WorkoutCanvas from '../tools/WorkoutCanvas';
 import { 
   ArrowLeft, 
   Activity,
@@ -29,6 +30,8 @@ export default function ToolDetailView({ tool, onBack }: ToolDetailViewProps) {
         return <MarkdownEther />;
       case "6":
         return <ChromaticExtractor />;
+      case "7":
+        return <WorkoutCanvas />;
       default:
         return (
           <div className="relative z-10 text-center space-y-10">
@@ -116,7 +119,7 @@ export default function ToolDetailView({ tool, onBack }: ToolDetailViewProps) {
             {renderToolLogic()}
 
             {/* Technical Detail Overlays */}
-            {!["1", "3", "4", "5", "6"].includes(tool.id) && (
+            {!["1", "3", "4", "5", "6", "7"].includes(tool.id) && (
               <>
                 <div className="absolute top-8 right-8 px-4 py-2 rounded-full bg-white/5 text-[10px] font-display font-bold text-white/30 uppercase tracking-widest">
                   Playground
