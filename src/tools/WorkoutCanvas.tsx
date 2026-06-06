@@ -1546,9 +1546,9 @@ export default function WorkoutCanvas() {
                       </div>
 
                       {/* Adjusters Layout */}
-                      <div className={`bg-lumora-card/50 p-3 rounded-2xl border border-white/5 grid ${item.isBodyweight ? "grid-cols-1" : "grid-cols-2"} gap-3 text-xs`}>
+                      <div className="bg-lumora-card/50 p-3 rounded-2xl border border-white/5 flex flex-wrap gap-2 text-xs">
                         {!item.isBodyweight && (
-                          <div className="flex items-center justify-center space-x-2 bg-lumora-bg/40 px-2.5 py-2 rounded-xl border border-white/5">
+                          <div className="flex-1 min-w-[140px] flex items-center justify-center space-x-1.5 bg-lumora-bg/40 px-2 py-2 rounded-xl border border-white/5">
                             <span className="text-lumora-sub font-extrabold shrink-0">{t.weightLabel}</span>
                             <button
                               onClick={() => changeVal(item.id, "w", -item.step)}
@@ -1565,7 +1565,7 @@ export default function WorkoutCanvas() {
                             </button>
                           </div>
                         )}
-                        <div className="flex items-center justify-center space-x-2 bg-lumora-bg/40 px-2.5 py-2 rounded-xl border border-white/5">
+                        <div className="flex-1 min-w-[140px] flex items-center justify-center space-x-1.5 bg-lumora-bg/40 px-2 py-2 rounded-xl border border-white/5">
                           <span className="text-lumora-sub font-extrabold shrink-0">{t.repsLabel}</span>
                           <button
                             onClick={() => changeVal(item.id, "r", -1)}
