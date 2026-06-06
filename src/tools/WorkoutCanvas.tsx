@@ -476,16 +476,16 @@ const TRANSLATIONS = {
 
 export default function WorkoutCanvas() {
   const [lang, setLang] = useState<"ko" | "en">(() => {
+    const savedLang = localStorage.getItem("gems_workout_lang");
+    if (savedLang === "en" || savedLang === "ko") {
+      return savedLang;
+    }
     const path = window.location.pathname;
     if (path.includes("/workout-canvas/ko")) {
       return "ko";
     }
     if (path.includes("/workout-canvas/en")) {
       return "en";
-    }
-    const savedLang = localStorage.getItem("gems_workout_lang");
-    if (savedLang === "en" || savedLang === "ko") {
-      return savedLang;
     }
     return "en";
   });

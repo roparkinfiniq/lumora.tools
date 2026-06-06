@@ -297,16 +297,16 @@ export default function App() {
     if (currentView === "utility-detail" && selectedTool) {
       const slug = selectedTool.slug || getToolSlug(selectedTool.name);
       if (selectedTool.id === "7") {
-        const path = window.location.pathname;
         let currentLang = "en";
-        if (path.includes("/workout-canvas/ko")) {
-          currentLang = "ko";
-        } else if (path.includes("/workout-canvas/en")) {
-          currentLang = "en";
+        const savedLang = localStorage.getItem("gems_workout_lang");
+        if (savedLang === "ko" || savedLang === "en") {
+          currentLang = savedLang;
         } else {
-          const savedLang = localStorage.getItem("gems_workout_lang");
-          if (savedLang === "ko" || savedLang === "en") {
-            currentLang = savedLang;
+          const path = window.location.pathname;
+          if (path.includes("/workout-canvas/ko")) {
+            currentLang = "ko";
+          } else if (path.includes("/workout-canvas/en")) {
+            currentLang = "en";
           }
         }
         url = `/utilities/${slug}/${currentLang}`;
