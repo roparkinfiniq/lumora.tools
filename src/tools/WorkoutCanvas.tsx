@@ -1216,12 +1216,12 @@ export default function WorkoutCanvas() {
             {/* Smart Screen Status Indicator (Wake Lock) */}
             <button
               onClick={triggerWakeLockAction}
-              className={`btn-tap p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl text-[10px] font-bold flex items-center gap-1 transition-all whitespace-nowrap shrink-0 ${
+              className={`btn-tap p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl text-[10px] font-bold flex items-center gap-1 transition-all duration-200 whitespace-nowrap shrink-0 ${
                 isIframe
-                  ? "bg-lumora-highlight/10 border border-lumora-highlight/20 text-lumora-highlight"
+                  ? "bg-lumora-highlight/10 border border-lumora-highlight/20 text-lumora-highlight hover:bg-lumora-highlight/20"
                   : isWakeLockActive
-                  ? "bg-lumora-highlight/10 border border-lumora-highlight/20 text-lumora-highlight"
-                  : "bg-lumora-bg/60 border border-white/5 text-lumora-sub"
+                  ? "bg-lumora-highlight/10 border border-lumora-highlight/20 text-lumora-highlight hover:bg-lumora-highlight/20"
+                  : "bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10"
               }`}
               title={isIframe ? t.wakeLockDEMO : (wakeLockStatusText === "화면 유지 ON" ? (lang === "ko" ? "화면 유지 ON" : "Wake Lock ON") : (lang === "ko" ? "화면 유지 OFF" : "Wake Lock OFF"))}
             >
@@ -1235,7 +1235,7 @@ export default function WorkoutCanvas() {
             {/* Language Switch Toggle Button */}
             <button
               onClick={toggleLanguage}
-              className="btn-tap p-1.5 sm:px-2 sm:py-1.5 bg-lumora-bg/60 border border-white/5 rounded-xl text-[10px] font-bold text-lumora-highlight flex items-center gap-1 shrink-0"
+              className="btn-tap p-1.5 sm:px-2 sm:py-1.5 bg-lumora-bg/60 border border-white/5 rounded-xl text-[10px] font-bold text-lumora-highlight flex items-center gap-1 shrink-0 hover:bg-lumora-highlight/15 hover:border-lumora-highlight/30 transition-all duration-200"
               title={lang === "ko" ? "English" : "한국어"}
             >
               <Globe className="w-3.5 h-3.5 text-lumora-highlight" />
@@ -1245,7 +1245,7 @@ export default function WorkoutCanvas() {
             {/* Routine Settings (Visible Days Toggle) */}
             <button
               onClick={() => setIsSettingsOpen(true)}
-              className="btn-tap p-1.5 bg-lumora-bg/60 border border-white/5 rounded-xl text-[10px] font-bold text-lumora-sub hidden sm:inline-flex items-center gap-1 shrink-0"
+              className="btn-tap p-1.5 bg-lumora-bg/60 border border-white/5 rounded-xl text-[10px] font-bold text-lumora-sub hidden sm:inline-flex items-center gap-1 shrink-0 hover:bg-lumora-hover hover:text-white hover:border-white/10 transition-all duration-200"
               title="루틴 설정 및 요일 활성화"
             >
               <Settings className="w-3.5 h-3.5 text-lumora-sub" />
@@ -1254,7 +1254,7 @@ export default function WorkoutCanvas() {
             {/* Data Backup & Restore Trigger */}
             <button
               onClick={openBackupModal}
-              className="btn-tap p-1.5 bg-lumora-bg/60 border border-white/5 rounded-xl text-[10px] font-bold text-lumora-sub hidden sm:inline-flex items-center gap-1 shrink-0"
+              className="btn-tap p-1.5 bg-lumora-bg/60 border border-white/5 rounded-xl text-[10px] font-bold text-lumora-sub hidden sm:inline-flex items-center gap-1 shrink-0 hover:bg-lumora-hover hover:text-white hover:border-white/10 transition-all duration-200"
               title="기록 백업/복원"
             >
               <Database className="w-3.5 h-3.5 text-lumora-sub" />
@@ -1263,7 +1263,7 @@ export default function WorkoutCanvas() {
             {/* Injury Prevention Specs */}
             <button
               onClick={() => setIsSafetyOpen(true)}
-              className="btn-tap p-1.5 bg-lumora-bg/60 border border-white/5 rounded-xl text-[10px] font-bold text-lumora-sub hidden sm:inline-flex items-center gap-1 shrink-0"
+              className="btn-tap p-1.5 bg-lumora-bg/60 border border-white/5 rounded-xl text-[10px] font-bold text-lumora-sub hidden sm:inline-flex items-center gap-1 shrink-0 hover:bg-lumora-hover hover:text-white hover:border-white/10 transition-all duration-200"
               title="부상 방지 가이드"
             >
               <Info className="w-3.5 h-3.5 text-lumora-sub" />
@@ -1272,7 +1272,7 @@ export default function WorkoutCanvas() {
             {/* More Options Menu (Mobile Only) */}
             <button
               onClick={() => setIsMoreOpen(true)}
-              className="btn-tap p-1.5 bg-lumora-bg/60 border border-white/5 rounded-xl text-[10px] font-bold text-lumora-sub flex sm:hidden items-center gap-1 shrink-0"
+              className="btn-tap p-1.5 bg-lumora-bg/60 border border-white/5 rounded-xl text-[10px] font-bold text-lumora-sub flex sm:hidden items-center gap-1 shrink-0 hover:bg-lumora-hover hover:text-white hover:border-white/10 transition-all duration-200"
               title="더 보기"
             >
               <MoreHorizontal className="w-3.5 h-3.5 text-lumora-sub" />
@@ -1296,7 +1296,7 @@ export default function WorkoutCanvas() {
             </div>
             <button
               onClick={() => setIsPwaOpen(true)}
-              className="btn-tap px-3 py-2 bg-lumora-highlight hover:bg-[#c4b5fd] text-slate-900 font-black text-xs rounded-xl shadow-md shrink-0"
+              className="btn-tap px-3 py-2 bg-lumora-highlight hover:bg-[#c4b5fd] text-slate-900 font-black text-xs rounded-xl shadow-md shrink-0 transition-all duration-200"
             >
               {t.pwaBannerInstall}
             </button>
@@ -1338,8 +1338,8 @@ export default function WorkoutCanvas() {
                 onClick={() => handleDayChange(day)}
                 className={`btn-tap flex flex-col items-center justify-center py-2.5 rounded-xl transition-all duration-200 border ${
                   isSelected
-                    ? "bg-lumora-highlight border-lumora-highlight text-slate-900 font-bold shadow-md shadow-lumora-highlight/10"
-                    : "bg-transparent border-transparent text-lumora-sub hover:text-white font-semibold"
+                    ? "bg-lumora-highlight border-lumora-highlight text-slate-900 font-bold shadow-md shadow-lumora-highlight/10 hover:bg-[#d8ccff]"
+                    : "bg-transparent border-transparent text-lumora-sub hover:text-white hover:bg-white/5 hover:border-white/5 font-semibold"
                 }`}
               >
                 <span className="text-[13px] font-black leading-none">{dayChar}</span>
@@ -1375,7 +1375,7 @@ export default function WorkoutCanvas() {
               <h2 className="text-base font-extrabold text-white tracking-tight break-words min-w-0">{db[activeDay]?.mainTitle}</h2>
               <button
                 onClick={openRoutineModal}
-                className="btn-tap p-1 bg-lumora-bg/60 hover:bg-lumora-hover border border-white/5 rounded-lg text-lumora-sub hover:text-white shrink-0 mt-0.5"
+                className="btn-tap p-1 bg-lumora-bg/60 hover:bg-lumora-hover border border-white/5 hover:border-white/10 rounded-lg text-lumora-sub hover:text-white shrink-0 mt-0.5 transition-all duration-200"
                 title={t.editLabel}
               >
                 <Edit2 className="w-3.5 h-3.5" />
@@ -1424,15 +1424,17 @@ export default function WorkoutCanvas() {
                     <div className="flex items-center space-x-1.5 shrink-0 pt-0.5">
                       <button
                         onClick={() => openExerciseModal(item.id)}
-                        className="btn-tap p-1.5 bg-lumora-hover text-lumora-text hover:bg-white/10 rounded-lg transition"
+                        className="btn-tap p-1.5 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-lg transition-all duration-200"
                         title={t.editLabel}
                       >
                         <Edit3 className="w-3.5 h-3.5" />
                       </button>
                       <button
                         onClick={() => deleteExercise(item.id)}
-                        className={`btn-tap p-1.5 bg-lumora-hover rounded-lg transition-colors ${
-                          deleteConfirmActive[item.id] ? "text-red-400 bg-red-950/40" : "text-lumora-sub hover:text-red-400"
+                        className={`btn-tap p-1.5 border rounded-lg transition-all duration-200 ${
+                          deleteConfirmActive[item.id]
+                            ? "text-red-400 bg-red-950/40 border-red-500/30"
+                            : "bg-lumora-bg/60 border-white/5 text-lumora-sub hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/20"
                         }`}
                         title={t.deleteLabel}
                       >
@@ -1449,14 +1451,14 @@ export default function WorkoutCanvas() {
                         <div className="flex items-center space-x-3 bg-lumora-bg/40 px-3 py-1.5 rounded-xl border border-white/5">
                           <button
                             onClick={() => changeCardio(item.id, -1)}
-                            className="btn-tap p-1 bg-lumora-hover text-lumora-text hover:bg-white/10 rounded-lg"
+                            className="btn-tap p-1 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-lg transition-all duration-200"
                           >
                             <Minus className="w-3.5 h-3.5" />
                           </button>
                           <span className="font-black text-white text-sm px-2">{item.duration}{lang === "ko" ? "분" : " min"}</span>
                           <button
                             onClick={() => changeCardio(item.id, 1)}
-                            className="btn-tap p-1 bg-lumora-hover text-lumora-text hover:bg-white/10 rounded-lg"
+                            className="btn-tap p-1 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-lg transition-all duration-200"
                           >
                             <Plus className="w-3.5 h-3.5" />
                           </button>
@@ -1464,10 +1466,10 @@ export default function WorkoutCanvas() {
                       </div>
                       <button
                         onClick={() => toggleCardioDone(item.id)}
-                        className={`btn-tap w-full py-2.5 rounded-xl border font-bold text-xs flex items-center justify-center transition-all ${
+                        className={`btn-tap w-full py-2.5 rounded-xl border font-bold text-xs flex items-center justify-center transition-all duration-200 ${
                           item.isDone
-                            ? "bg-lumora-highlight text-slate-900 border-lumora-highlight shadow-md"
-                            : "bg-lumora-bg/60 border border-white/5 text-lumora-sub"
+                            ? "bg-lumora-highlight text-slate-900 border-lumora-highlight shadow-md hover:bg-[#d8ccff]"
+                            : "bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10"
                         }`}
                       >
                         {item.isDone ? (
@@ -1486,14 +1488,14 @@ export default function WorkoutCanvas() {
                         <div className="flex items-center space-x-3 bg-lumora-bg/40 px-3 py-1.5 rounded-xl border border-white/5">
                           <button
                             onClick={() => changeCardio(item.id, -5)}
-                            className="btn-tap p-1 bg-lumora-hover text-lumora-text hover:bg-white/10 rounded-lg"
+                            className="btn-tap p-1 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-lg transition-all duration-200"
                           >
                             <Minus className="w-3.5 h-3.5" />
                           </button>
                           <span className="font-black text-white text-sm px-2">{item.duration}{lang === "ko" ? "분" : " min"}</span>
                           <button
                             onClick={() => changeCardio(item.id, 5)}
-                            className="btn-tap p-1 bg-lumora-hover text-lumora-text hover:bg-white/10 rounded-lg"
+                            className="btn-tap p-1 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-lg transition-all duration-200"
                           >
                             <Plus className="w-3.5 h-3.5" />
                           </button>
@@ -1501,10 +1503,10 @@ export default function WorkoutCanvas() {
                       </div>
                       <button
                         onClick={() => toggleCardioDone(item.id)}
-                        className={`btn-tap w-full py-2.5 rounded-xl border font-bold text-xs flex items-center justify-center transition-all ${
+                        className={`btn-tap w-full py-2.5 rounded-xl border font-bold text-xs flex items-center justify-center transition-all duration-200 ${
                           item.isDone
-                            ? "bg-lumora-highlight text-slate-900 border-lumora-highlight shadow-md"
-                            : "bg-lumora-bg/60 border border-white/5 text-lumora-sub"
+                            ? "bg-lumora-highlight text-slate-900 border-lumora-highlight shadow-md hover:bg-[#d8ccff]"
+                            : "bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10"
                         }`}
                       >
                         {item.isDone ? (
@@ -1530,10 +1532,10 @@ export default function WorkoutCanvas() {
                             <button
                               key={idx}
                               onClick={() => toggleSetStatus(item.id, idx)}
-                              className={`btn-tap py-3 rounded-2xl border font-bold text-xs flex flex-col items-center justify-center transition-all ${
+                              className={`btn-tap py-3 rounded-2xl border font-bold text-xs flex flex-col items-center justify-center transition-all duration-200 ${
                                 completed
-                                  ? "bg-lumora-highlight text-slate-900 border-lumora-highlight shadow-md"
-                                  : "bg-lumora-bg/60 border border-white/5 text-lumora-sub"
+                                  ? "bg-lumora-highlight text-slate-900 border-lumora-highlight shadow-md hover:bg-[#d8ccff]"
+                                  : "bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10"
                               }`}
                             >
                               <span className={`text-[9px] ${completed ? "text-slate-800" : "text-lumora-sub/60"} font-black uppercase`}>
@@ -1552,14 +1554,14 @@ export default function WorkoutCanvas() {
                             <span className="text-lumora-sub font-extrabold shrink-0">{t.weightLabel}</span>
                             <button
                               onClick={() => changeVal(item.id, "w", -item.step)}
-                              className="btn-tap p-1 bg-lumora-hover text-lumora-text hover:bg-white/10 rounded-lg"
+                              className="btn-tap p-1 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-lg transition-all duration-200"
                             >
                               <Minus className="w-3.5 h-3.5" />
                             </button>
                             <span className="font-extrabold text-white min-w-[42px] text-center text-xs">{item.weight}kg</span>
                             <button
                               onClick={() => changeVal(item.id, "w", item.step)}
-                              className="btn-tap p-1 bg-lumora-hover text-lumora-text hover:bg-white/10 rounded-lg"
+                              className="btn-tap p-1 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-lg transition-all duration-200"
                             >
                               <Plus className="w-3.5 h-3.5" />
                             </button>
@@ -1569,14 +1571,14 @@ export default function WorkoutCanvas() {
                           <span className="text-lumora-sub font-extrabold shrink-0">{t.repsLabel}</span>
                           <button
                             onClick={() => changeVal(item.id, "r", -1)}
-                            className="btn-tap p-1 bg-lumora-hover text-lumora-text hover:bg-white/10 rounded-lg"
+                            className="btn-tap p-1 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-lg transition-all duration-200"
                           >
                             <Minus className="w-3.5 h-3.5" />
                           </button>
                           <span className="font-extrabold text-white min-w-[28px] text-center text-xs">{item.reps}{lang === "ko" ? "회" : " reps"}</span>
                           <button
                             onClick={() => changeVal(item.id, "r", 1)}
-                            className="btn-tap p-1 bg-lumora-hover text-lumora-text hover:bg-white/10 rounded-lg"
+                            className="btn-tap p-1 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-lg transition-all duration-200"
                           >
                             <Plus className="w-3.5 h-3.5" />
                           </button>
@@ -1607,7 +1609,7 @@ export default function WorkoutCanvas() {
         {/* Add Workout Exercise Button */}
         <button
           onClick={() => openExerciseModal(null)}
-          className="btn-tap w-full py-3.5 bg-lumora-bg/60 hover:bg-lumora-hover border border-white/5 text-lumora-highlight font-bold rounded-2xl flex items-center justify-center space-x-2 shadow-sm text-xs"
+          className="btn-tap w-full py-3.5 bg-lumora-bg/60 hover:bg-lumora-hover border border-white/5 hover:border-white/10 text-lumora-highlight font-bold rounded-2xl flex items-center justify-center space-x-2 shadow-sm text-xs transition-all duration-200"
         >
           <PlusCircle className="w-4 h-4" />
           <span>{t.addExerciseBtn}</span>
@@ -1617,14 +1619,14 @@ export default function WorkoutCanvas() {
         <div className="pt-6 pb-8 border-t border-white/5">
           <button
             onClick={copyRoutineResults}
-            className="btn-tap w-full py-4 bg-gradient-to-r from-lumora-highlight to-lumora-highlight/85 text-slate-900 font-black rounded-2xl flex items-center justify-center space-x-2 shadow-lg shadow-lumora-highlight/10 text-sm"
+            className="btn-tap w-full py-4 bg-gradient-to-r from-lumora-highlight to-lumora-highlight/85 text-slate-900 font-black rounded-2xl flex items-center justify-center space-x-2 shadow-lg shadow-lumora-highlight/10 text-sm hover:opacity-95 hover:scale-[1.005] active:scale-[0.995] transition-all duration-200"
           >
             <CheckCheck className="w-5 h-5" />
             <span>{t.completeLogsBtn}</span>
           </button>
           <button
             onClick={() => setIsResetConfirmOpen(true)}
-            className="btn-tap w-full py-3 mt-3 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 font-bold rounded-2xl flex items-center justify-center space-x-2 shadow-sm text-xs transition-colors"
+            className="btn-tap w-full py-3 mt-3 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 font-bold rounded-2xl flex items-center justify-center space-x-2 shadow-sm text-xs hover:scale-[1.005] active:scale-[0.995] transition-all duration-200"
           >
             <RotateCcw className="w-4 h-4" />
             <span>{t.resetLogsBtn}</span>
@@ -1660,7 +1662,7 @@ export default function WorkoutCanvas() {
                   <div className="shrink-0 p-6 pb-4 relative border-b border-white/5">
                     <button
                       onClick={() => setIsRoutineModalOpen(false)}
-                      className="absolute top-5 right-6 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
+                      className="absolute top-5 right-6 p-2 bg-lumora-bg/60 border border-white/5 hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-xl text-lumora-sub transition-all duration-200"
                     >
                       <X className="w-4 h-4" />
                     </button>
@@ -1721,7 +1723,7 @@ export default function WorkoutCanvas() {
                   <div className="shrink-0 p-6 pt-4 border-t border-white/5 bg-lumora-card">
                     <button
                       onClick={saveRoutineInfo}
-                      className="btn-tap w-full py-3 bg-lumora-highlight hover:bg-[#c4b5fd] text-slate-900 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-lg transition"
+                      className="btn-tap w-full py-3 bg-lumora-highlight hover:bg-[#c4b5fd] text-slate-900 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-lg transition-all duration-200"
                     >
                       <Check className="w-4 h-4" />
                       <span>{t.saveBtn}</span>
@@ -1759,7 +1761,7 @@ export default function WorkoutCanvas() {
                   <div className="shrink-0 p-6 pb-4 relative border-b border-white/5">
                     <button
                       onClick={() => setIsExerciseModalOpen(false)}
-                      className="absolute top-5 right-6 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
+                      className="absolute top-5 right-6 p-2 bg-lumora-bg/60 border border-white/5 hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-xl text-lumora-sub transition-all duration-200"
                     >
                       <X className="w-4 h-4" />
                     </button>
@@ -1948,7 +1950,7 @@ export default function WorkoutCanvas() {
                   <div className="shrink-0 p-6 pt-4 border-t border-white/5 bg-lumora-card">
                     <button
                       onClick={saveExercise}
-                      className="btn-tap w-full py-3 bg-lumora-highlight hover:bg-[#c4b5fd] text-slate-900 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-lg transition"
+                      className="btn-tap w-full py-3 bg-lumora-highlight hover:bg-[#c4b5fd] text-slate-900 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-lg transition-all duration-200"
                     >
                       <Check className="w-4 h-4" />
                       <span>{t.saveGeneralBtn}</span>
@@ -1986,7 +1988,7 @@ export default function WorkoutCanvas() {
                   <div className="shrink-0 p-6 pb-4 relative border-b border-white/5">
                     <button
                       onClick={() => setIsSettingsOpen(false)}
-                      className="absolute top-5 right-6 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
+                      className="absolute top-5 right-6 p-2 bg-lumora-bg/60 border border-white/5 hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-xl text-lumora-sub transition-all duration-200"
                     >
                       <X className="w-4 h-4" />
                     </button>
@@ -2058,7 +2060,7 @@ export default function WorkoutCanvas() {
                   <div className="shrink-0 p-6 pt-4 border-t border-white/5 bg-lumora-card">
                     <button
                       onClick={() => applyVisibleDays(visibleDays)}
-                      className="btn-tap w-full py-3 bg-lumora-highlight hover:bg-[#c4b5fd] text-slate-900 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-lg transition"
+                      className="btn-tap w-full py-3 bg-lumora-highlight hover:bg-[#c4b5fd] text-slate-900 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-lg transition-all duration-200"
                     >
                       <Check className="w-4 h-4" />
                       <span>{t.applyBtn}</span>
@@ -2096,7 +2098,7 @@ export default function WorkoutCanvas() {
                   <div className="shrink-0 p-6 pb-4 relative border-b border-white/5">
                     <button
                       onClick={() => setIsBackupOpen(false)}
-                      className="absolute top-5 right-6 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
+                      className="absolute top-5 right-6 p-2 bg-lumora-bg/60 border border-white/5 hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-xl text-lumora-sub transition-all duration-200"
                     >
                       <X className="w-4 h-4" />
                     </button>
@@ -2149,7 +2151,7 @@ export default function WorkoutCanvas() {
                       />
                       <button
                         onClick={importBackupCode}
-                        className="btn-tap w-full py-2.5 bg-lumora-highlight hover:bg-[#c4b5fd] text-slate-900 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-lg transition"
+                        className="btn-tap w-full py-2.5 bg-lumora-highlight hover:bg-[#c4b5fd] text-slate-900 font-black rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-lg transition-all duration-200"
                       >
                         <Upload className="w-4 h-4" />
                         <span>{t.btnRestoreApply}</span>
@@ -2173,7 +2175,7 @@ export default function WorkoutCanvas() {
                   <div className="shrink-0 p-6 pt-4 border-t border-white/5 bg-lumora-card">
                     <button
                       onClick={() => setIsBackupOpen(false)}
-                      className="btn-tap w-full py-3 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:text-white font-black rounded-xl text-xs flex items-center justify-center transition"
+                      className="btn-tap w-full py-3 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10 font-black rounded-xl text-xs flex items-center justify-center transition-all duration-200"
                     >
                       <span>{t.btnCloseGeneral}</span>
                     </button>
@@ -2210,7 +2212,7 @@ export default function WorkoutCanvas() {
                   <div className="shrink-0 p-6 pb-4 relative border-b border-white/5">
                     <button
                       onClick={() => setIsSafetyOpen(false)}
-                      className="absolute top-5 right-6 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
+                      className="absolute top-5 right-6 p-2 bg-lumora-bg/60 border border-white/5 hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-xl text-lumora-sub transition-all duration-200"
                     >
                       <X className="w-4 h-4" />
                     </button>
@@ -2258,7 +2260,7 @@ export default function WorkoutCanvas() {
                   <div className="shrink-0 p-6 pt-4 border-t border-white/5 bg-lumora-card">
                     <button
                       onClick={() => setIsSafetyOpen(false)}
-                      className="btn-tap w-full py-3 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:text-white font-black rounded-xl text-xs flex items-center justify-center transition"
+                      className="btn-tap w-full py-3 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10 font-black rounded-xl text-xs flex items-center justify-center transition-all duration-200"
                     >
                       <span>{t.btnCloseGeneral}</span>
                     </button>
@@ -2295,7 +2297,7 @@ export default function WorkoutCanvas() {
                   <div className="shrink-0 p-6 pb-4 relative border-b border-white/5">
                     <button
                       onClick={() => setIsPwaOpen(false)}
-                      className="absolute top-5 right-6 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
+                      className="absolute top-5 right-6 p-2 bg-lumora-bg/60 border border-white/5 hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-xl text-lumora-sub transition-all duration-200"
                     >
                       <X className="w-4 h-4" />
                     </button>
@@ -2342,7 +2344,7 @@ export default function WorkoutCanvas() {
                   <div className="shrink-0 p-6 pt-4 border-t border-white/5 bg-lumora-card">
                     <button
                       onClick={() => setIsPwaOpen(false)}
-                      className="btn-tap w-full py-3 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:text-white font-black rounded-xl text-xs flex items-center justify-center transition"
+                      className="btn-tap w-full py-3 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10 font-black rounded-xl text-xs flex items-center justify-center transition-all duration-200"
                     >
                       <span>{t.btnCloseGeneral}</span>
                     </button>
@@ -2379,7 +2381,7 @@ export default function WorkoutCanvas() {
                   <div className="shrink-0 p-6 pb-4 relative border-b border-white/5">
                     <button
                       onClick={() => setIsResetConfirmOpen(false)}
-                      className="absolute top-5 right-6 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
+                      className="absolute top-5 right-6 p-2 bg-lumora-bg/60 border border-white/5 hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-xl text-lumora-sub transition-all duration-200"
                     >
                       <X className="w-4 h-4" />
                     </button>
@@ -2407,7 +2409,7 @@ export default function WorkoutCanvas() {
                     <div className="grid grid-cols-2 gap-3">
                       <button
                         onClick={() => setIsResetConfirmOpen(false)}
-                        className="btn-tap w-full py-3 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:text-white font-black rounded-xl text-xs flex items-center justify-center transition"
+                        className="btn-tap w-full py-3 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10 font-black rounded-xl text-xs flex items-center justify-center transition-all duration-200"
                       >
                         {t.btnCancel}
                       </button>
@@ -2451,7 +2453,7 @@ export default function WorkoutCanvas() {
                   <div className="shrink-0 p-6 pb-4 relative border-b border-white/5">
                     <button
                       onClick={() => setIsMoreOpen(false)}
-                      className="absolute top-5 right-6 p-2 bg-lumora-hover hover:bg-white/10 rounded-xl text-lumora-sub transition"
+                      className="absolute top-5 right-6 p-2 bg-lumora-bg/60 border border-white/5 hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-xl text-lumora-sub transition-all duration-200"
                     >
                       <X className="w-4 h-4" />
                     </button>
@@ -2474,7 +2476,7 @@ export default function WorkoutCanvas() {
                         setIsMoreOpen(false);
                         setIsSettingsOpen(true);
                       }}
-                      className="w-full flex items-center p-4 bg-[#1a1921]/50 hover:bg-lumora-hover border border-white/5 rounded-2xl transition text-left pointer-events-auto gap-3"
+                      className="w-full flex items-center p-4 bg-[#1a1921]/50 hover:bg-lumora-hover border border-white/5 hover:border-white/10 rounded-2xl transition-all duration-200 text-left pointer-events-auto gap-3"
                     >
                       <div className="w-9 h-9 rounded-xl bg-lumora-highlight/10 text-lumora-highlight flex items-center justify-center shrink-0">
                         <Settings className="w-4 h-4" />
@@ -2490,7 +2492,7 @@ export default function WorkoutCanvas() {
                         setIsMoreOpen(false);
                         openBackupModal();
                       }}
-                      className="w-full flex items-center p-4 bg-[#1a1921]/50 hover:bg-lumora-hover border border-white/5 rounded-2xl transition text-left pointer-events-auto gap-3"
+                      className="w-full flex items-center p-4 bg-[#1a1921]/50 hover:bg-lumora-hover border border-white/5 hover:border-white/10 rounded-2xl transition-all duration-200 text-left pointer-events-auto gap-3"
                     >
                       <div className="w-9 h-9 rounded-xl bg-lumora-highlight/10 text-lumora-highlight flex items-center justify-center shrink-0">
                         <Database className="w-4 h-4" />
@@ -2506,7 +2508,7 @@ export default function WorkoutCanvas() {
                         setIsMoreOpen(false);
                         setIsSafetyOpen(true);
                       }}
-                      className="w-full flex items-center p-4 bg-[#1a1921]/50 hover:bg-lumora-hover border border-white/5 rounded-2xl transition text-left pointer-events-auto gap-3"
+                      className="w-full flex items-center p-4 bg-[#1a1921]/50 hover:bg-lumora-hover border border-white/5 hover:border-white/10 rounded-2xl transition-all duration-200 text-left pointer-events-auto gap-3"
                     >
                       <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-450 flex items-center justify-center shrink-0">
                         <ShieldAlert className="w-4 h-4" />
@@ -2522,7 +2524,7 @@ export default function WorkoutCanvas() {
                   <div className="shrink-0 p-6 pt-4 border-t border-white/5 bg-lumora-card">
                     <button
                       onClick={() => setIsMoreOpen(false)}
-                      className="btn-tap w-full py-3 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:text-white font-black rounded-xl text-xs flex items-center justify-center transition pointer-events-auto"
+                      className="btn-tap w-full py-3 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10 font-black rounded-xl text-xs flex items-center justify-center transition-all duration-200 pointer-events-auto"
                   >
                     <span>{t.btnCloseGeneral}</span>
                   </button>
