@@ -911,17 +911,18 @@ export default function WorkoutCanvas() {
   };
 
   const importBackupCode = () => {
-    if (!importCode.trim()) {
+    const sanitized = importCode.replace(/\s+/g, "");
+    if (!sanitized) {
       triggerToastBanner(t.toastRestoreInputCode);
       return;
     }
     try {
-      const decodedStr = decodeURIComponent(escape(atob(importCode.trim())));
+      const decodedStr = decodeURIComponent(escape(atob(sanitized)));
       const importedData = JSON.parse(decodedStr);
 
       let isValid = false;
       for (const d in importedData) {
-        if (importedData[d].items && Array.isArray(importedData[d].items)) {
+        if (importedData[d] && importedData[d].items && Array.isArray(importedData[d].items)) {
           isValid = true;
           break;
         }
@@ -929,18 +930,62 @@ export default function WorkoutCanvas() {
 
       if (!isValid) throw new Error("Format invalid.");
 
-      const updatedDb = { ...db };
+      // Intelligent Language Detection
+      let detectedLang: "ko" | "en" = lang;
       for (const day in importedData) {
-        if (importedData[day]) {
-          updatedDb[day] = importedData[day];
+        if (importedData[day] && importedData[day].tabLabel) {
+          const hasKorean = /[ㄱ-ㅎㅏ-ㅣ가-힣]/.test(importedData[day].tabLabel);
+          detectedLang = hasKorean ? "ko" : "en";
+          break;
         }
       }
 
+      // Restore based on the detected language's template
+      const baseTemplate = detectedLang === "ko" ? DEFAULT_DATABASE : EN_DEFAULT_DATABASE;
+      const updatedDb = { ...baseTemplate };
+
+      for (const day in baseTemplate) {
+        if (importedData[day]) {
+          updatedDb[day] = {
+            ...baseTemplate[day],
+            ...importedData[day],
+            items: importedData[day].items ? importedData[day].items.map((savedItem: any) => ({
+              id: savedItem.id,
+              name: savedItem.name,
+              category: savedItem.category,
+              target: savedItem.target,
+              isWarmup: savedItem.isWarmup,
+              isCardio: savedItem.isCardio,
+              isBodyweight: savedItem.isBodyweight,
+              isDone: savedItem.isDone,
+              duration: savedItem.duration,
+              weight: savedItem.weight,
+              reps: savedItem.reps,
+              step: savedItem.step ?? 2.5,
+              sets: savedItem.sets ?? [null, null, null],
+              note: savedItem.note ?? "",
+              tip: savedItem.tip ?? "",
+            })) : []
+          };
+        }
+      }
+
+      // Sync active state & language
+      if (detectedLang !== lang) {
+        setLang(detectedLang);
+        localStorage.setItem("gems_workout_lang", detectedLang);
+      }
+
       setDb(updatedDb);
-      saveToStorage(updatedDb, activeDay);
+
+      // Force save to the matching language storage key
+      localStorage.setItem(`gems_workout_database_v1_${detectedLang}`, JSON.stringify(updatedDb));
+      localStorage.setItem(`gems_active_day_${detectedLang}`, activeDay);
+
       setIsBackupOpen(false);
-      triggerToastBanner(t.toastRestoreSuccess);
+      triggerToastBanner(detectedLang === "ko" ? "성공적으로 데이터를 한글 모드로 복원했습니다!" : "Successfully restored data in English mode!");
     } catch (e) {
+      console.error("Restore failed", e);
       triggerToastBanner(t.toastRestoreFail);
     }
   };
