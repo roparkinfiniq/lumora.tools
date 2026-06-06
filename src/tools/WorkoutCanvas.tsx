@@ -900,7 +900,11 @@ export default function WorkoutCanvas() {
   // Backup & Restore
   const openBackupModal = () => {
     try {
-      const dbString = JSON.stringify(db);
+      const backupPayload = {
+        ...db,
+        visibleDays: visibleDays
+      };
+      const dbString = JSON.stringify(backupPayload);
       const base64Code = btoa(unescape(encodeURIComponent(dbString)));
       setExportCode(base64Code);
     } catch (e) {
@@ -970,6 +974,12 @@ export default function WorkoutCanvas() {
         }
       }
 
+      // Restore visible days configuration
+      let restoredVisibleDays: string[] | null = null;
+      if (importedData.visibleDays && Array.isArray(importedData.visibleDays)) {
+        restoredVisibleDays = importedData.visibleDays.filter((d: string) => DAY_ORDER.includes(d));
+      }
+
       // Sync active state & language
       if (detectedLang !== lang) {
         setLang(detectedLang);
@@ -978,12 +988,24 @@ export default function WorkoutCanvas() {
 
       setDb(updatedDb);
 
+      if (restoredVisibleDays && restoredVisibleDays.length > 0) {
+        setVisibleDays(restoredVisibleDays);
+        localStorage.setItem(`gems_visible_days_${detectedLang}`, JSON.stringify(restoredVisibleDays));
+      }
+
       // Force save to the matching language storage key
       localStorage.setItem(`gems_workout_database_v1_${detectedLang}`, JSON.stringify(updatedDb));
-      localStorage.setItem(`gems_active_day_${detectedLang}`, activeDay);
+      
+      // If the currently active day is not visible, select the first visible day
+      let nextActiveDay = activeDay;
+      if (restoredVisibleDays && restoredVisibleDays.length > 0 && !restoredVisibleDays.includes(activeDay)) {
+        nextActiveDay = restoredVisibleDays[0];
+        setActiveDay(nextActiveDay);
+      }
+      localStorage.setItem(`gems_active_day_${detectedLang}`, nextActiveDay);
 
       setIsBackupOpen(false);
-      triggerToastBanner(detectedLang === "ko" ? "성공적으로 데이터를 한글 모드로 복원했습니다!" : "Successfully restored data in English mode!");
+      triggerToastBanner(detectedLang === "ko" ? "성공적으로 데이터와 요일 설정을 한글 모드로 복원했습니다!" : "Successfully restored data and visible days in English mode!");
     } catch (e) {
       console.error("Restore failed", e);
       triggerToastBanner(t.toastRestoreFail);
