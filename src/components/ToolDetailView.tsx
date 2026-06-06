@@ -56,9 +56,9 @@ export default function ToolDetailView({ tool, onBack }: ToolDetailViewProps) {
   };
 
   return (
-    <div className={`mx-auto px-6 py-12 ${tool.id === "7" ? "max-w-6xl w-full" : "container"}`}>
+    <div className={`mx-auto px-3 sm:px-6 py-8 md:py-12 ${tool.id === "7" ? "max-w-6xl w-full" : "container"}`}>
       {/* Navigation Header */}
-      <div className="flex items-center justify-between mb-16 px-4 gap-4">
+      <div className="flex items-center justify-between mb-10 md:mb-16 px-0.5 sm:px-2 gap-4">
         <button 
           onClick={onBack}
           className="group flex items-center gap-3 text-xs font-display font-bold uppercase tracking-widest text-white/50 hover:text-white transition-colors py-2 px-4 rounded-full hover:bg-white/5 whitespace-nowrap"
