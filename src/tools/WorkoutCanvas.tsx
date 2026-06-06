@@ -1619,14 +1619,14 @@ export default function WorkoutCanvas() {
         <div className="pt-6 pb-8 border-t border-white/5">
           <button
             onClick={copyRoutineResults}
-            className="btn-tap w-full py-4 bg-gradient-to-r from-lumora-highlight to-lumora-highlight/85 text-slate-900 font-black rounded-2xl flex items-center justify-center space-x-2 shadow-lg shadow-lumora-highlight/10 text-sm hover:opacity-95 hover:scale-[1.005] active:scale-[0.995] transition-all duration-200"
+            className="btn-tap w-full py-4 bg-gradient-to-r from-lumora-highlight to-lumora-highlight/85 text-slate-900 font-black rounded-2xl flex items-center justify-center space-x-2 shadow-lg shadow-lumora-highlight/10 text-sm hover:brightness-105 hover:shadow-lumora-highlight/20 active:scale-[0.99] transition-all duration-200"
           >
             <CheckCheck className="w-5 h-5" />
             <span>{t.completeLogsBtn}</span>
           </button>
           <button
             onClick={() => setIsResetConfirmOpen(true)}
-            className="btn-tap w-full py-3 mt-3 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 font-bold rounded-2xl flex items-center justify-center space-x-2 shadow-sm text-xs hover:scale-[1.005] active:scale-[0.995] transition-all duration-200"
+            className="btn-tap w-full py-3 mt-3 bg-red-500/10 hover:bg-red-500/15 text-red-400 hover:text-red-300 border border-red-500/20 hover:border-red-500/35 font-bold rounded-2xl flex items-center justify-center space-x-2 shadow-sm text-xs active:scale-[0.99] transition-all duration-200"
           >
             <RotateCcw className="w-4 h-4" />
             <span>{t.resetLogsBtn}</span>
