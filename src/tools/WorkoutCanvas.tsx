@@ -1369,13 +1369,13 @@ export default function WorkoutCanvas() {
         </div>
 
         {/* Routine Metadata */}
-        <div className="flex items-center justify-between px-1 gap-4">
+        <div className="flex items-start justify-between px-1 gap-4">
           <div className="space-y-0.5 min-w-0 flex-1">
-            <div className="flex items-center space-x-2">
+            <div className="flex items-start space-x-2">
               <h2 className="text-base font-extrabold text-white tracking-tight break-words min-w-0">{db[activeDay]?.mainTitle}</h2>
               <button
                 onClick={openRoutineModal}
-                className="btn-tap p-1 bg-lumora-bg/60 hover:bg-lumora-hover border border-white/5 rounded-lg text-lumora-sub hover:text-white shrink-0"
+                className="btn-tap p-1 bg-lumora-bg/60 hover:bg-lumora-hover border border-white/5 rounded-lg text-lumora-sub hover:text-white shrink-0 mt-0.5"
                 title={t.editLabel}
               >
                 <Edit2 className="w-3.5 h-3.5" />
