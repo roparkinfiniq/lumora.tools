@@ -58,16 +58,16 @@ export default function ToolDetailView({ tool, onBack }: ToolDetailViewProps) {
   return (
     <div className={`mx-auto px-6 py-12 ${tool.id === "7" ? "max-w-6xl w-full" : "container"}`}>
       {/* Navigation Header */}
-      <div className="flex items-center justify-between mb-16 px-4">
+      <div className="flex items-center justify-between mb-16 px-4 gap-4">
         <button 
           onClick={onBack}
-          className="group flex items-center gap-3 text-xs font-display font-bold uppercase tracking-widest text-white/50 hover:text-white transition-colors py-2 px-4 rounded-full hover:bg-white/5"
+          className="group flex items-center gap-3 text-xs font-display font-bold uppercase tracking-widest text-white/50 hover:text-white transition-colors py-2 px-4 rounded-full hover:bg-white/5 whitespace-nowrap"
         >
           <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
           Back to list
         </button>
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-[10px] font-display font-bold text-white/50 uppercase tracking-widest shadow-sm">
+          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-[10px] font-display font-bold text-white/50 uppercase tracking-widest shadow-sm whitespace-nowrap">
             <span className="h-1.5 w-1.5 rounded-full bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.5)]" />
             Live Execution
           </div>
