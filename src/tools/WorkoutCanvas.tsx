@@ -1008,7 +1008,17 @@ export default function WorkoutCanvas() {
       triggerToastBanner(detectedLang === "ko" ? "성공적으로 데이터와 요일 설정을 한글 모드로 복원했습니다!" : "Successfully restored data and visible days in English mode!");
     } catch (e) {
       console.error("Restore failed", e);
-      triggerToastBanner(t.toastRestoreFail);
+      let errMsg = t.toastRestoreFail;
+      if (e instanceof Error) {
+        if (e.message === "Format invalid.") {
+          errMsg = lang === "ko" ? "복원 실패: 지원하지 않거나 손상된 백업 코드 형식입니다." : "Restore failed: Invalid or corrupted backup format.";
+        } else if (e.name === "SyntaxError") {
+          errMsg = lang === "ko" ? "복원 실패: 유효하지 않은 데이터 구조(JSON)입니다. 코드를 다시 복사해 주세요." : "Restore failed: Invalid data structure. Please re-copy the code.";
+        } else {
+          errMsg = lang === "ko" ? `복원 실패: 디코딩 오류가 발생했습니다. (핸드폰에서 복사가 완전히 되었는지 확인하세요)` : `Restore failed: Decoding error. (Please verify if the copy was completed on the phone)`;
+        }
+      }
+      triggerToastBanner(errMsg);
     }
   };
 
@@ -2195,11 +2205,35 @@ export default function WorkoutCanvas() {
                         />
                         <button
                           onClick={() => {
-                            navigator.clipboard.writeText(exportCode).then(() => {
-                              triggerToastBanner(lang === "ko" ? "백업용 보안 코드가 복사되었습니다! 안전한 곳에 기록해 두세요." : "Backup token copied! Keep it in a safe place.");
-                            });
+                            navigator.clipboard.writeText(exportCode).then(
+                              () => {
+                                triggerToastBanner(lang === "ko" ? "백업 보안 코드가 클립보드에 복사되었습니다! 안전한 곳에 붙여넣어 두세요." : "Backup code copied to clipboard! Keep it in a safe place.");
+                              },
+                              () => {
+                                // Fallback copy mechanism for mobile or iframe env
+                                try {
+                                  const textArea = document.createElement("textarea");
+                                  textArea.value = exportCode;
+                                  textArea.style.position = "fixed";
+                                  textArea.style.left = "-999999px";
+                                  textArea.style.top = "-999999px";
+                                  document.body.appendChild(textArea);
+                                  textArea.focus();
+                                  textArea.select();
+                                  const successful = document.execCommand("copy");
+                                  document.body.removeChild(textArea);
+                                  if (successful) {
+                                    triggerToastBanner(lang === "ko" ? "백업 보안 코드가 복사되었습니다! (대체 방식)" : "Backup code copied! (fallback)");
+                                  } else {
+                                    throw new Error("execCommand failed");
+                                  }
+                                } catch (err) {
+                                  triggerToastBanner(lang === "ko" ? "자동 복사에 실패했습니다. 위 텍스트 영역을 길게 눌러 전체 선택해 직접 복사해 주세요." : "Auto-copy failed. Please manually select all and copy the text.");
+                                }
+                              }
+                            );
                           }}
-                          className="btn-tap absolute right-2 bottom-2 px-2.5 py-1.5 bg-lumora-highlight text-slate-900 font-extrabold text-[10px] rounded-lg shadow-md flex items-center gap-1"
+                          className="btn-tap absolute right-2 bottom-2 px-2.5 py-1.5 bg-lumora-highlight text-slate-900 font-extrabold text-[10px] rounded-lg shadow-md flex items-center gap-1 transition-all duration-200"
                         >
                           <Copy className="w-3 h-3" /> {t.btnCopyCode}
                         </button>
