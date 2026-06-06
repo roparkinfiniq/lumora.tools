@@ -474,6 +474,378 @@ const TRANSLATIONS = {
   }
 };
 
+interface ExercisePreset {
+  id: string;
+  nameKo: string;
+  nameEn: string;
+  categoryKo: string;
+  categoryEn: string;
+  type: "normal" | "bodyweight" | "cardio";
+  sets: number;
+  weight: number;
+  reps: number;
+  duration: number;
+  targetKo: string;
+  targetEn: string;
+  tipKo: string;
+  tipEn: string;
+}
+
+const EXERCISE_PRESETS: ExercisePreset[] = [
+  {
+    id: "preset-chest-1",
+    nameKo: "벤치 프레스",
+    nameEn: "Bench Press",
+    categoryKo: "가슴",
+    categoryEn: "Chest",
+    type: "normal",
+    sets: 4,
+    weight: 40,
+    reps: 10,
+    duration: 0,
+    targetKo: "가슴 전체 근비대 유도",
+    targetEn: "Target overall chest hypertrophy",
+    tipKo: "바벨을 명치 아래쪽으로 수직 하강하여 가슴 수축",
+    tipEn: "Bring the bar vertically down towards your lower chest"
+  },
+  {
+    id: "preset-chest-2",
+    nameKo: "인클라인 덤벨 프레스",
+    nameEn: "Incline Dumbbell Press",
+    categoryKo: "가슴",
+    categoryEn: "Chest",
+    type: "normal",
+    sets: 4,
+    weight: 15,
+    reps: 12,
+    duration: 0,
+    targetKo: "상부 가슴 집중 타격",
+    targetEn: "Target upper chest focus",
+    tipKo: "팔꿈치 각도를 살짝 안으로 조여 어깨 부상 예방",
+    tipEn: "Keep elbow angles tucked slightly inward to prevent shoulder strain"
+  },
+  {
+    id: "preset-chest-3",
+    nameKo: "펙덱 플라이",
+    nameEn: "Pec Deck Fly",
+    categoryKo: "가슴",
+    categoryEn: "Chest",
+    type: "normal",
+    sets: 3,
+    weight: 25,
+    reps: 15,
+    duration: 0,
+    targetKo: "가슴 안쪽 고립 및 수축",
+    targetEn: "Isolate inner chest squeeze",
+    tipKo: "가슴을 활짝 열고 이완 시 어깨 통증 주의",
+    tipEn: "Open your chest fully, avoiding shoulder hyperextension"
+  },
+  {
+    id: "preset-chest-4",
+    nameKo: "푸쉬업",
+    nameEn: "Push Up",
+    categoryKo: "가슴",
+    categoryEn: "Chest",
+    type: "bodyweight",
+    sets: 3,
+    weight: 0,
+    reps: 15,
+    duration: 0,
+    targetKo: "맨몸 전신 코어 및 가슴 협응",
+    targetEn: "Bodyweight chest & core coordination",
+    tipKo: "엉덩이가 처지거나 올라가지 않게 전신 일직선 유지",
+    tipEn: "Keep your body in a straight line, do not sag your hips"
+  },
+  {
+    id: "preset-back-1",
+    nameKo: "데드리프트",
+    nameEn: "Deadlift",
+    categoryKo: "등",
+    categoryEn: "Back",
+    type: "normal",
+    sets: 4,
+    weight: 60,
+    reps: 8,
+    duration: 0,
+    targetKo: "후면 사슬 전체 스트렝스",
+    targetEn: "Posterior chain overall strength",
+    tipKo: "복압을 유지하고 바가 몸에서 떨어지지 않게 리프팅",
+    tipEn: "Maintain core brace and keep the bar close to your shins"
+  },
+  {
+    id: "preset-back-2",
+    nameKo: "풀업",
+    nameEn: "Pull Up",
+    categoryKo: "등",
+    categoryEn: "Back",
+    type: "bodyweight",
+    sets: 4,
+    weight: 0,
+    reps: 8,
+    duration: 0,
+    targetKo: "등 광배근 너비 확장",
+    targetEn: "Broaden latissimus dorsi width",
+    tipKo: "숄더패킹 상태를 의식하며 가슴을 바에 밀착하듯 당김",
+    tipEn: "Focus on shoulder packing and pull your chest to the bar"
+  },
+  {
+    id: "preset-back-3",
+    nameKo: "랫풀다운",
+    nameEn: "Lat Pulldown",
+    categoryKo: "등",
+    categoryEn: "Back",
+    type: "normal",
+    sets: 4,
+    weight: 35,
+    reps: 12,
+    duration: 0,
+    targetKo: "광배근 및 대원근 집중 자극",
+    targetEn: "Focus on latissimus dorsi & teres major",
+    tipKo: "당길 때 상체를 살짝 뒤로 눕히며 견갑을 하강",
+    tipEn: "Lean back slightly and depress your shoulders as you pull"
+  },
+  {
+    id: "preset-back-4",
+    nameKo: "시티드 로우",
+    nameEn: "Seated Row",
+    categoryKo: "등",
+    categoryEn: "Back",
+    type: "normal",
+    sets: 3,
+    weight: 30,
+    reps: 12,
+    duration: 0,
+    targetKo: "등 중부 입체감 및 두께 강화",
+    targetEn: "Enhance middle back density and thickness",
+    tipKo: "명치 쪽으로 줄을 당기며 견갑골을 강하게 수축",
+    tipEn: "Pull towards your lower chest and squeeze scapulae together"
+  },
+  {
+    id: "preset-lower-1",
+    nameKo: "바벨 스쿼트",
+    nameEn: "Barbell Squat",
+    categoryKo: "하체",
+    categoryEn: "Lower",
+    type: "normal",
+    sets: 4,
+    weight: 50,
+    reps: 10,
+    duration: 0,
+    targetKo: "대퇴사두근 및 둔근 전신 대근육 강화",
+    targetEn: "Strengthen quadriceps and glutes",
+    tipKo: "무릎이 안으로 모이지 않게 발끝 방향과 수평 정렬",
+    tipEn: "Keep knees aligned with toes, do not let them cave in"
+  },
+  {
+    id: "preset-lower-2",
+    nameKo: "레그 프레스",
+    nameEn: "Leg Press",
+    categoryKo: "하체",
+    categoryEn: "Lower",
+    type: "normal",
+    sets: 4,
+    weight: 80,
+    reps: 12,
+    duration: 0,
+    targetKo: "하체 전체 안전 고중량 타격",
+    targetEn: "Safe high-load lower body targeting",
+    tipKo: "발판에서 뒤꿈치가 절대 뜨지 않도록 밀착 유지",
+    tipEn: "Keep heels firmly flat on the platform at all times"
+  },
+  {
+    id: "preset-lower-3",
+    nameKo: "레그 익스텐션",
+    nameEn: "Leg Extension",
+    categoryKo: "하체",
+    categoryEn: "Lower",
+    type: "normal",
+    sets: 3,
+    weight: 30,
+    reps: 15,
+    duration: 0,
+    targetKo: "대퇴사두근 앞벅지 고립 극대화",
+    targetEn: "Maximize quadriceps isolation",
+    tipKo: "발목을 몸쪽으로 당긴 상태에서 무릎을 끝까지 수축",
+    tipEn: "Flex ankles toward your body and fully lock out knees"
+  },
+  {
+    id: "preset-lower-4",
+    nameKo: "레그 컬",
+    nameEn: "Leg Curl",
+    categoryKo: "하체",
+    categoryEn: "Lower",
+    type: "normal",
+    sets: 3,
+    weight: 25,
+    reps: 15,
+    duration: 0,
+    targetKo: "대퇴이두근 허벅지 뒤편 집중 발달",
+    targetEn: "Isolate hamstrings on back of thighs",
+    tipKo: "엉덩이가 패드에서 들썩거리지 않게 밀착 고정",
+    tipEn: "Keep your hips firmly pressed down on the pad"
+  },
+  {
+    id: "preset-shoulders-1",
+    nameKo: "덤벨 숄더 프레스",
+    nameEn: "Dumbbell Shoulder Press",
+    categoryKo: "어깨",
+    categoryEn: "Shoulders",
+    type: "normal",
+    sets: 4,
+    weight: 10,
+    reps: 12,
+    duration: 0,
+    targetKo: "전측면 삼각근 입체적 어깨 볼륨",
+    targetEn: "Build round front & side deltoid volume",
+    tipKo: "덤벨을 내릴 때 팔꿈치가 수직 방향으로 지탱되도록 조절",
+    tipEn: "Ensure forearms stay vertical as you lower the weights"
+  },
+  {
+    id: "preset-shoulders-2",
+    nameKo: "사이드 레터럴 레이즈",
+    nameEn: "Side Lateral Raise",
+    categoryKo: "어깨",
+    categoryEn: "Shoulders",
+    type: "normal",
+    sets: 4,
+    weight: 5,
+    reps: 20,
+    duration: 0,
+    targetKo: "측면 삼각근 너비 및 분리도",
+    targetEn: "Build side deltoid width and definition",
+    tipKo: "덤벨을 위가 아닌 양옆 멀리 던지듯 보낸 뒤 버티며 이완",
+    tipEn: "Reach dumbbells far out to the sides rather than straight up"
+  },
+  {
+    id: "preset-shoulders-3",
+    nameKo: "밀리터리 프레스",
+    nameEn: "Military Press",
+    categoryKo: "어깨",
+    categoryEn: "Shoulders",
+    type: "normal",
+    sets: 4,
+    weight: 25,
+    reps: 10,
+    duration: 0,
+    targetKo: "전면 어깨 및 삼각근 전체 스트렝스",
+    targetEn: "Overall front deltoid strength building",
+    tipKo: "허리가 과하게 꺾이지 않도록 코어와 엉덩이에 힘을 유지",
+    tipEn: "Squeeze glutes and brace core to prevent lower back hyperextension"
+  },
+  {
+    id: "preset-armcore-1",
+    nameKo: "바벨 컬",
+    nameEn: "Barbell Curl",
+    categoryKo: "이두",
+    categoryEn: "Biceps",
+    type: "normal",
+    sets: 3,
+    weight: 15,
+    reps: 12,
+    duration: 0,
+    targetKo: "이두근 볼륨 발달",
+    targetEn: "Build biceps peak and mass",
+    tipKo: "팔꿈치를 옆구리에 고정하고 과도한 반동을 억제",
+    tipEn: "Keep elbows pinned to your sides and avoid excessive momentum"
+  },
+  {
+    id: "preset-armcore-2",
+    nameKo: "트라이셉스 푸쉬다운",
+    nameEn: "Triceps Pushdown",
+    categoryKo: "삼두",
+    categoryEn: "Triceps",
+    type: "normal",
+    sets: 3,
+    weight: 20,
+    reps: 15,
+    duration: 0,
+    targetKo: "삼두근 외측두 및 뒤편 볼륨 선명화",
+    targetEn: "Build lateral triceps head and volume",
+    tipKo: "상체를 살짝 숙이고 팔꿈치가 벌어지지 않게 고정하여 수축",
+    tipEn: "Lean forward slightly and lock elbows in place as you push down"
+  },
+  {
+    id: "preset-armcore-3",
+    nameKo: "플랭크",
+    nameEn: "Plank",
+    categoryKo: "코어",
+    categoryEn: "Core",
+    type: "bodyweight",
+    sets: 3,
+    weight: 0,
+    reps: 1,
+    duration: 0,
+    targetKo: "전신 코어 강화 및 등척성 버티기",
+    targetEn: "Strengthen isometric core stabilization",
+    tipKo: "머리부터 발끝까지 널빤지처럼 일직선을 만들어 복압 유지",
+    tipEn: "Keep a straight line from head to toe, bracing your core hard"
+  },
+  {
+    id: "preset-armcore-4",
+    nameKo: "크런치",
+    nameEn: "Crunch",
+    categoryKo: "코어",
+    categoryEn: "Core",
+    type: "bodyweight",
+    sets: 3,
+    weight: 0,
+    reps: 20,
+    duration: 0,
+    targetKo: "상복부 집중 수축 타격",
+    targetEn: "Isolate and contract upper abdominals",
+    tipKo: "허리를 바닥에 대고 날개뼈를 가볍게 들어 복압 쥐어짜기",
+    tipEn: "Keep lower back flat on the floor and lift shoulder blades up"
+  },
+  {
+    id: "preset-cardio-1",
+    nameKo: "러닝머신 (빠른 걷기)",
+    nameEn: "Treadmill (Fast Walk)",
+    categoryKo: "유산소",
+    categoryEn: "Cardio",
+    type: "cardio",
+    sets: 1,
+    weight: 0,
+    reps: 0,
+    duration: 15,
+    targetKo: "심박수 서서히 유도 및 칼로리 연소",
+    targetEn: "Moderate cardio output & warm up heart rate",
+    tipKo: "등을 곧게 펴고 가벼운 조깅 템포와 빠른 걷기 병행",
+    tipEn: "Walk briskly or jog with an upright spinal posture"
+  },
+  {
+    id: "preset-cardio-2",
+    nameKo: "실내 사이클",
+    nameEn: "Stationary Bike",
+    categoryKo: "유산소",
+    categoryEn: "Cardio",
+    type: "cardio",
+    sets: 1,
+    weight: 0,
+    reps: 0,
+    duration: 20,
+    targetKo: "하체 혈류 공급 및 전신 순환 촉진",
+    targetEn: "Lower body vascular drive & system warm up",
+    tipKo: "일정한 RPM 페달 속도로 심박수를 일정 수준 유지",
+    tipEn: "Keep a steady pedaling cadence to maintain target heart rate"
+  },
+  {
+    id: "preset-cardio-3",
+    nameKo: "천국의 계단 (스텝밀)",
+    nameEn: "Stairmaster",
+    categoryKo: "유산소",
+    categoryEn: "Cardio",
+    type: "cardio",
+    sets: 1,
+    weight: 0,
+    reps: 0,
+    duration: 15,
+    targetKo: "둔근 중심 하체 강화 및 고강도 유산소",
+    targetEn: "High-intensity cardio & glute conditioning",
+    tipKo: "허리를 구부리지 않고 뒤꿈치로 발판을 디뎌 오르기",
+    tipEn: "Do not hunch over, press through your heels on each step"
+  }
+];
+
 export default function WorkoutCanvas() {
   const [lang, setLang] = useState<"ko" | "en">(() => {
     const savedLang = localStorage.getItem("gems_workout_lang");
@@ -490,6 +862,7 @@ export default function WorkoutCanvas() {
     return "en";
   });
   const [activeDay, setActiveDay] = useState<string>("mon");
+  const [presetActiveTab, setPresetActiveTab] = useState<string>("Chest");
   const [db, setDb] = useState<WorkoutDatabase>(EN_DEFAULT_DATABASE);
   const [visibleDays, setVisibleDays] = useState<string[]>(["mon", "tue", "wed", "thu", "fri", "sat", "sun"]);
   const [showToast, setShowToast] = useState(false);
@@ -1105,6 +1478,87 @@ export default function WorkoutCanvas() {
       setEditExTip(item.tip || "");
     }
     setIsExerciseModalOpen(true);
+  };
+
+  const PRESET_CATEGORIES = [
+    { key: "Chest", label: lang === "ko" ? "가슴" : "Chest" },
+    { key: "Back", label: lang === "ko" ? "등" : "Back" },
+    { key: "Lower", label: lang === "ko" ? "하체" : "Lower" },
+    { key: "Shoulders", label: lang === "ko" ? "어깨" : "Shoulders" },
+    { key: "Arms", label: lang === "ko" ? "팔/코어" : "Arms" },
+    { key: "Cardio", label: lang === "ko" ? "유산소" : "Cardio" }
+  ];
+
+  const handleSelectPreset = (preset: ExercisePreset) => {
+    setEditExName(lang === "ko" ? preset.nameKo : preset.nameEn);
+    setEditExCategory(lang === "ko" ? preset.categoryKo : preset.categoryEn);
+    setEditExSetsCount(preset.sets);
+    setEditExType(preset.type);
+    setEditExWeight(preset.weight);
+    setEditExReps(preset.reps);
+    setEditExDuration(preset.duration);
+    setEditExTarget(lang === "ko" ? preset.targetKo : preset.targetEn);
+    setEditExTip(lang === "ko" ? preset.tipKo : preset.tipEn);
+    triggerToastBanner(lang === "ko" ? `"${preset.nameKo}" 값이 입력되었습니다.` : `"${preset.nameEn}" form fields preset loaded.`);
+  };
+
+  const addPresetExerciseDirectly = (preset: ExercisePreset) => {
+    const name = lang === "ko" ? preset.nameKo : preset.nameEn;
+    const category = lang === "ko" ? preset.categoryKo : preset.categoryEn;
+    const setsCount = preset.sets;
+    const type = preset.type;
+    const weight = preset.weight;
+    const reps = preset.reps;
+    const duration = preset.duration;
+    const target = lang === "ko" ? preset.targetKo : preset.targetEn;
+    const tip = lang === "ko" ? preset.tipKo : preset.tipEn;
+
+    const isWarmup = category === "웜업" || category === "Warmup";
+    const isCardio = category === "유산소" || category === "Cardio" || (type === "cardio" && !isWarmup);
+    const isBodyweight = type === "bodyweight";
+
+    let targetText = target;
+    if (!targetText) {
+      if (isCardio || isWarmup) {
+        targetText = lang === "ko" ? `${duration}분 수행` : `${duration} min execution`;
+      } else {
+        targetText = isBodyweight 
+          ? (lang === "ko" ? `${reps}회` : `${reps} reps`) 
+          : (lang === "ko" ? `${weight}kg x ${reps}회` : `${weight}kg x ${reps} reps`);
+      }
+    }
+
+    const updatedDb = { ...db };
+    const newId = `${activeDay}-${Date.now()}`;
+    const sets = Array(setsCount).fill(null);
+
+    const newItem: ExerciseItem = {
+      id: newId,
+      name,
+      category,
+      target: targetText,
+      weight: isBodyweight || isCardio || isWarmup ? 0 : weight,
+      reps: isCardio || isWarmup ? 0 : reps,
+      step: category === "어깨" || category === "Shoulders" ? 0.5 : (category === "하체" || category === "Lower" ? 5 : 2.5),
+      sets,
+      note: "",
+      tip: tip || `${category} 가이드`,
+    };
+
+    if (isWarmup) newItem.isWarmup = true;
+    if (isCardio) newItem.isCardio = true;
+    if (isBodyweight) newItem.isBodyweight = true;
+    if (isWarmup || isCardio) newItem.duration = duration;
+
+    if (!updatedDb[activeDay].items) {
+      updatedDb[activeDay].items = [];
+    }
+    updatedDb[activeDay].items.push(newItem);
+
+    setDb(updatedDb);
+    saveToStorage(updatedDb, activeDay);
+    setIsExerciseModalOpen(false);
+    triggerToastBanner(lang === "ko" ? `"${name}" 운동을 즉시 추가했습니다!` : `"${name}" added directly to your routine!`);
   };
 
   const saveExercise = () => {
@@ -1860,6 +2314,74 @@ export default function WorkoutCanvas() {
 
                   {/* Body (Scrollable) */}
                   <div className="flex-1 overflow-y-auto p-6 space-y-4">
+                    {!editingExerciseId && (
+                      <div className="space-y-3.5 pb-2.5 border-b border-white/5">
+                        <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">
+                          {lang === "ko" ? "⚡ 자주 쓰는 운동 퀵 선택" : "⚡ Quick Presets"}
+                        </label>
+                        
+                        {/* Preset Categories Tabs */}
+                        <div className="flex items-center space-x-1.5 overflow-x-auto pb-1.5 scrollbar-thin">
+                          {PRESET_CATEGORIES.map((cat) => {
+                            const isSelected = presetActiveTab === cat.key;
+                            return (
+                              <button
+                                key={cat.key}
+                                type="button"
+                                onClick={() => setPresetActiveTab(cat.key)}
+                                className={`btn-tap px-3 py-1.5 rounded-lg text-[10px] font-bold border transition-all whitespace-nowrap shrink-0 ${
+                                  isSelected
+                                    ? "bg-lumora-highlight/10 border-lumora-highlight text-lumora-highlight"
+                                    : "bg-lumora-bg/60 border-white/5 text-lumora-sub hover:text-white hover:bg-white/5"
+                                }`}
+                              >
+                                {cat.label}
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        {/* Preset Chips */}
+                        <div className="flex flex-wrap gap-2 pt-1 max-h-32 overflow-y-auto pr-1">
+                          {EXERCISE_PRESETS.filter((p) => {
+                            if (presetActiveTab === "Chest") return p.categoryEn === "Chest";
+                            if (presetActiveTab === "Back") return p.categoryEn === "Back";
+                            if (presetActiveTab === "Lower") return p.categoryEn === "Lower";
+                            if (presetActiveTab === "Shoulders") return p.categoryEn === "Shoulders";
+                            if (presetActiveTab === "Arms") return p.categoryEn === "Biceps" || p.categoryEn === "Triceps" || p.categoryEn === "Core";
+                            if (presetActiveTab === "Cardio") return p.categoryEn === "Cardio" || p.categoryEn === "Warmup";
+                            return false;
+                          }).map((preset) => {
+                            const name = lang === "ko" ? preset.nameKo : preset.nameEn;
+                            return (
+                              <div
+                                key={preset.id}
+                                className="group flex items-center bg-lumora-bg/50 border border-white/5 hover:border-white/10 rounded-xl overflow-hidden transition-all duration-200"
+                              >
+                                {/* Prefill button */}
+                                <button
+                                  type="button"
+                                  onClick={() => handleSelectPreset(preset)}
+                                  className="btn-tap px-3 py-2 text-[11px] font-semibold text-slate-200 hover:text-white hover:bg-white/5 transition text-left"
+                                >
+                                  {name}
+                                </button>
+                                {/* Direct quick add button */}
+                                <button
+                                  type="button"
+                                  onClick={() => addPresetExerciseDirectly(preset)}
+                                  className="btn-tap px-2.5 py-2 bg-lumora-highlight/10 text-lumora-highlight hover:bg-lumora-highlight hover:text-slate-900 border-l border-white/5 transition-all duration-200 flex items-center justify-center"
+                                  title={lang === "ko" ? "즉시 오늘 루틴에 추가" : "Add instantly to today's routine"}
+                                >
+                                  <span className="text-[10px] font-bold leading-none">+</span>
+                                </button>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+
                     <div className="space-y-1.5">
                       <label className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase block">{t.exNameInput}</label>
                       <input
