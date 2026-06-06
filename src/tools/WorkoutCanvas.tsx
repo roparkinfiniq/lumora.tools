@@ -2356,13 +2356,13 @@ export default function WorkoutCanvas() {
                             return (
                               <div
                                 key={preset.id}
-                                className="group flex items-center bg-lumora-bg/50 border border-white/5 hover:border-white/10 rounded-xl overflow-hidden transition-all duration-200"
+                                className="group flex items-stretch bg-lumora-bg/50 border border-white/5 hover:border-white/10 rounded-xl overflow-hidden transition-all duration-200"
                               >
                                 {/* Prefill button */}
                                 <button
                                   type="button"
                                   onClick={() => handleSelectPreset(preset)}
-                                  className="btn-tap px-3 py-2 text-[11px] font-semibold text-slate-200 hover:text-white hover:bg-white/5 transition text-left"
+                                  className="btn-tap px-3 py-2 text-[11px] font-semibold text-slate-200 hover:text-white hover:bg-white/5 transition text-left flex items-center"
                                 >
                                   {name}
                                 </button>
@@ -2370,10 +2370,10 @@ export default function WorkoutCanvas() {
                                 <button
                                   type="button"
                                   onClick={() => addPresetExerciseDirectly(preset)}
-                                  className="btn-tap px-2.5 py-2 bg-lumora-highlight/10 text-lumora-highlight hover:bg-lumora-highlight hover:text-slate-900 border-l border-white/5 transition-all duration-200 flex items-center justify-center"
+                                  className="btn-tap px-2.5 py-2 bg-lumora-highlight/10 text-lumora-highlight hover:bg-lumora-highlight hover:text-slate-900 border-l border-white/5 transition-all duration-200 flex items-center justify-center shrink-0 self-stretch"
                                   title={lang === "ko" ? "즉시 오늘 루틴에 추가" : "Add instantly to today's routine"}
                                 >
-                                  <span className="text-[10px] font-bold leading-none">+</span>
+                                  <Plus className="w-3 h-3" />
                                 </button>
                               </div>
                             );
