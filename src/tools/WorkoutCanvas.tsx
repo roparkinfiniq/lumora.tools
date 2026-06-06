@@ -1284,14 +1284,14 @@ export default function WorkoutCanvas() {
       {/* PWA Install Banner */}
       {isIframe && (
         <div className="w-full px-4 mt-3">
-          <div className="bg-gradient-to-r from-lumora-highlight/10 to-lumora-bg/60 border border-lumora-highlight/20 rounded-2xl p-4 flex items-center justify-between shadow-xl">
-            <div className="flex items-center space-x-3">
+          <div className="bg-gradient-to-r from-lumora-highlight/10 to-lumora-bg/60 border border-lumora-highlight/20 rounded-2xl p-4 flex items-center justify-between gap-3 shadow-xl">
+            <div className="flex items-center space-x-3 min-w-0 flex-1">
               <div className="w-10 h-10 rounded-xl bg-lumora-highlight/10 text-lumora-highlight flex items-center justify-center shrink-0">
                 <Download className="w-5 h-5" />
               </div>
-              <div>
-                <h4 className="text-xs font-black text-white">{t.pwaBannerTitle}</h4>
-                <p className="text-[10px] text-lumora-sub mt-0.5">{t.pwaBannerDesc}</p>
+              <div className="min-w-0 flex-1">
+                <h4 className="text-xs font-black text-white break-words leading-tight">{t.pwaBannerTitle}</h4>
+                <p className="text-[10px] text-lumora-sub mt-0.5 break-words leading-tight">{t.pwaBannerDesc}</p>
               </div>
             </div>
             <button
@@ -1360,28 +1360,28 @@ export default function WorkoutCanvas() {
           <div className="w-8 h-8 rounded-xl bg-lumora-highlight/10 flex items-center justify-center text-lumora-highlight shrink-0 mt-0.5">
             <MessageSquare className="w-4 h-4" />
           </div>
-          <div className="space-y-1">
+          <div className="space-y-1 min-w-0 flex-1">
             <span className="text-[9px] font-extrabold text-lumora-highlight tracking-wider uppercase">{t.guideTitle}</span>
-            <p className="text-xs text-lumora-text leading-relaxed font-semibold">
+            <p className="text-xs text-lumora-text leading-relaxed font-semibold break-words">
               {db[activeDay]?.directive}
             </p>
           </div>
         </div>
 
         {/* Routine Metadata */}
-        <div className="flex items-center justify-between px-1">
-          <div className="space-y-0.5">
+        <div className="flex items-center justify-between px-1 gap-4">
+          <div className="space-y-0.5 min-w-0 flex-1">
             <div className="flex items-center space-x-2">
-              <h2 className="text-base font-extrabold text-white tracking-tight">{db[activeDay]?.mainTitle}</h2>
+              <h2 className="text-base font-extrabold text-white tracking-tight break-words min-w-0">{db[activeDay]?.mainTitle}</h2>
               <button
                 onClick={openRoutineModal}
-                className="btn-tap p-1 bg-lumora-bg/60 hover:bg-lumora-hover border border-white/5 rounded-lg text-lumora-sub hover:text-white"
+                className="btn-tap p-1 bg-lumora-bg/60 hover:bg-lumora-hover border border-white/5 rounded-lg text-lumora-sub hover:text-white shrink-0"
                 title={t.editLabel}
               >
                 <Edit2 className="w-3.5 h-3.5" />
               </button>
             </div>
-            <p className="text-xs text-lumora-sub">{db[activeDay]?.subTitle}</p>
+            <p className="text-xs text-lumora-sub break-words">{db[activeDay]?.subTitle}</p>
           </div>
           <div className="bg-[#1a1921]/40 px-3 py-1.5 rounded-xl border border-white/5 text-right shrink-0">
             <span className="text-[9px] text-lumora-sub font-extrabold block uppercase tracking-wider">{t.routineProgressText}</span>
@@ -1445,7 +1445,7 @@ export default function WorkoutCanvas() {
                   {item.isWarmup ? (
                     <div className="space-y-2">
                       <div className="flex items-center justify-between bg-lumora-card/50 p-3 rounded-2xl border border-white/5 text-xs">
-                        <span className="text-lumora-sub font-extrabold">{t.setLogsLabel}</span>
+                        <span className="text-lumora-sub font-extrabold whitespace-nowrap shrink-0">{t.setLogsLabel}</span>
                         <div className="flex items-center space-x-3 bg-lumora-bg/40 px-3 py-1.5 rounded-xl border border-white/5">
                           <button
                             onClick={() => changeCardio(item.id, -1)}
@@ -1482,7 +1482,7 @@ export default function WorkoutCanvas() {
                   ) : item.isCardio ? (
                     <div className="space-y-2">
                       <div className="flex items-center justify-between bg-lumora-card/50 p-3 rounded-2xl border border-white/5 text-xs">
-                        <span className="text-lumora-sub font-extrabold">{t.setLogsLabelCardio}</span>
+                        <span className="text-lumora-sub font-extrabold whitespace-nowrap shrink-0">{t.setLogsLabelCardio}</span>
                         <div className="flex items-center space-x-3 bg-lumora-bg/40 px-3 py-1.5 rounded-xl border border-white/5">
                           <button
                             onClick={() => changeCardio(item.id, -5)}
@@ -1665,13 +1665,13 @@ export default function WorkoutCanvas() {
                       <X className="w-4 h-4" />
                     </button>
 
-                    <div className="flex items-center space-x-3">
+                    <div className="flex items-center space-x-3 min-w-0 flex-1 mr-8">
                       <div className="w-9 h-9 rounded-xl bg-lumora-highlight/10 text-lumora-highlight flex items-center justify-center shrink-0">
                         <Edit3 className="w-5 h-5" />
                       </div>
-                      <div>
-                        <h3 className="text-sm font-black text-white">{t.routineInfoEditTitle}</h3>
-                        <p className="text-[10px] text-lumora-sub">{t.routineInfoEditDesc}</p>
+                      <div className="min-w-0 flex-1">
+                        <h3 className="text-sm font-black text-white break-words leading-tight">{t.routineInfoEditTitle}</h3>
+                        <p className="text-[10px] text-lumora-sub break-words leading-tight mt-0.5">{t.routineInfoEditDesc}</p>
                       </div>
                     </div>
                   </div>
@@ -1764,15 +1764,15 @@ export default function WorkoutCanvas() {
                       <X className="w-4 h-4" />
                     </button>
 
-                    <div className="flex items-center space-x-3">
+                    <div className="flex items-center space-x-3 min-w-0 flex-1 mr-8">
                       <div className="w-9 h-9 rounded-xl bg-lumora-highlight/10 text-lumora-highlight flex items-center justify-center shrink-0">
                         <PlusCircle className="w-5 h-5" />
                       </div>
-                      <div>
-                        <h3 className="text-sm font-black text-white">
+                      <div className="min-w-0 flex-1">
+                        <h3 className="text-sm font-black text-white break-words leading-tight">
                           {editingExerciseId ? t.exerciseEditTitle : t.exerciseAddTitle}
                         </h3>
-                        <p className="text-[10px] text-lumora-sub">
+                        <p className="text-[10px] text-lumora-sub break-words leading-tight mt-0.5">
                           {editingExerciseId ? t.exerciseEditDesc : t.exerciseAddDesc}
                         </p>
                       </div>
@@ -1991,13 +1991,13 @@ export default function WorkoutCanvas() {
                       <X className="w-4 h-4" />
                     </button>
 
-                    <div className="flex items-center space-x-3">
+                    <div className="flex items-center space-x-3 min-w-0 flex-1 mr-8">
                       <div className="w-9 h-9 rounded-xl bg-lumora-highlight/10 text-lumora-highlight flex items-center justify-center shrink-0">
                         <Settings className="w-5 h-5" />
                       </div>
-                      <div>
-                        <h3 className="text-sm font-black text-white">{t.settingsTitle}</h3>
-                        <p className="text-[10px] text-lumora-sub">{t.settingsDesc}</p>
+                      <div className="min-w-0 flex-1">
+                        <h3 className="text-sm font-black text-white break-words leading-tight">{t.settingsTitle}</h3>
+                        <p className="text-[10px] text-lumora-sub break-words leading-tight mt-0.5">{t.settingsDesc}</p>
                       </div>
                     </div>
                   </div>
@@ -2101,13 +2101,13 @@ export default function WorkoutCanvas() {
                       <X className="w-4 h-4" />
                     </button>
 
-                    <div className="flex items-center space-x-3">
+                    <div className="flex items-center space-x-3 min-w-0 flex-1 mr-8">
                       <div className="w-9 h-9 rounded-xl bg-lumora-highlight/10 text-lumora-highlight flex items-center justify-center shrink-0">
                         <Database className="w-5 h-5" />
                       </div>
-                      <div>
-                        <h3 className="text-sm font-black text-white">{t.backupTitle}</h3>
-                        <p className="text-[10px] text-lumora-sub">{t.backupDesc}</p>
+                      <div className="min-w-0 flex-1">
+                        <h3 className="text-sm font-black text-white break-words leading-tight">{t.backupTitle}</h3>
+                        <p className="text-[10px] text-lumora-sub break-words leading-tight mt-0.5">{t.backupDesc}</p>
                       </div>
                     </div>
                   </div>
@@ -2215,34 +2215,40 @@ export default function WorkoutCanvas() {
                       <X className="w-4 h-4" />
                     </button>
 
-                    <div className="flex items-center space-x-3">
+                    <div className="flex items-center space-x-3 min-w-0 flex-1 mr-8">
                       <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-450 flex items-center justify-center shrink-0">
                         <ShieldAlert className="w-5 h-5" />
                       </div>
-                      <div>
-                        <h3 className="text-sm font-black text-white">{t.safetyTitle}</h3>
-                        <p className="text-[10px] text-lumora-sub">{t.safetyDesc}</p>
+                      <div className="min-w-0 flex-1">
+                        <h3 className="text-sm font-black text-white break-words leading-tight">{t.safetyTitle}</h3>
+                        <p className="text-[10px] text-lumora-sub break-words leading-tight mt-0.5">{t.safetyDesc}</p>
                       </div>
                     </div>
                   </div>
 
                   {/* Body (Scrollable) */}
                   <div className="flex-1 overflow-y-auto p-6 space-y-3">
-                    <div className="p-3.5 bg-[#1a1921]/50 rounded-2xl border border-white/5 flex items-start gap-3">
-                      <span className="px-2 py-0.5 bg-rose-500/10 text-rose-450 font-extrabold text-[10px] rounded border border-rose-500/20 mt-0.5 shrink-0">{t.wristTitle}</span>
-                      <p className="text-[11px] text-lumora-text/80 leading-relaxed font-semibold">
+                    <div className="p-3.5 bg-[#1a1921]/50 rounded-2xl border border-white/5 flex flex-col gap-2">
+                      <div className="flex items-center">
+                        <span className="px-2 py-0.5 bg-rose-500/10 text-rose-450 font-extrabold text-[10px] rounded border border-rose-500/20 shrink-0">{t.wristTitle}</span>
+                      </div>
+                      <p className="text-[11px] text-lumora-text/80 leading-relaxed font-semibold break-words">
                         {t.wristBody}
                       </p>
                     </div>
-                    <div className="p-3.5 bg-[#1a1921]/50 rounded-2xl border border-white/5 flex items-start gap-3">
-                      <span className="px-2 py-0.5 bg-amber-500/10 text-amber-450 font-extrabold text-[10px] rounded border border-amber-500/20 mt-0.5 shrink-0">{t.kneeTitle}</span>
-                      <p className="text-[11px] text-lumora-text/80 leading-relaxed font-semibold">
+                    <div className="p-3.5 bg-[#1a1921]/50 rounded-2xl border border-white/5 flex flex-col gap-2">
+                      <div className="flex items-center">
+                        <span className="px-2 py-0.5 bg-amber-500/10 text-amber-450 font-extrabold text-[10px] rounded border border-amber-500/20 shrink-0">{t.kneeTitle}</span>
+                      </div>
+                      <p className="text-[11px] text-lumora-text/80 leading-relaxed font-semibold break-words">
                         {t.kneeBody}
                       </p>
                     </div>
-                    <div className="p-3.5 bg-[#1a1921]/50 rounded-2xl border border-white/5 flex items-start gap-3">
-                      <span className="px-2 py-0.5 bg-teal-500/10 text-teal-450 font-extrabold text-[10px] rounded border border-teal-500/20 mt-0.5 shrink-0">{t.shoulderTitle}</span>
-                      <p className="text-[11px] text-lumora-text/80 leading-relaxed font-semibold">
+                    <div className="p-3.5 bg-[#1a1921]/50 rounded-2xl border border-white/5 flex flex-col gap-2">
+                      <div className="flex items-center">
+                        <span className="px-2 py-0.5 bg-teal-500/10 text-teal-450 font-extrabold text-[10px] rounded border border-teal-500/20 shrink-0">{t.shoulderTitle}</span>
+                      </div>
+                      <p className="text-[11px] text-lumora-text/80 leading-relaxed font-semibold break-words">
                         {t.shoulderBody}
                       </p>
                     </div>
@@ -2294,13 +2300,13 @@ export default function WorkoutCanvas() {
                       <X className="w-4 h-4" />
                     </button>
 
-                    <div className="flex items-center space-x-3">
+                    <div className="flex items-center space-x-3 min-w-0 flex-1 mr-8">
                       <div className="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-450 flex items-center justify-center shrink-0">
                         <Smartphone className="w-5 h-5" />
                       </div>
-                      <div>
-                        <h3 className="text-sm font-black text-white">{t.pwaTitle}</h3>
-                        <p className="text-[10px] text-lumora-sub">{t.pwaDesc}</p>
+                      <div className="min-w-0 flex-1">
+                        <h3 className="text-sm font-black text-white break-words leading-tight">{t.pwaTitle}</h3>
+                        <p className="text-[10px] text-lumora-sub break-words leading-tight mt-0.5">{t.pwaDesc}</p>
                       </div>
                     </div>
                   </div>
@@ -2378,13 +2384,13 @@ export default function WorkoutCanvas() {
                       <X className="w-4 h-4" />
                     </button>
 
-                    <div className="flex items-center space-x-3">
+                    <div className="flex items-center space-x-3 min-w-0 flex-1 mr-8">
                       <div className="w-9 h-9 rounded-xl bg-rose-500/10 text-rose-450 flex items-center justify-center shrink-0">
                         <RotateCcw className="w-5 h-5" />
                       </div>
-                      <div>
-                        <h3 className="text-sm font-black text-white">{t.resetConfirmTitle}</h3>
-                        <p className="text-[10px] text-lumora-sub">{t.resetConfirmDesc}</p>
+                      <div className="min-w-0 flex-1">
+                        <h3 className="text-sm font-black text-white break-words leading-tight">{t.resetConfirmTitle}</h3>
+                        <p className="text-[10px] text-lumora-sub break-words leading-tight mt-0.5">{t.resetConfirmDesc}</p>
                       </div>
                     </div>
                   </div>
@@ -2450,13 +2456,13 @@ export default function WorkoutCanvas() {
                       <X className="w-4 h-4" />
                     </button>
 
-                    <div className="flex items-center space-x-3">
+                    <div className="flex items-center space-x-3 min-w-0 flex-1 mr-8">
                       <div className="w-9 h-9 rounded-xl bg-lumora-highlight/10 text-lumora-highlight flex items-center justify-center shrink-0">
                         <MoreHorizontal className="w-5 h-5" />
                       </div>
-                      <div>
-                        <h3 className="text-sm font-black text-white">{t.moreMenuTitle}</h3>
-                        <p className="text-[10px] text-lumora-sub">{t.moreMenuDesc}</p>
+                      <div className="min-w-0 flex-1">
+                        <h3 className="text-sm font-black text-white break-words leading-tight">{t.moreMenuTitle}</h3>
+                        <p className="text-[10px] text-lumora-sub break-words leading-tight mt-0.5">{t.moreMenuDesc}</p>
                       </div>
                     </div>
                   </div>
@@ -2468,16 +2474,14 @@ export default function WorkoutCanvas() {
                         setIsMoreOpen(false);
                         setIsSettingsOpen(true);
                       }}
-                      className="w-full flex items-center justify-between p-4 bg-[#1a1921]/50 hover:bg-lumora-hover border border-white/5 rounded-2xl transition text-left pointer-events-auto"
+                      className="w-full flex items-center p-4 bg-[#1a1921]/50 hover:bg-lumora-hover border border-white/5 rounded-2xl transition text-left pointer-events-auto gap-3"
                     >
-                      <div className="flex items-center space-x-3.5">
-                        <div className="w-9 h-9 rounded-xl bg-lumora-highlight/10 text-lumora-highlight flex items-center justify-center shrink-0">
-                          <Settings className="w-4 h-4" />
-                        </div>
-                        <div>
-                          <div className="text-xs font-bold text-white">{t.settingsTitle}</div>
-                          <div className="text-[9px] text-lumora-sub mt-0.5">{t.settingsDesc}</div>
-                        </div>
+                      <div className="w-9 h-9 rounded-xl bg-lumora-highlight/10 text-lumora-highlight flex items-center justify-center shrink-0">
+                        <Settings className="w-4 h-4" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="text-xs font-bold text-white break-words leading-tight">{t.settingsTitle}</div>
+                        <div className="text-[9px] text-lumora-sub mt-0.5 break-words leading-tight">{t.settingsDesc}</div>
                       </div>
                     </button>
 
@@ -2486,16 +2490,14 @@ export default function WorkoutCanvas() {
                         setIsMoreOpen(false);
                         openBackupModal();
                       }}
-                      className="w-full flex items-center justify-between p-4 bg-[#1a1921]/50 hover:bg-lumora-hover border border-white/5 rounded-2xl transition text-left pointer-events-auto"
+                      className="w-full flex items-center p-4 bg-[#1a1921]/50 hover:bg-lumora-hover border border-white/5 rounded-2xl transition text-left pointer-events-auto gap-3"
                     >
-                      <div className="flex items-center space-x-3.5">
-                        <div className="w-9 h-9 rounded-xl bg-lumora-highlight/10 text-lumora-highlight flex items-center justify-center shrink-0">
-                          <Database className="w-4 h-4" />
-                        </div>
-                        <div>
-                          <div className="text-xs font-bold text-white">{t.backupTitle}</div>
-                          <div className="text-[9px] text-lumora-sub mt-0.5">{t.backupDesc}</div>
-                        </div>
+                      <div className="w-9 h-9 rounded-xl bg-lumora-highlight/10 text-lumora-highlight flex items-center justify-center shrink-0">
+                        <Database className="w-4 h-4" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="text-xs font-bold text-white break-words leading-tight">{t.backupTitle}</div>
+                        <div className="text-[9px] text-lumora-sub mt-0.5 break-words leading-tight">{t.backupDesc}</div>
                       </div>
                     </button>
 
@@ -2504,16 +2506,14 @@ export default function WorkoutCanvas() {
                         setIsMoreOpen(false);
                         setIsSafetyOpen(true);
                       }}
-                      className="w-full flex items-center justify-between p-4 bg-[#1a1921]/50 hover:bg-lumora-hover border border-white/5 rounded-2xl transition text-left pointer-events-auto"
+                      className="w-full flex items-center p-4 bg-[#1a1921]/50 hover:bg-lumora-hover border border-white/5 rounded-2xl transition text-left pointer-events-auto gap-3"
                     >
-                      <div className="flex items-center space-x-3.5">
-                        <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-450 flex items-center justify-center shrink-0">
-                          <ShieldAlert className="w-4 h-4" />
-                        </div>
-                        <div>
-                          <div className="text-xs font-bold text-white">{t.safetyTitle}</div>
-                          <div className="text-[9px] text-lumora-sub mt-0.5">{t.safetyDesc}</div>
-                        </div>
+                      <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-450 flex items-center justify-center shrink-0">
+                        <ShieldAlert className="w-4 h-4" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="text-xs font-bold text-white break-words leading-tight">{t.safetyTitle}</div>
+                        <div className="text-[9px] text-lumora-sub mt-0.5 break-words leading-tight">{t.safetyDesc}</div>
                       </div>
                     </button>
                   </div>
