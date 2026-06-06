@@ -398,7 +398,11 @@ export default function App() {
 
       <CursorSpotlight />
 
-      <main className="relative pt-32 lg:pt-48">
+      <main className={`relative transition-all duration-300 ${
+        currentView === "utility-detail" || selectedPost
+          ? "pt-6 lg:pt-16"
+          : "pt-32 lg:pt-48"
+      }`}>
         <AnimatePresence mode="wait">
           {currentView === "home" && (
             <motion.div
