@@ -115,6 +115,129 @@ const tools: Tool[] = [
       { step: "Copy blog/coach report", detail: "Click 'Complete & Copy AI Coach Report' to copy a formatted text summary for your blog, coach, or AI." },
     ],
   },
+  {
+    id: "8",
+    name: "PNG ↔ JPG Converter",
+    slug: "png-jpg",
+    description:
+      "Convert PNG to JPG with custom background colors, or JPG to PNG losslessly. All processing is local and secure.",
+    icon: "Image",
+    category: "Synthesis",
+    link: "#",
+    usageSteps: [
+      { step: "Select image", detail: "Drag and drop a PNG or JPG image, or click to choose from your files." },
+      { step: "Choose output format", detail: "Select PNG, JPG, or let the converter automatically decide the opposite format." },
+      { step: "Adjust options", detail: "Configure JPG quality and set background colors for transparent PNGs." },
+      { step: "Convert & Download", detail: "Click 'Convert' to process, preview the output, and click 'Download' to save." },
+    ],
+  },
+  {
+    id: "9",
+    name: "PNG/JPG → ICO Converter",
+    slug: "ico-converter",
+    description:
+      "Convert images to multi-resolution Windows ICO favicon format. Output contains 16px, 32px, 48px, and 64px layers.",
+    icon: "FileImage",
+    category: "Synthesis",
+    link: "#",
+    usageSteps: [
+      { step: "Upload image", detail: "Drag and drop or click to upload a square PNG or JPG image (under 2MB)." },
+      { step: "Process conversion", detail: "Click 'Convert' to trigger client-side binary packaging." },
+      { step: "Download ICO", detail: "Once complete, click 'Download' to save your multi-resolution favicon.ico file." },
+    ],
+  },
+  {
+    id: "10",
+    name: "Image Compressor",
+    slug: "image-compressor",
+    description:
+      "Reduce image file size locally using HTML5 canvas. Customize dimensions and compression ratios with real-time feedback.",
+    icon: "FileDown",
+    category: "Synthesis",
+    link: "#",
+    usageSteps: [
+      { step: "Add image", detail: "Drag and drop or select a JPG, PNG, or WEBP image." },
+      { step: "Tune compression settings", detail: "Adjust the quality slider and resize width to find the perfect balance." },
+      { step: "Inspect preview", detail: "Scroll mouse wheel to zoom, or drag-pan the image to inspect quality." },
+      { step: "Download result", detail: "Click 'Download' to save the optimized image file." },
+    ],
+  },
+  {
+    id: "11",
+    name: "HEIC to JPG Converter",
+    slug: "heic-to-jpg",
+    description:
+      "Convert Apple HEIC photos to standard JPEG files. Fast local conversion keeping your privacy safe.",
+    icon: "Image",
+    category: "Synthesis",
+    link: "#",
+    usageSteps: [
+      { step: "Select HEIC file", detail: "Drop your HEIC photos or click to browse files from your Apple devices." },
+      { step: "Start conversion", detail: "Click 'Convert' to decode and render the HEIC content locally." },
+      { step: "Download JPEG", detail: "Click 'Download' to save the decoded high-quality JPG image." },
+    ],
+  },
+  {
+    id: "12",
+    name: "Image to PDF Converter",
+    slug: "image-to-pdf",
+    description:
+      "Combine multiple PNG, JPG, or WEBP images into a single formatted PDF document. Support page size and margins customisation.",
+    icon: "FileUp",
+    category: "Synthesis",
+    link: "#",
+    usageSteps: [
+      { step: "Upload images", detail: "Select multiple image files. Drag or click the up/down buttons to reorder them." },
+      { step: "Customize layout", detail: "Set target page size (A4, Letter, Auto), orientation, margins, and fitting modes." },
+      { step: "Generate PDF", detail: "Click 'Convert to PDF' and wait for the document to compile and download." },
+    ],
+  },
+  {
+    id: "13",
+    name: "PDF to Image Converter",
+    slug: "pdf-to-image",
+    description:
+      "Extract pages from a PDF document as high-resolution PNG or JPG images. Preview page by page and download as a ZIP.",
+    icon: "FileImage",
+    category: "Synthesis",
+    link: "#",
+    usageSteps: [
+      { step: "Upload PDF", detail: "Drag and drop or select your PDF document to load it in the viewer." },
+      { step: "Preview pages", detail: "Navigate using next/prev buttons, or zoom/pan the canvas to inspect detail." },
+      { step: "Configure output", detail: "Select output format (PNG/JPG), resolution scale, and quality options." },
+      { step: "Extract ZIP", detail: "Click 'Save all pages' to export all pages as a structured ZIP file." },
+    ],
+  },
+  {
+    id: "14",
+    name: "PDF Merger",
+    slug: "pdf-merge",
+    description:
+      "Merge multiple PDF files into a single consolidated PDF document. Rearrange pages easily and securely inside your browser.",
+    icon: "Files",
+    category: "Synthesis",
+    link: "#",
+    usageSteps: [
+      { step: "Select PDFs", detail: "Choose or drop multiple PDF files. The viewer will show a sortable queue." },
+      { step: "Reorder queue", detail: "Drag files up/down to set the merging sequence." },
+      { step: "Merge & Save", detail: "Click 'Merge & Download' to combine all files into one document." },
+    ],
+  },
+  {
+    id: "15",
+    name: "Global Size Converter",
+    slug: "global-size-converter",
+    description:
+      "Translate shoes, clothing, hats, and rings sizes between KR, US, UK, and EU standards instantly.",
+    icon: "Ruler",
+    category: "Dev Tools",
+    link: "#",
+    usageSteps: [
+      { step: "Choose tab", detail: "Select footwear, tops/bottoms clothing, headwear, or rings tabs." },
+      { step: "Input size", detail: "Toggle gender options, adjust sliders, or input your measurements." },
+      { step: "Get conversions", detail: "Instantly read corresponding sizing values across global regions." },
+    ],
+  },
 ];
 
 const blogPosts: BlogPost[] = [

@@ -6,6 +6,14 @@ import ChromaticExtractor from '../tools/ChromaticExtractor';
 import VectorLabGradients from '../tools/VectorLabGradients';
 import PdfStudio from '../tools/PdfStudio';
 import WorkoutCanvas from '../tools/WorkoutCanvas';
+import PngJpgConverter from '../tools/PngJpgConverter';
+import IcoConverter from '../tools/IcoConverter';
+import ImageCompressor from '../tools/ImageCompressor';
+import HeicToJpg from '../tools/HeicToJpg';
+import ImageToPdf from '../tools/ImageToPdf';
+import PdfToImage from '../tools/PdfToImage';
+import PdfMerger from '../tools/PdfMerger';
+import GlobalSizeConverter from '../tools/GlobalSizeConverter';
 import { 
   ArrowLeft, 
   Activity,
@@ -32,6 +40,22 @@ export default function ToolDetailView({ tool, onBack }: ToolDetailViewProps) {
         return <ChromaticExtractor />;
       case "7":
         return <WorkoutCanvas />;
+      case "8":
+        return <PngJpgConverter />;
+      case "9":
+        return <IcoConverter />;
+      case "10":
+        return <ImageCompressor />;
+      case "11":
+        return <HeicToJpg />;
+      case "12":
+        return <ImageToPdf />;
+      case "13":
+        return <PdfToImage />;
+      case "14":
+        return <PdfMerger />;
+      case "15":
+        return <GlobalSizeConverter />;
       default:
         return (
           <div className="relative z-10 text-center space-y-10">
@@ -121,7 +145,7 @@ export default function ToolDetailView({ tool, onBack }: ToolDetailViewProps) {
             {renderToolLogic()}
 
             {/* Technical Detail Overlays */}
-            {!["1", "3", "4", "5", "6", "7"].includes(tool.id) && (
+            {!["1", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"].includes(tool.id) && (
               <>
                 <div className="absolute top-8 right-8 px-4 py-2 rounded-full bg-white/5 text-[10px] font-display font-bold text-white/30 uppercase tracking-widest">
                   Playground

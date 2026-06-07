@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import Toast from "../components/Toast";
 import { 
@@ -163,7 +163,7 @@ export default function ChromaticExtractor() {
             <ImageIcon className="h-3 w-3" /> Visual Context
           </span>
           <div 
-            className={`flex-1 rounded-[32px] border-2 border-dashed transition-all flex flex-col items-center justify-center overflow-hidden relative group bg-[#0a0a0c] ${
+            className={`flex-1 rounded-[32px] border-2 border-dashed transition-all flex flex-col items-center justify-center overflow-hidden relative group bg-lumora-bg/40 ${
               image ? 'border-transparent' : 'border-white/5 hover:border-white/10 cursor-pointer'
             }`}
             onClick={() => !image && fileInputRef.current?.click()}
@@ -210,7 +210,7 @@ export default function ChromaticExtractor() {
                         scale: { duration: 0.1 }
                       }}
                       onClick={() => handleCopy(hex)}
-                      className="group flex items-center justify-between p-3 rounded-2xl bg-[#0a0a0c] border border-white/5 hover:border-white/20 transition-all text-left"
+                      className="group flex items-center justify-between p-3 rounded-2xl bg-lumora-bg/40 border border-white/5 hover:border-white/20 transition-all text-left"
                     >
                       <div className="flex items-center gap-4">
                         <div 

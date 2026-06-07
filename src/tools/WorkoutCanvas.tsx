@@ -1350,7 +1350,7 @@ export default function WorkoutCanvas() {
       // Restore visible days configuration
       let restoredVisibleDays: string[] | null = null;
       if (importedData.visibleDays && Array.isArray(importedData.visibleDays)) {
-        restoredVisibleDays = importedData.visibleDays.filter((d: string) => DAY_ORDER.includes(d));
+        restoredVisibleDays = importedData.visibleDays.filter((d: string) => (DAY_ORDER as readonly string[]).includes(d));
       }
 
       // Sync active state & language
