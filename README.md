@@ -1,5 +1,5 @@
 <div align="center">
-<img width="1200" height="475" alt="Lumora Tools Banner" src="./banner.png" />
+<img width="1200" height="475" alt="Lumora Tools Banner" src="./banner_minimal.png" />
 </div>
 
 # 🧶 Lumora Tools
