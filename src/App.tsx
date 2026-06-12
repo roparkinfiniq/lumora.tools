@@ -395,11 +395,22 @@ export default function App() {
     if (path.startsWith("/utilities/")) {
       return "utility-detail";
     }
+    if (path.startsWith("/journal/")) {
+      return "insights";
+    }
     return URL_TO_VIEW[path] ?? "home";
   });
   const [activeCategory, setActiveCategory] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
+  const [selectedPost, setSelectedPost] = useState<BlogPost | null>(() => {
+    const path = window.location.pathname;
+    if (path.startsWith("/journal/")) {
+      const parts = path.substring("/journal/".length).split("/");
+      const postId = parts[0];
+      return blogPosts.find((p) => p.id === postId) ?? null;
+    }
+    return null;
+  });
   const [selectedTool, setSelectedTool] = useState<Tool | null>(() => {
     const path = window.location.pathname;
     if (path.startsWith("/utilities/")) {
@@ -436,12 +447,14 @@ export default function App() {
       } else {
         url = `/utilities/${slug}`;
       }
+    } else if (currentView === "insights" && selectedPost) {
+      url = `/journal/${selectedPost.id}`;
     }
     if (window.location.pathname !== url) {
       window.history.pushState({ view: currentView }, "", url);
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [currentView, selectedTool]);
+  }, [currentView, selectedTool, selectedPost]);
 
   // Handle browser back/forward buttons
   useEffect(() => {
@@ -453,10 +466,19 @@ export default function App() {
         const foundTool = tools.find((t) => t.slug === toolSlug || getToolSlug(t.name) === toolSlug) ?? null;
         setCurrentView("utility-detail");
         setSelectedTool(foundTool);
+        setSelectedPost(null);
+      } else if (path.startsWith("/journal/")) {
+        const parts = path.substring("/journal/".length).split("/");
+        const postId = parts[0];
+        const foundPost = blogPosts.find((p) => p.id === postId) ?? null;
+        setCurrentView("insights");
+        setSelectedPost(foundPost);
+        setSelectedTool(null);
       } else {
         const view = URL_TO_VIEW[path] ?? "home";
         setCurrentView(view);
         setSelectedTool(null);
+        setSelectedPost(null);
       }
     };
 
