@@ -94,10 +94,13 @@ export default function GlobalSizeConverter() {
   const getShoeConversions = () => {
     const match = SHOE_DATA.find((s) => s.mm === shoesSize);
     if (!match) return [];
+    
+    const usLabel = shoesGender === "men" ? "US (Men)" : "US (Women)";
+    const usValue = shoesGender === "men" ? match.us_m.toString() : match.us_w.toString();
+
     return [
       { label: "Korea (mm)", value: `${match.mm} mm` },
-      { label: "US (Men)", value: match.us_m.toString() },
-      { label: "US (Women)", value: match.us_w.toString() },
+      { label: usLabel, value: usValue },
       { label: "UK", value: match.uk.toString() },
       { label: "Europe (EU)", value: match.eu.toString() },
     ];
@@ -238,7 +241,12 @@ export default function GlobalSizeConverter() {
                 <label className="text-[10px] font-display font-bold text-white/40 uppercase tracking-widest">Gender Target</label>
                 <div className="grid grid-cols-2 gap-2 bg-lumora-bg/40 p-1 rounded-xl border border-white/5">
                   <button
-                    onClick={() => setShoesGender("men")}
+                    onClick={() => {
+                      setShoesGender("men");
+                      if (shoesSize < 245) {
+                        setShoesSize(270);
+                      }
+                    }}
                     className={`py-2 px-3 text-[10px] font-display font-bold uppercase tracking-wider rounded-lg transition-all ${
                       shoesGender === "men" ? "bg-white/10 text-white" : "text-white/40 hover:text-white"
                     }`}
@@ -246,7 +254,12 @@ export default function GlobalSizeConverter() {
                     Men Standard
                   </button>
                   <button
-                    onClick={() => setShoesGender("women")}
+                    onClick={() => {
+                      setShoesGender("women");
+                      if (shoesSize > 270) {
+                        setShoesSize(240);
+                      }
+                    }}
                     className={`py-2 px-3 text-[10px] font-display font-bold uppercase tracking-wider rounded-lg transition-all ${
                       shoesGender === "women" ? "bg-white/10 text-white" : "text-white/40 hover:text-white"
                     }`}
@@ -263,7 +276,7 @@ export default function GlobalSizeConverter() {
                   onChange={(e) => setShoesSize(parseInt(e.target.value))}
                   className="w-full bg-lumora-bg/85 border border-white/5 rounded-xl px-4 py-2.5 text-xs text-white/80 focus:outline-none"
                 >
-                  {SHOE_DATA.map((s) => (
+                  {SHOE_DATA.filter((s) => shoesGender === "men" ? s.mm >= 245 : s.mm <= 270).map((s) => (
                     <option key={s.mm} value={s.mm}>
                       {s.mm} mm
                     </option>
