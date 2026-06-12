@@ -41,7 +41,7 @@ export default function CodeTiaraView() {
 
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-4">
               <a
-                href="https://drive.google.com/file/d/1d6DJ8F3Gm3BVyWOiNDs3VPmHafBMbzFa/view?usp=sharing"
+                href="https://drive.google.com/uc?export=download&id=1d6DJ8F3Gm3BVyWOiNDs3VPmHafBMbzFa"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group flex items-center justify-center gap-2 sm:gap-3 h-12 sm:h-14 lg:h-16 px-6 sm:px-8 rounded-xl bg-white text-black font-display font-bold text-base sm:text-lg hover:-translate-y-1 hover:shadow-[0_8px_20px_rgba(255,255,255,0.2)] active:translate-y-0 active:scale-95 transition-all duration-300"
@@ -387,7 +387,7 @@ export default function CodeTiaraView() {
             </div>
 
             <a
-              href="https://drive.google.com/file/d/1d6DJ8F3Gm3BVyWOiNDs3VPmHafBMbzFa/view?usp=sharing"
+              href="https://drive.google.com/uc?export=download&id=1d6DJ8F3Gm3BVyWOiNDs3VPmHafBMbzFa"
               target="_blank"
               rel="noopener noreferrer"
               className="group/btn inline-flex items-center justify-center gap-2 sm:gap-3 h-12 sm:h-14 lg:h-16 px-8 sm:px-10 rounded-xl bg-white text-black font-display font-bold text-base sm:text-lg hover:-translate-y-1 hover:shadow-[0_8px_20px_rgba(255,255,255,0.2)] active:translate-y-0 active:scale-95 transition-all duration-300"
