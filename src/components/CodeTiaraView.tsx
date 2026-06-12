@@ -52,10 +52,10 @@ export default function CodeTiaraView() {
                   <Download className="absolute -top-full left-0 h-4 w-4 sm:h-5 sm:w-5 shrink-0 transition-transform duration-300 group-hover:translate-y-full" />
                 </div>
               </a>
-              <button className="flex items-center justify-center gap-2 sm:gap-3 h-12 sm:h-14 lg:h-16 px-4 sm:px-6 rounded-xl bg-black border border-white/20 text-white font-display font-medium text-base sm:text-lg hover:bg-[#111] hover:border-white/40 hover:-translate-y-1 hover:shadow-[0_8px_20px_rgba(0,0,0,0.3)] active:translate-y-0 active:scale-95 transition-all duration-300 group">
+              <div className="flex items-center justify-center gap-2 sm:gap-3 h-12 sm:h-14 lg:h-16 px-4 sm:px-6 rounded-xl bg-white/[0.02] border border-white/10 text-white/40 font-display font-medium text-base sm:text-lg select-none cursor-not-allowed relative group overflow-hidden opacity-50">
                 <svg
                   viewBox="0 0 24 24"
-                  className="w-6 h-6 sm:w-8 sm:h-8 shrink-0 group-hover:scale-105 transition-transform duration-300"
+                  className="w-6 h-6 sm:w-8 sm:h-8 shrink-0 opacity-30"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
@@ -77,14 +77,14 @@ export default function CodeTiaraView() {
                   />
                 </svg>
                 <div className="flex flex-col items-start justify-center text-left">
-                  <span className="text-[10px] uppercase font-semibold tracking-[0.08em] text-white/80 leading-none mb-1 whitespace-nowrap">
-                    GET IT ON
+                  <span className="text-[10px] uppercase font-bold tracking-[0.08em] text-[#ff7eb3] leading-none mb-1 whitespace-nowrap">
+                    COMING SOON
                   </span>
-                  <span className="text-[20px] font-sans font-bold tracking-tight leading-none text-white whitespace-nowrap">
+                  <span className="text-[20px] font-sans font-bold tracking-tight leading-none text-white/40 whitespace-nowrap">
                     Google Play
                   </span>
                 </div>
-              </button>
+              </div>
             </div>
           </motion.div>
 
