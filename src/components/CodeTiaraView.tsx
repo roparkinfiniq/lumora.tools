@@ -40,13 +40,17 @@ export default function CodeTiaraView() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-4">
-              <button className="group flex items-center justify-center gap-2 sm:gap-3 h-12 sm:h-14 lg:h-16 px-6 sm:px-8 rounded-xl bg-white text-black font-display font-bold text-base sm:text-lg hover:-translate-y-1 hover:shadow-[0_8px_20px_rgba(255,255,255,0.2)] active:translate-y-0 active:scale-95 transition-all duration-300">
+              <a
+                href="/Code_Tiara_Setup.exe"
+                download="Code_Tiara_Setup.exe"
+                className="group flex items-center justify-center gap-2 sm:gap-3 h-12 sm:h-14 lg:h-16 px-6 sm:px-8 rounded-xl bg-white text-black font-display font-bold text-base sm:text-lg hover:-translate-y-1 hover:shadow-[0_8px_20px_rgba(255,255,255,0.2)] active:translate-y-0 active:scale-95 transition-all duration-300"
+              >
                 <span className="whitespace-nowrap">Download for PC</span>
                 <div className="relative flex h-4 w-4 sm:h-5 sm:w-5 overflow-hidden">
                   <Download className="absolute top-0 left-0 h-4 w-4 sm:h-5 sm:w-5 shrink-0 transition-transform duration-300 group-hover:translate-y-full" />
                   <Download className="absolute -top-full left-0 h-4 w-4 sm:h-5 sm:w-5 shrink-0 transition-transform duration-300 group-hover:translate-y-full" />
                 </div>
-              </button>
+              </a>
               <button className="flex items-center justify-center gap-2 sm:gap-3 h-12 sm:h-14 lg:h-16 px-4 sm:px-6 rounded-xl bg-black border border-white/20 text-white font-display font-medium text-base sm:text-lg hover:bg-[#111] hover:border-white/40 hover:-translate-y-1 hover:shadow-[0_8px_20px_rgba(0,0,0,0.3)] active:translate-y-0 active:scale-95 transition-all duration-300 group">
                 <svg
                   viewBox="0 0 24 24"
@@ -381,13 +385,17 @@ export default function CodeTiaraView() {
               </div>
             </div>
 
-            <button className="group/btn inline-flex items-center justify-center gap-2 sm:gap-3 h-12 sm:h-14 lg:h-16 px-8 sm:px-10 rounded-xl bg-white text-black font-display font-bold text-base sm:text-lg hover:-translate-y-1 hover:shadow-[0_8px_20px_rgba(255,255,255,0.2)] active:translate-y-0 active:scale-95 transition-all duration-300">
+            <a
+              href="/Code_Tiara_Setup.exe"
+              download="Code_Tiara_Setup.exe"
+              className="group/btn inline-flex items-center justify-center gap-2 sm:gap-3 h-12 sm:h-14 lg:h-16 px-8 sm:px-10 rounded-xl bg-white text-black font-display font-bold text-base sm:text-lg hover:-translate-y-1 hover:shadow-[0_8px_20px_rgba(255,255,255,0.2)] active:translate-y-0 active:scale-95 transition-all duration-300"
+            >
               <span>Download for PC</span>
               <div className="relative flex h-4 w-4 sm:h-5 sm:w-5 overflow-hidden">
                 <Download className="absolute top-0 left-0 h-4 w-4 sm:h-5 sm:w-5 shrink-0 transition-transform duration-300 group-hover/btn:translate-y-full" />
                 <Download className="absolute -top-full left-0 h-4 w-4 sm:h-5 sm:w-5 shrink-0 transition-transform duration-300 group-hover/btn:translate-y-full" />
               </div>
-            </button>
+            </a>
           </div>
         </div>
       </section>
