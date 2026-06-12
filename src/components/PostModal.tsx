@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { X, ArrowLeft, Share2, Bookmark, Clock, Eye, List } from "lucide-react";
+import { X, ArrowLeft, Share2, Clock, Eye, List } from "lucide-react";
 import { BlogPost } from "../types";
 import Prism from "prismjs";
 import "prismjs/components/prism-javascript";
@@ -161,9 +161,6 @@ const morning = () => {
             </button>
 
             <div className="flex items-center gap-2">
-              <button className="h-10 w-10 flex items-center justify-center rounded-full bg-white/[0.03] border border-white/5 text-white/40 hover:text-white hover:bg-white/10 transition-all duration-300">
-                <Bookmark className="h-4 w-4" />
-              </button>
             </div>
           </nav>
 
@@ -192,7 +189,7 @@ const morning = () => {
               </div>
               <div>
                 <p className="text-base font-display font-bold text-white/80">
-                  ro.park
+                  Raone Park
                 </p>
                 <p className="text-[10px] text-white/40 font-display font-bold uppercase tracking-widest mt-1">
                   {post.date}
