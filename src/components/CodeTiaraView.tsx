@@ -41,7 +41,7 @@ export default function CodeTiaraView() {
 
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-4">
               <a
-                href="https://github.com/roparkinfiniq/lumora.tools/releases/download/v1.7.4/Code.Tiara.Setup.1.7.4.exe"
+                href="https://github.com/roparkinfiniq/lumora.tools/releases/download/Code_Tiara/Code.Tiara.Setup.1.7.4.exe"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group flex items-center justify-center gap-2 sm:gap-3 h-12 sm:h-14 lg:h-16 px-6 sm:px-8 rounded-xl bg-white text-black font-display font-bold text-base sm:text-lg hover:-translate-y-1 hover:shadow-[0_8px_20px_rgba(255,255,255,0.2)] active:translate-y-0 active:scale-95 transition-all duration-300"
@@ -387,7 +387,7 @@ export default function CodeTiaraView() {
             </div>
 
             <a
-              href="https://github.com/roparkinfiniq/lumora.tools/releases/download/v1.7.4/Code.Tiara.Setup.1.7.4.exe"
+              href="https://github.com/roparkinfiniq/lumora.tools/releases/download/Code_Tiara/Code.Tiara.Setup.1.7.4.exe"
               target="_blank"
               rel="noopener noreferrer"
               className="group/btn inline-flex items-center justify-center gap-2 sm:gap-3 h-12 sm:h-14 lg:h-16 px-8 sm:px-10 rounded-xl bg-white text-black font-display font-bold text-base sm:text-lg hover:-translate-y-1 hover:shadow-[0_8px_20px_rgba(255,255,255,0.2)] active:translate-y-0 active:scale-95 transition-all duration-300"
