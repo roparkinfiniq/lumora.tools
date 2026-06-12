@@ -128,7 +128,7 @@ export default function StudioView() {
             </div>
             <p className="text-lg text-lumora-sub font-medium mb-10">I'm always open to discussing new tools, fun ideas, and design.</p>
             <div className="flex flex-col sm:flex-row gap-6">
-              <a href="https://github.com/lumora-tools" target="_blank" rel="noopener noreferrer" className="flex-1 p-6 rounded-3xl bg-white/[0.04] border border-white/5 hover:bg-white/[0.08] hover:border-white/10 transition-all duration-300 flex items-center justify-between group/link hover:-translate-y-1 active:scale-[0.98] shadow-sm hover:shadow-md">
+              <a href="https://github.com/roparkinfiniq/lumora.tools" target="_blank" rel="noopener noreferrer" className="flex-1 p-6 rounded-3xl bg-white/[0.04] border border-white/5 hover:bg-white/[0.08] hover:border-white/10 transition-all duration-300 flex items-center justify-between group/link hover:-translate-y-1 active:scale-[0.98] shadow-sm hover:shadow-md">
                 <div className="flex items-center gap-4">
                   <div className="h-12 w-12 rounded-full bg-white/5 flex items-center justify-center group-hover/link:bg-white/10 transition-colors duration-300">
                     <Github className="h-6 w-6 text-white/60 group-hover/link:text-white transition-colors duration-300" />
@@ -137,7 +137,7 @@ export default function StudioView() {
                 </div>
                 <ArrowRight className="h-5 w-5 text-white/20 group-hover/link:text-white group-hover/link:-rotate-45 transition-all duration-300" />
               </a>
-              <a href="mailto:hello@lumora.tools" className="flex-1 p-6 rounded-3xl bg-white/[0.04] border border-white/5 hover:bg-white/[0.08] hover:border-white/10 transition-all duration-300 flex items-center justify-between group/link hover:-translate-y-1 active:scale-[0.98] shadow-sm hover:shadow-md">
+              <a href="mailto:raonepark@gmail.com" className="flex-1 p-6 rounded-3xl bg-white/[0.04] border border-white/5 hover:bg-white/[0.08] hover:border-white/10 transition-all duration-300 flex items-center justify-between group/link hover:-translate-y-1 active:scale-[0.98] shadow-sm hover:shadow-md">
                 <div className="flex items-center gap-4">
                   <div className="h-12 w-12 rounded-full bg-white/5 flex items-center justify-center group-hover/link:bg-white/10 transition-colors duration-300">
                     <Mail className="h-6 w-6 text-white/60 group-hover/link:text-white transition-colors duration-300" />

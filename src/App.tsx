@@ -10,7 +10,7 @@ import {
   Sparkles,
   ArrowRight,
   Github,
-  ExternalLink,
+  Mail,
   MousePointer2,
   Type,
   Cpu,
@@ -1274,19 +1274,23 @@ export default function App() {
               </h4>
               <nav className="flex flex-col gap-4 text-base font-medium text-lumora-sub">
                 <a
-                  href="#"
+                  href="https://github.com/roparkinfiniq/lumora.tools"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="hover:text-white transition-colors flex items-center gap-3"
                 >
                   <Github className="h-5 w-5 text-white/40" /> Github
                 </a>
                 <a
-                  href="#"
+                  href="mailto:raonepark@gmail.com"
                   className="hover:text-white transition-colors flex items-center gap-3"
                 >
-                  <ExternalLink className="h-5 w-5 text-white/40" /> Twitter
+                  <Mail className="h-5 w-5 text-white/40" /> Email
                 </a>
                 <a
-                  href="#"
+                  href="https://lumora-lab.tistory.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="hover:text-white transition-colors flex items-center gap-3"
                 >
                   <Type className="h-5 w-5 text-white/40" /> Tistory
