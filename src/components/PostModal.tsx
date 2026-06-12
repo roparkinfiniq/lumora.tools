@@ -184,12 +184,12 @@ const morning = () => {
             <div className="flex items-center gap-4 mb-10">
               <div className="h-10 w-10 rounded-full bg-lumora-accent/20 flex items-center justify-center">
                 <span className="text-lumora-accent font-display font-bold">
-                  R
+                  L
                 </span>
               </div>
               <div>
                 <p className="text-base font-display font-bold text-white/80">
-                  Raone Park
+                  Lumora
                 </p>
                 <p className="text-[10px] text-white/40 font-display font-bold uppercase tracking-widest mt-1">
                   {post.date}
