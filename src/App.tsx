@@ -6,6 +6,7 @@ import StudioView from "./components/StudioView";
 import ToolDetailView from "./components/ToolDetailView";
 import CodeTiaraView from "./components/CodeTiaraView";
 import { Tool, BlogPost } from "./types";
+import { blogPosts } from "./data/posts";
 import {
   Sparkles,
   ArrowRight,
@@ -240,100 +241,6 @@ const tools: Tool[] = [
   },
 ];
 
-const blogPosts: BlogPost[] = [
-  {
-    id: "1",
-    title: "Finding stillness in a hyper-connected world",
-    excerpt:
-      "Lately, I’ve been leaving my phone in another room until 10 AM. The silence is deafening, then comforting.",
-    date: "APR 28, 2026",
-    link: "#",
-    tags: ["Mindfulness", "Focus"],
-    content: `
-      <p class="lead">I used to think that productivity was about doing more things faster. Lately, I've realized it's about doing fewer things, but doing them with absolute intention. In this note, I reflect on the small changes that brought some quiet back to my mornings.</p>
-      
-      <h2>The first hour</h2>
-      <p>We believe that we need to be constantly connected to the world. But for the last three months, I've started leaving my phone in the kitchen when I go to sleep. When I wake up, the first hour of the day belongs completely to me. No notifications, no urgent emails, no scrolling.</p>
-      
-      <blockquote>
-        "The world can wait until 9 AM. Your mind needs space to breathe before it's asked to perform."
-      </blockquote>
-
-      <h2>The tools of analog</h2>
-      <p>I bought a simple, unlined notebook. Using a pen instead of a keyboard changes how you process thoughts. It's slower. It forces you to construct the sentence in your mind before it becomes permanent on paper. This analog delay acts as a natural filter for the inconsequential.</p>
-    `,
-  },
-  {
-    id: "2",
-    title: "Why I went back to a paper notebook",
-    excerpt:
-      "There is something undeniably satisfying about crossing a task out with ink rather than checking a pixelated box.",
-    date: "APR 24, 2026",
-    link: "#",
-    imageUrl:
-      "https://images.unsplash.com/photo-1517842645767-c639042777db?auto=format&fit=crop&w=1200&q=80",
-    tags: ["Analogue", "Journaling"],
-    content: `
-      <p class="lead">Digital tools are infinite. A Notion page can scroll forever; an Apple Note has no boundaries. But human attention is undeniably finite. Returning to physical paper was an exercise in embracing boundaries.</p>
-
-      <h2>The tactile feedback of completion</h2>
-      <p>There is a specific, visceral joy in striking a line through a completed task with a heavy pen. It requires physical effort. It leaves a permanent mark. Clicking a checkbox that magically disappears into a 'Done' list feels sterile by comparison. With paper, you see everything you've accomplished at the end of the day, immortalized in ink.</p>
-
-      <img src="https://images.unsplash.com/photo-1517842645767-c639042777db?auto=format&fit=crop&w=1200&q=80" alt="Writing in a notebook" referrerpolicy="no-referrer" />
-
-      <h2>Forced prioritization</h2>
-      <p>A standard A5 page only holds about 20 lines of writing comfortably. You cannot schedule 50 tasks for a Tuesday. The physical constraint forces actual prioritization. If it doesn't fit on the page, it cannot be done today.</p>
-    `,
-  },
-  {
-    id: "3",
-    title: "A weekend without plans",
-    excerpt:
-      "No itinerary. No reservations. Just a camera, comfortable shoes, and nowhere to be.",
-    date: "APR 18, 2026",
-    link: "#",
-    imageUrl:
-      "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=1200&q=80",
-    tags: ["Life", "Travel"],
-    content: `
-      <p class="lead">We spend our weeks scheduling every hour—meetings, deep work blocks, gym sessions, dinner dates. When the weekend arrives, the instinct is to schedule leisure just as aggressively. Last weekend, I decided to do nothing.</p>
-
-      <h2>The art of wandering</h2>
-      <p>I left my apartment with only my keys and a camera. No destination in Google Maps. No goal to 'see the sights'. It's astonishing how different a city feels when you aren't using it as a transit corridor to get from Point A to Point B.</p>
-
-      <blockquote>
-        "Not all those who wander are lost. Sometimes, they are just finally paying attention."
-      </blockquote>
-
-      <h2>Serendipity requires space</h2>
-      <p>When every minute is planned, serendipity is impossible. By leaving my schedule blank, I accidentally spent two hours in a tiny used bookstore I would have otherwise walked right past. Planning is necessary for progress, but emptiness is necessary for discovery.</p>
-    `,
-  },
-  {
-    id: "4",
-    title: "The perfect cup of pour-over",
-    excerpt:
-      "It took me three years to realize the temperature of the water matters just as much as the beans.",
-    date: "MAR 02, 2026",
-    link: "#",
-    tags: ["Coffee", "Routine"],
-    content: `
-      <p class="lead">Coffee is a ritual disguised as a beverage. The process of making a pour-over forces you to stand still for four minutes. It demands your attention. You cannot multi-task while pouring a slow concentric circle over a bed of blooming grounds.</p>
-
-      <h2>The three variables</h2>
-      <p>There are only three things you can control: the grind size, the water temperature, and the ratio. Yet, from these three variables emerges infinite complexity.</p>
-      
-      <ul>
-        <li><strong>Grind Size:</strong> Too fine, and it's bitter. Too coarse, and it's sour. Finding the sweet spot is a daily negotiation.</li>
-        <li><strong>Temperature:</strong> Never boiling. Around 200°F (93°C) is where the delicate aromatics survive without being scorched.</li>
-        <li><strong>Ratio:</strong> 1:15 is the golden mean. 20 grams of coffee, 300 grams of water.</li>
-      </ul>
-
-      <h2>A lesson in patience</h2>
-      <p>You cannot rush gravity. The water pulls through the grounds at its own pace. It's a gentle morning reminder that not everything responds to urgency.</p>
-    `,
-  },
-];
 
 function CursorSpotlight() {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
