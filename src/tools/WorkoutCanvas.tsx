@@ -25,7 +25,9 @@ import {
   Plus,
   Settings,
   Globe,
-  MoreHorizontal
+  MoreHorizontal,
+  RefreshCw,
+  ArrowLeftRight
 } from "lucide-react";
 
 interface ExerciseSet {
@@ -174,6 +176,77 @@ const EN_DAY_LABELS: Record<string, string> = {
   fri: "Fri (Upper)",
   sat: "Sat (Legs)",
   sun: "Sun (Rest)"
+};
+
+const DAY_NAMES_MAP: Record<string, { enShort: string; enLong: string; koShort: string; koLong: string }> = {
+  mon: { enShort: "Mon", enLong: "Monday", koShort: "월", koLong: "월요일" },
+  tue: { enShort: "Tue", enLong: "Tuesday", koShort: "화", koLong: "화요일" },
+  wed: { enShort: "Wed", enLong: "Wednesday", koShort: "수", koLong: "수요일" },
+  thu: { enShort: "Thu", enLong: "Thursday", koShort: "목", koLong: "목요일" },
+  fri: { enShort: "Fri", enLong: "Friday", koShort: "금", koLong: "금요일" },
+  sat: { enShort: "Sat", enLong: "Saturday", koShort: "토", koLong: "토요일" },
+  sun: { enShort: "Sun", enLong: "Sunday", koShort: "일", koLong: "일요일" },
+};
+
+const adjustDayNamesInRoutine = (
+  routine: DayRoutine,
+  fromDay: string,
+  toDay: string
+): DayRoutine => {
+  const fromNames = DAY_NAMES_MAP[fromDay];
+  const toNames = DAY_NAMES_MAP[toDay];
+  if (!fromNames || !toNames) return routine;
+
+  const replaceText = (text: string): string => {
+    if (!text) return text;
+    let res = text
+      .replace(new RegExp("\\b" + fromNames.enLong + "\\b", "gi"), toNames.enLong)
+      .replace(new RegExp("\\b" + fromNames.enShort + "\\b", "gi"), toNames.enShort);
+
+    res = res.replace(new RegExp(fromNames.koLong, "g"), toNames.koLong);
+    
+    if (res === fromNames.koShort) {
+      res = toNames.koShort;
+    }
+    
+    const startRegex = new RegExp("^" + fromNames.koShort + "([\\s\\(\\):\\-])");
+    res = res.replace(startRegex, toNames.koShort + "$1");
+    
+    const midRegex = new RegExp("([\\(\\s])" + fromNames.koShort + "([\\)\\s])", "g");
+    res = res.replace(midRegex, "$1" + toNames.koShort + "$2");
+
+    return res;
+  };
+
+  const updatedItems = (routine.items || []).map((item) => {
+    let newId = item.id;
+    if (item.id.startsWith(fromDay + "-")) {
+      newId = item.id.replace(fromDay + "-", toDay + "-");
+    }
+    return { ...item, id: newId };
+  });
+
+  return {
+    ...routine,
+    tabLabel: replaceText(routine.tabLabel || ""),
+    mainTitle: replaceText(routine.mainTitle || ""),
+    subTitle: replaceText(routine.subTitle || ""),
+    directive: replaceText(routine.directive || ""),
+    items: updatedItems,
+  };
+};
+
+const getEmptyRoutine = (day: string, lang: "ko" | "en"): DayRoutine => {
+  const currentLabels = lang === "ko" ? DAY_LABELS : EN_DAY_LABELS;
+  const tabLabel = currentLabels[day];
+  
+  return {
+    tabLabel,
+    mainTitle: lang === "ko" ? `${tabLabel} 루틴` : `${tabLabel} Routine`,
+    subTitle: lang === "ko" ? "설정된 세부 가이드가 없습니다." : "No summary guide.",
+    directive: lang === "ko" ? "이 요일에 새로운 운동을 추가하여 루틴을 구성해 보세요." : "No directive. Try adding a new exercise.",
+    items: []
+  };
 };
 
 const EN_DEFAULT_DATABASE: WorkoutDatabase = {
@@ -346,6 +419,17 @@ const TRANSLATIONS = {
     toastExDeleteSuccess: "운동이 삭제되었습니다.",
     toastTabSettingMin: "최소 하나의 요일은 활성화되어야 합니다!",
     toastRestoreInputCode: "복원할 백업 코드를 입력해 주세요.",
+    routineMoveSwapTitle: "루틴 요일 이동 / 복사 / 교환",
+    routineMoveSwapDesc: "현재 요일의 루틴을 다른 요일로 이동, 복사하거나 교환합니다.",
+    targetDayLabel: "대상 요일 선택",
+    btnSwap: "교환하기",
+    btnMove: "이동하기",
+    btnCopy: "복사하기",
+    toastSwapSuccess: "루틴 요일이 성공적으로 교환되었습니다!",
+    toastMoveSuccess: "루틴이 지정된 요일로 이동되었습니다!",
+    toastRoutineCopySuccess: "루틴이 지정된 요일로 복사되었습니다!",
+    labelClear: "비움",
+    labelKeep: "유지",
     monLabel: "월요일", tueLabel: "화요일", wedLabel: "수요일", thuLabel: "목요일", friLabel: "금요일", satLabel: "토요일", sunLabel: "일요일",
     wristTitle: "손목 보호", wristBody: "프레스 동작 시 엄지 아랫부분의 뼈(척골 라인)에 무거운 바를 얹어 고정하는 '불독 그립'을 사용하여 손목이 뒤로 꺾여 생기는 손상을 방지합니다.",
     kneeTitle: "무릎 제어", kneeBody: "스쿼트, 레그 프레스 시 발끝 방향과 무릎이 나아가는 궤적을 반드시 평행하게 유지합니다. 발가락이 안쪽으로 모이거나 무릎이 모이지 않게 주의하세요.",
@@ -448,6 +532,17 @@ const TRANSLATIONS = {
     toastExDeleteSuccess: "Exercise removed.",
     toastTabSettingMin: "At least one day must be active!",
     toastRestoreInputCode: "Please enter a backup token.",
+    routineMoveSwapTitle: "Move / Swap / Copy Routine",
+    routineMoveSwapDesc: "Move, copy, or swap the current routine with another day.",
+    targetDayLabel: "Select Target Day",
+    btnSwap: "Swap Days",
+    btnMove: "Move to Day",
+    btnCopy: "Copy to Day",
+    toastSwapSuccess: "Routines successfully swapped!",
+    toastMoveSuccess: "Routine successfully moved!",
+    toastRoutineCopySuccess: "Routine successfully copied!",
+    labelClear: "clear",
+    labelKeep: "keep",
     monLabel: "Monday", tueLabel: "Tuesday", wedLabel: "Wednesday", thuLabel: "Thursday", friLabel: "Friday", satLabel: "Saturday", sunLabel: "Sunday",
     wristTitle: "Wrist Safety", wristBody: "On pressing motions, rest the bar directly over the heel of the palm (ulnar line) using the 'bulldog grip' to prevent wrist bending and joint damage.",
     kneeTitle: "Knee Control", kneeBody: "During squatting or pressing movements, ensure knee caps track perfectly parallel with toes. Do not let knees cave inwards.",
@@ -862,6 +957,7 @@ export default function WorkoutCanvas() {
     return "en";
   });
   const [activeDay, setActiveDay] = useState<string>("mon");
+  const [targetMoveDay, setTargetMoveDay] = useState<string>("mon");
   const [presetActiveTab, setPresetActiveTab] = useState<string>("Chest");
   const [db, setDb] = useState<WorkoutDatabase>(EN_DEFAULT_DATABASE);
   const [visibleDays, setVisibleDays] = useState<string[]>(["mon", "tue", "wed", "thu", "fri", "sat", "sun"]);
@@ -1402,9 +1498,16 @@ export default function WorkoutCanvas() {
         setResetConfirmActive(false);
       }, 3500);
     } else {
+      localStorage.removeItem("gems_workout_database_v1_ko");
+      localStorage.removeItem("gems_active_day_ko");
+      localStorage.removeItem("gems_visible_days_ko");
+      localStorage.removeItem("gems_workout_database_v1_en");
+      localStorage.removeItem("gems_active_day_en");
+      localStorage.removeItem("gems_visible_days_en");
       localStorage.removeItem("gems_workout_database_v1");
       localStorage.removeItem("gems_active_day");
       localStorage.removeItem("gems_visible_days");
+      localStorage.removeItem("gems_workout_lang");
       window.location.reload();
     }
   };
@@ -1416,6 +1519,11 @@ export default function WorkoutCanvas() {
     setEditRoutineTitle(selected.mainTitle);
     setEditRoutineSubTitle(selected.subTitle);
     setEditRoutineDirective(selected.directive);
+    
+    // Find the first day in DAY_ORDER that is not activeDay
+    const firstOtherDay = DAY_ORDER.find((d) => d !== activeDay) || "mon";
+    setTargetMoveDay(firstOtherDay);
+    
     setIsRoutineModalOpen(true);
   };
 
@@ -1440,6 +1548,54 @@ export default function WorkoutCanvas() {
     saveToStorage(updatedDb, activeDay);
     setIsRoutineModalOpen(false);
     triggerToastBanner(t.toastExEditSuccess);
+  };
+
+  const handleRoutineSwap = () => {
+    if (!targetMoveDay || targetMoveDay === activeDay) return;
+
+    const updatedDb = { ...db };
+    const srcRoutine = updatedDb[activeDay];
+    const destRoutine = updatedDb[targetMoveDay];
+
+    updatedDb[activeDay] = adjustDayNamesInRoutine(destRoutine, targetMoveDay, activeDay);
+    updatedDb[targetMoveDay] = adjustDayNamesInRoutine(srcRoutine, activeDay, targetMoveDay);
+
+    setDb(updatedDb);
+    saveToStorage(updatedDb, targetMoveDay);
+    setActiveDay(targetMoveDay);
+    setIsRoutineModalOpen(false);
+    triggerToastBanner(t.toastSwapSuccess);
+  };
+
+  const handleRoutineMove = () => {
+    if (!targetMoveDay || targetMoveDay === activeDay) return;
+
+    const updatedDb = { ...db };
+    const srcRoutine = updatedDb[activeDay];
+
+    updatedDb[targetMoveDay] = adjustDayNamesInRoutine(srcRoutine, activeDay, targetMoveDay);
+    updatedDb[activeDay] = getEmptyRoutine(activeDay, lang);
+
+    setDb(updatedDb);
+    saveToStorage(updatedDb, targetMoveDay);
+    setActiveDay(targetMoveDay);
+    setIsRoutineModalOpen(false);
+    triggerToastBanner(t.toastMoveSuccess);
+  };
+
+  const handleRoutineCopy = () => {
+    if (!targetMoveDay || targetMoveDay === activeDay) return;
+
+    const updatedDb = { ...db };
+    const srcRoutine = updatedDb[activeDay];
+
+    updatedDb[targetMoveDay] = adjustDayNamesInRoutine(srcRoutine, activeDay, targetMoveDay);
+
+    setDb(updatedDb);
+    saveToStorage(updatedDb, targetMoveDay);
+    setActiveDay(targetMoveDay);
+    setIsRoutineModalOpen(false);
+    triggerToastBanner(t.toastRoutineCopySuccess);
   };
 
   // Exercise modal trigger
@@ -2247,6 +2403,107 @@ export default function WorkoutCanvas() {
                         rows={3}
                         className="w-full bg-lumora-bg/80 border border-white/10 text-xs text-lumora-text rounded-xl px-3 py-2.5 focus:outline-none focus:border-lumora-highlight resize-none"
                       />
+                    </div>
+
+                    {/* Routine Move / Swap / Copy Section */}
+                    <div className="border-t border-white/5 pt-4 space-y-3">
+                      <div className="flex flex-col">
+                        <span className="text-[10px] font-extrabold text-lumora-highlight tracking-wider uppercase">{t.routineMoveSwapTitle}</span>
+                        <span className="text-[9px] text-lumora-sub mt-0.5">{t.routineMoveSwapDesc}</span>
+                      </div>
+                      
+                      <div className="space-y-1.5">
+                        <label className="text-[9px] text-lumora-sub font-extrabold tracking-wider uppercase block">{t.targetDayLabel}</label>
+                        <select
+                          value={targetMoveDay}
+                          onChange={(e) => setTargetMoveDay(e.target.value)}
+                          className="w-full bg-lumora-bg border border-white/10 text-xs text-lumora-text rounded-xl px-3 py-2.5 focus:outline-none focus:border-lumora-highlight"
+                        >
+                          {DAY_ORDER.filter(d => d !== activeDay).map(d => (
+                            <option key={d} value={d} className="bg-lumora-card text-white">
+                              {CURRENT_DAY_LABELS[d]} ({db[d]?.mainTitle || (lang === "ko" ? "빈 루틴" : "Empty Routine")})
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* Visual Action Guide */}
+                      <div className="bg-[#1a1921]/60 border border-white/5 rounded-xl p-3 space-y-2 text-[10px]">
+                        <div className="text-lumora-highlight font-extrabold uppercase tracking-wide flex items-center gap-1">
+                          <span>💡</span>
+                          <span>{lang === "ko" ? "동작 선택 가이드" : "Action Guide"}</span>
+                        </div>
+                        
+                        <div className="space-y-1.5 text-lumora-sub leading-normal">
+                          {/* Swap */}
+                          <div className="p-1.5 bg-lumora-bg/30 border border-white/5 rounded-lg space-y-0.5">
+                            <div className="flex items-center justify-between text-white font-bold">
+                              <span>🔄 {t.btnSwap}</span>
+                              <span className="text-[9px] text-lumora-highlight font-black">{CURRENT_DAY_LABELS[activeDay]} ↔ {CURRENT_DAY_LABELS[targetMoveDay]}</span>
+                            </div>
+                            <p className="text-[9px] text-lumora-sub">
+                              {lang === "ko"
+                                ? `두 요일의 루틴을 서로 맞바꿉니다.`
+                                : `Swaps the routines of the two days.`}
+                            </p>
+                          </div>
+                          
+                          {/* Move */}
+                          <div className="p-1.5 bg-lumora-bg/30 border border-white/5 rounded-lg space-y-0.5">
+                            <div className="flex items-center justify-between text-white font-bold">
+                              <span>➡️ {t.btnMove}</span>
+                              <span className="text-[9px] text-lumora-highlight font-black">{CURRENT_DAY_LABELS[activeDay]} ➡️ {CURRENT_DAY_LABELS[targetMoveDay]} ({t.labelClear})</span>
+                            </div>
+                            <p className="text-[9px] text-lumora-sub">
+                              {lang === "ko"
+                                ? `루틴을 이동시키고 현재 요일은 빈 상태로 만듭니다.`
+                                : `Moves this routine to the target day, clearing today.`}
+                            </p>
+                          </div>
+
+                          {/* Copy */}
+                          <div className="p-1.5 bg-lumora-bg/30 border border-white/5 rounded-lg space-y-0.5">
+                            <div className="flex items-center justify-between text-white font-bold">
+                              <span>📄 {t.btnCopy}</span>
+                              <span className="text-[9px] text-lumora-highlight font-black">{CURRENT_DAY_LABELS[activeDay]} ➡️ {CURRENT_DAY_LABELS[targetMoveDay]} ({t.labelKeep})</span>
+                            </div>
+                            <p className="text-[9px] text-lumora-sub">
+                              {lang === "ko"
+                                ? `루틴을 대상 요일에 복사하며, 현재 요일도 그대로 유지합니다.`
+                                : `Copies this routine to the target day, keeping today.`}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-3 gap-2">
+                        <button
+                          type="button"
+                          onClick={handleRoutineSwap}
+                          className="btn-tap py-2 bg-lumora-highlight/10 hover:bg-lumora-highlight/20 text-lumora-highlight border border-lumora-highlight/20 hover:border-lumora-highlight/35 font-extrabold rounded-xl flex flex-col items-center justify-center gap-1 shadow-sm text-[10px] transition-all duration-200"
+                        >
+                          <RefreshCw className="w-3.5 h-3.5" />
+                          <span>{t.btnSwap}</span>
+                        </button>
+                        
+                        <button
+                          type="button"
+                          onClick={handleRoutineMove}
+                          className="btn-tap py-2 bg-lumora-highlight/10 hover:bg-lumora-highlight/20 text-lumora-highlight border border-lumora-highlight/20 hover:border-lumora-highlight/35 font-extrabold rounded-xl flex flex-col items-center justify-center gap-1 shadow-sm text-[10px] transition-all duration-200"
+                        >
+                          <ArrowLeftRight className="w-3.5 h-3.5" />
+                          <span>{t.btnMove}</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={handleRoutineCopy}
+                          className="btn-tap py-2 bg-lumora-highlight/10 hover:bg-lumora-highlight/20 text-lumora-highlight border border-lumora-highlight/20 hover:border-lumora-highlight/35 font-extrabold rounded-xl flex flex-col items-center justify-center gap-1 shadow-sm text-[10px] transition-all duration-200"
+                        >
+                          <Copy className="w-3.5 h-3.5" />
+                          <span>{t.btnCopy}</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
 
