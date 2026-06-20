@@ -6,9 +6,9 @@ import { perfectPourOver } from "./perfect-pour-over";
 import { needRest } from "./need-rest";
 
 export const blogPosts: BlogPost[] = [
+  needRest,
   stillness,
   paperNotebook,
   weekendWithoutPlans,
   perfectPourOver,
-  needRest,
 ];
