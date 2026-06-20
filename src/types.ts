@@ -18,4 +18,5 @@ export interface BlogPost {
   content?: string;
   imageUrl?: string;
   tags?: string[];
+  hideThumbnailInModal?: boolean;
 }

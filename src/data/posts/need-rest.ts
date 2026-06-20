@@ -7,6 +7,8 @@ export const needRest: BlogPost = {
     "Productivity isn't about pushing harder. It's about breaking the vicious cycle of instant gratification and reclaiming true rest.",
   date: "JUN 21, 2026",
   link: "#",
+  imageUrl: "/images/sleepy.png",
+  hideThumbnailInModal: true,
   tags: ["Dopamine", "Burnout", "Productivity"],
   content: `
     <p class="lead">I live in a truly convenient era. Nowadays, thanks to AI, we have entered an age where we can easily accomplish tasks that used to be difficult, and obtain our desired results without putting in much effort. However, as life becomes easier and we get what we want so quickly, the value of steadily working hard to achieve something has become unclear. With the process of earning through sweat disappearing, I was gradually becoming conditioned to quick and easy stimulation.</p>

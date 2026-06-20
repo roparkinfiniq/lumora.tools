@@ -197,7 +197,7 @@ const morning = () => {
               </div>
             </div>
 
-            {post.imageUrl && (
+            {post.imageUrl && !post.hideThumbnailInModal && (
               <div className="w-full mb-12 overflow-hidden rounded-[24px] border border-white/10">
                 <img
                   src={post.imageUrl}
@@ -209,7 +209,7 @@ const morning = () => {
             )}
 
             {/* Decorative Divider */}
-            {!post.imageUrl && (
+            {(!post.imageUrl || post.hideThumbnailInModal) && (
               <div className="w-16 h-1 rounded-full bg-lumora-highlight/20 mb-16" />
             )}
 
