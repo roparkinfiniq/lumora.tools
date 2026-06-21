@@ -313,5 +313,5 @@ Individual tools have no URL — they're managed via the `selectedTool` state.
 3. **`usageSteps` is required.** Without it, the "How to Use" section won't render in the left panel.
 4. **Component length.** If a single `.tsx` file exceeds ~300 lines, consider extracting sub-components.
 5. **Tokens over raw colors.** Use `bg-lumora-highlight` instead of `bg-purple-500`. Always check for a token first.
-6. **Animate state transitions.** Use `AnimatePresence` + `motion.div` for empty↔filled and tab-switch transitions.
+6. **Animate state transitions.** Use `AnimatePresence` + `motion.div` for empty↔filled, tab-switch, and page/view transitions. Ensure all page/view entries and exits are animated smoothly (`duration: 0.5` with `ease: "easeInOut"`) to avoid abrupt jumps.
 7. **All copy is English.** If you're tempted to write a Korean string in the UI, don't — translate it first.

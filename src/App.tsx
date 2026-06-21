@@ -459,9 +459,10 @@ export default function App() {
           {currentView === "home" && (
             <motion.div
               key="home"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
               className="container mx-auto px-6"
             >
               {/* Bento Hero Section */}
@@ -705,9 +706,10 @@ export default function App() {
           {currentView === "utilities" && (
             <motion.div
               key="utilities"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
               className="container mx-auto px-6"
             >
               <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-start pb-24 border-t border-white/5 pt-12">
@@ -1167,7 +1169,7 @@ export default function App() {
               initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.98 }}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
             >
               <ToolDetailView
                 tool={selectedTool}

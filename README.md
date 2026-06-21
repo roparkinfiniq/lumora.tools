@@ -36,4 +36,10 @@
 
 ---
 
+## 🎬 Page & View Transitions
+- **Smooth transitions are mandatory:** All page and view entry/exit animations must have a consistent duration (`duration: 0.5`) and transition curve (`ease: "easeInOut"`).
+- **AnimatePresence integration:** Ensure any conditionally rendered views (like sub-pages or modals) are correctly wrapped in `<AnimatePresence>` at their parent container so they don't unmount abruptly without running exit animations.
+
+---
+
 *Made with 🤍 by [Raone Park](https://lumora-lab.tistory.com/).*
