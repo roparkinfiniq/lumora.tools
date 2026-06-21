@@ -10,7 +10,7 @@ import "prismjs/components/prism-json";
 import "prismjs/components/prism-python";
 
 interface PostModalProps {
-  post: BlogPost | null;
+  post: BlogPost;
   onClose: () => void;
 }
 
@@ -96,7 +96,6 @@ export default function PostModal({ post, onClose }: PostModalProps) {
     return () => container?.removeEventListener('scroll', handleScroll);
   }, [toc]);
 
-  if (!post) return null;
 
   const demoContent = `
     <p class="lead">I used to think that productivity was about doing more things faster. Lately, I've realized it's about doing fewer things, but doing them with absolute intention. In this note, I reflect on the small changes that brought some quiet back to my mornings.</p>
@@ -126,13 +125,13 @@ const morning = () => {
   `;
 
   return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[100]"
-      >
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5, ease: "easeInOut" }}
+      className="fixed inset-0 z-[100]"
+    >
         <div className="fixed inset-0 bg-lumora-bg/95 backdrop-blur-2xl" aria-hidden="true" onClick={onClose} />
         
         <div 
@@ -317,6 +316,5 @@ const morning = () => {
         </div>
         </div>
       </motion.div>
-    </AnimatePresence>
   );
 }

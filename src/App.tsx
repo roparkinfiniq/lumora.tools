@@ -1268,7 +1268,11 @@ export default function App() {
         </div>
       </footer>
 
-      <PostModal post={selectedPost} onClose={() => setSelectedPost(null)} />
+      <AnimatePresence>
+        {selectedPost && (
+          <PostModal post={selectedPost} onClose={() => setSelectedPost(null)} />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
