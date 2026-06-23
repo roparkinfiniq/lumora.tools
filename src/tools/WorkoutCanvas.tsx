@@ -27,7 +27,9 @@ import {
   Globe,
   MoreHorizontal,
   RefreshCw,
-  ArrowLeftRight
+  ArrowLeftRight,
+  ChevronUp,
+  ChevronDown
 } from "lucide-react";
 
 interface ExerciseSet {
@@ -364,6 +366,8 @@ const TRANSLATIONS = {
     guidePrefix: "가이드",
     editLabel: "수정",
     deleteLabel: "삭제",
+    moveUpLabel: "위로 이동",
+    moveDownLabel: "아래로 이동",
     routineProgressText: "세션 진척도",
     routineInfoEditTitle: "루틴 정보 수정",
     routineInfoEditDesc: "해당 요일의 메인 루틴 정보 및 가이드를 변경합니다",
@@ -477,6 +481,8 @@ const TRANSLATIONS = {
     guidePrefix: "Guide",
     editLabel: "Edit",
     deleteLabel: "Delete",
+    moveUpLabel: "Move Up",
+    moveDownLabel: "Move Down",
     routineProgressText: "Progress",
     routineInfoEditTitle: "Edit Routine Details",
     routineInfoEditDesc: "Modify the main session title and coach guide for this day",
@@ -1838,6 +1844,29 @@ export default function WorkoutCanvas() {
     }
   };
 
+  const moveExerciseOrder = (itemId: string, direction: "up" | "down") => {
+    const updatedDb = { ...db };
+    const items = [...updatedDb[activeDay].items];
+    const index = items.findIndex((it) => it.id === itemId);
+    if (index === -1) return;
+
+    if (direction === "up" && index > 0) {
+      const temp = items[index];
+      items[index] = items[index - 1];
+      items[index - 1] = temp;
+    } else if (direction === "down" && index < items.length - 1) {
+      const temp = items[index];
+      items[index] = items[index + 1];
+      items[index + 1] = temp;
+    } else {
+      return;
+    }
+
+    updatedDb[activeDay].items = items;
+    setDb(updatedDb);
+    saveToStorage(updatedDb, activeDay);
+  };
+
   // Settings visible days apply
   const applyVisibleDays = (selectedDays: string[]) => {
     if (selectedDays.length === 0) {
@@ -2083,7 +2112,7 @@ export default function WorkoutCanvas() {
               {t.emptyRoutine}
             </div>
           ) : (
-            db[activeDay].items.map((item) => {
+            db[activeDay].items.map((item, index) => {
               let catColor = "bg-lumora-highlight/10 text-lumora-highlight border-lumora-highlight/20";
               if (item.category === "웜업" || item.category === "Warmup") {
                 catColor = "bg-amber-500/10 text-amber-400 border-amber-500/20";
@@ -2109,6 +2138,22 @@ export default function WorkoutCanvas() {
                       )}
                     </div>
                     <div className="flex items-center space-x-1.5 shrink-0 pt-0.5">
+                      <button
+                        onClick={() => moveExerciseOrder(item.id, "up")}
+                        disabled={index === 0}
+                        className="btn-tap p-1.5 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-lg transition-all duration-200 disabled:opacity-20 disabled:pointer-events-none"
+                        title={t.moveUpLabel}
+                      >
+                        <ChevronUp className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        onClick={() => moveExerciseOrder(item.id, "down")}
+                        disabled={index === db[activeDay].items.length - 1}
+                        className="btn-tap p-1.5 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-lg transition-all duration-200 disabled:opacity-20 disabled:pointer-events-none"
+                        title={t.moveDownLabel}
+                      >
+                        <ChevronDown className="w-3.5 h-3.5" />
+                      </button>
                       <button
                         onClick={() => openExerciseModal(item.id)}
                         className="btn-tap p-1.5 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-lg transition-all duration-200"
