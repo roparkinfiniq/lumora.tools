@@ -14,6 +14,7 @@ import ImageToPdf from '../tools/ImageToPdf';
 import PdfToImage from '../tools/PdfToImage';
 import PdfMerger from '../tools/PdfMerger';
 import GlobalSizeConverter from '../tools/GlobalSizeConverter';
+import BarcodeStudio from '../tools/BarcodeStudio';
 import { 
   ArrowLeft, 
   Activity,
@@ -56,6 +57,8 @@ export default function ToolDetailView({ tool, onBack }: ToolDetailViewProps) {
         return <PdfMerger />;
       case "15":
         return <GlobalSizeConverter />;
+      case "16":
+        return <BarcodeStudio />;
       default:
         return (
           <div className="relative z-10 text-center space-y-10">
@@ -145,7 +148,7 @@ export default function ToolDetailView({ tool, onBack }: ToolDetailViewProps) {
             {renderToolLogic()}
 
             {/* Technical Detail Overlays */}
-            {!["1", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"].includes(tool.id) && (
+            {!["1", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"].includes(tool.id) && (
               <>
                 <div className="absolute top-8 right-8 px-4 py-2 rounded-full bg-white/5 text-[10px] font-display font-bold text-white/30 uppercase tracking-widest">
                   Playground

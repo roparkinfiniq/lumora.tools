@@ -239,6 +239,22 @@ const tools: Tool[] = [
       { step: "Get conversions", detail: "Instantly read corresponding sizing values across global regions." },
     ],
   },
+  {
+    id: "16",
+    name: "Barcode & Label Studio",
+    slug: "barcode-label-studio",
+    description:
+      "Generate high-density 1D and 2D barcodes (Code 128, ITF-14, Data Matrix, QR Code) with batch processing, custom logistics headers, thermal printing presets, and zero ads.",
+    icon: "ScanBarcode",
+    category: "Synthesis",
+    link: "#",
+    usageSteps: [
+      { step: "Select symbology & preset", detail: "Choose barcode type (Code 128, ITF-14, EAN-13, Data Matrix, QR Code) or apply a warehouse preset like Bin Tag or Master Carton." },
+      { step: "Input code data", detail: "Enter barcode text, optional location header tag, or switch to Batch Mode for multi-line list input." },
+      { step: "Customize design", detail: "Adjust bar height, scale, colors, and human-readable text position." },
+      { step: "Export & print", detail: "Copy PNG to clipboard, download SVG/PNG vectors, or generate printable PDF sticker sheets." },
+    ],
+  },
 ];
 
 
