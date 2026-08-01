@@ -14,8 +14,164 @@ import {
   AlertCircle,
   Settings2,
   FileSpreadsheet,
-  PackageCheck
+  PackageCheck,
+  Wrench
 } from "lucide-react";
+
+// Check digit calculation helpers
+function calcEan13CheckDigit(d12: string): string {
+  let sum = 0;
+  for (let i = 0; i < 12; i++) {
+    const num = parseInt(d12[i], 10);
+    sum += i % 2 === 0 ? num : num * 3;
+  }
+  return String((10 - (sum % 10)) % 10);
+}
+
+function calcEan8CheckDigit(d7: string): string {
+  let sum = 0;
+  for (let i = 0; i < 7; i++) {
+    const num = parseInt(d7[i], 10);
+    sum += i % 2 === 0 ? num * 3 : num;
+  }
+  return String((10 - (sum % 10)) % 10);
+}
+
+function calcUpcaCheckDigit(d11: string): string {
+  let sum = 0;
+  for (let i = 0; i < 11; i++) {
+    const num = parseInt(d11[i], 10);
+    sum += i % 2 === 0 ? num * 3 : num;
+  }
+  return String((10 - (sum % 10)) % 10);
+}
+
+function calcItf14CheckDigit(d13: string): string {
+  let sum = 0;
+  for (let i = 0; i < 13; i++) {
+    const num = parseInt(d13[i], 10);
+    sum += i % 2 === 0 ? num * 3 : num;
+  }
+  return String((10 - (sum % 10)) % 10);
+}
+
+// Map symbology ID to bwip-js bcid
+function getBwipBcid(symbologyId: string): string {
+  if (symbologyId === "codabar") return "rationalizedCodabar";
+  return symbologyId;
+}
+
+// Process and validate barcode data
+function prepareCodeText(symbologyId: string, text: string): { processedText: string; suggestedFix?: string; warning?: string } {
+  const trimmed = text.trim();
+  if (!trimmed) return { processedText: "" };
+
+  if (symbologyId === "codabar") {
+    const upper = trimmed.toUpperCase();
+    const hasStart = /^[ABCD]/.test(upper);
+    const hasEnd = /[ABCD]$/.test(upper);
+    if (!hasStart || !hasEnd) {
+      const core = upper.replace(/^[ABCD]/, "").replace(/[ABCD]$/, "");
+      const fixed = `A${core || "12345678"}B`;
+      return {
+        processedText: fixed,
+        suggestedFix: fixed,
+        warning: "Codabar requires start/stop letters (A, B, C, D). Auto-formatted with A...B.",
+      };
+    }
+    return { processedText: upper };
+  }
+
+  if (symbologyId === "ean13") {
+    const digits = trimmed.replace(/\D/g, "");
+    if (digits.length === 12) {
+      const check = calcEan13CheckDigit(digits);
+      const fixed = digits + check;
+      return { processedText: fixed, suggestedFix: fixed };
+    }
+    if (digits.length === 13) {
+      const expectedCheck = calcEan13CheckDigit(digits.slice(0, 12));
+      const actualCheck = digits[12];
+      if (expectedCheck !== actualCheck) {
+        const fixed = digits.slice(0, 12) + expectedCheck;
+        return {
+          processedText: fixed,
+          suggestedFix: fixed,
+          warning: `Incorrect EAN-13 check digit (${actualCheck}). Valid check digit is ${expectedCheck}.`,
+        };
+      }
+      return { processedText: digits };
+    }
+  }
+
+  if (symbologyId === "ean8") {
+    const digits = trimmed.replace(/\D/g, "");
+    if (digits.length === 7) {
+      const check = calcEan8CheckDigit(digits);
+      const fixed = digits + check;
+      return { processedText: fixed, suggestedFix: fixed };
+    }
+    if (digits.length === 8) {
+      const expectedCheck = calcEan8CheckDigit(digits.slice(0, 7));
+      const actualCheck = digits[7];
+      if (expectedCheck !== actualCheck) {
+        const fixed = digits.slice(0, 7) + expectedCheck;
+        return {
+          processedText: fixed,
+          suggestedFix: fixed,
+          warning: `Incorrect EAN-8 check digit (${actualCheck}). Valid check digit is ${expectedCheck}.`,
+        };
+      }
+      return { processedText: digits };
+    }
+  }
+
+  if (symbologyId === "upca") {
+    const digits = trimmed.replace(/\D/g, "");
+    if (digits.length === 11) {
+      const check = calcUpcaCheckDigit(digits);
+      const fixed = digits + check;
+      return { processedText: fixed, suggestedFix: fixed };
+    }
+    if (digits.length === 12) {
+      const expectedCheck = calcUpcaCheckDigit(digits.slice(0, 11));
+      const actualCheck = digits[11];
+      if (expectedCheck !== actualCheck) {
+        const fixed = digits.slice(0, 11) + expectedCheck;
+        return {
+          processedText: fixed,
+          suggestedFix: fixed,
+          warning: `Incorrect UPC-A check digit (${actualCheck}). Valid check digit is ${expectedCheck}.`,
+        };
+      }
+      return { processedText: digits };
+    }
+  }
+
+  if (symbologyId === "itf14") {
+    const digits = trimmed.replace(/\D/g, "");
+    if (digits.length === 13) {
+      const check = calcItf14CheckDigit(digits);
+      const fixed = digits + check;
+      return { processedText: fixed, suggestedFix: fixed };
+    }
+    if (digits.length === 14) {
+      const expectedCheck = calcItf14CheckDigit(digits.slice(0, 13));
+      const actualCheck = digits[13];
+      if (expectedCheck !== actualCheck) {
+        const fixed = digits.slice(0, 13) + expectedCheck;
+        return {
+          processedText: fixed,
+          suggestedFix: fixed,
+          warning: `Incorrect ITF-14 check digit (${actualCheck}). Valid check digit is ${expectedCheck}.`,
+        };
+      }
+      return { processedText: digits };
+    }
+  }
+
+  return { processedText: trimmed };
+}
 
 // Barcode symbology definition
 interface SymbologyOption {
@@ -24,7 +180,6 @@ interface SymbologyOption {
   category: "Logistics" | "2D Matrix" | "Retail" | "Industrial";
   defaultText: string;
   description: string;
-  validate?: (text: string) => string | null;
 }
 
 const SYMBOLOGY_OPTIONS: SymbologyOption[] = [
@@ -47,30 +202,28 @@ const SYMBOLOGY_OPTIONS: SymbologyOption[] = [
     name: "ITF-14",
     category: "Logistics",
     defaultText: "10012345678902",
-    description: "Interleaved 2 of 5 with bearer bars for outer carton / master case packaging.",
-    validate: (t) => (/^\d{14}$/.test(t) ? null : "ITF-14 requires exactly 14 numeric digits."),
+    description: "Interleaved 2 of 5 with bearer bars for outer carton packaging.",
   },
   {
     id: "datamatrix",
     name: "Data Matrix",
     category: "2D Matrix",
     defaultText: "SN-2026-X88902-B",
-    description: "Compact 2D matrix ideal for small electronics, equipment tags, & medicine.",
+    description: "Compact 2D matrix ideal for small electronics & equipment tags.",
   },
   {
     id: "qrcode",
     name: "QR Code",
     category: "2D Matrix",
     defaultText: "https://lumora.tools",
-    description: "High-capacity matrix code for URLs, warehouse asset inspection, & location routing.",
+    description: "High-capacity matrix code for URLs & location routing.",
   },
   {
     id: "ean13",
     name: "EAN-13",
     category: "Retail",
-    defaultText: "8801234567896",
+    defaultText: "8801234567893",
     description: "13-digit standard GTIN barcode for international retail packaging.",
-    validate: (t) => (/^\d{12,13}$/.test(t) ? null : "EAN-13 requires 12 or 13 numeric digits."),
   },
   {
     id: "upca",
@@ -78,14 +231,13 @@ const SYMBOLOGY_OPTIONS: SymbologyOption[] = [
     category: "Retail",
     defaultText: "012345678905",
     description: "12-digit standard retail barcode used across North America.",
-    validate: (t) => (/^\d{11,12}$/.test(t) ? null : "UPC-A requires 11 or 12 numeric digits."),
   },
   {
     id: "codabar",
     name: "Codabar",
     category: "Industrial",
     defaultText: "A12345678B",
-    description: "Self-checking barcode for libraries, courier express bags, & blood banks.",
+    description: "Self-checking barcode for libraries, courier bags, & blood banks.",
   },
 ];
 
@@ -151,8 +303,12 @@ export default function BarcodeStudio() {
   const [sheetGrid, setSheetGrid] = useState<"2x7" | "3x8" | "4x10">("3x8");
   const [sheetPaper, setSheetPaper] = useState<"a4" | "thermal">("a4");
 
-  // Error & Toast State
+  // Error & Warning States
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [warningMsg, setWarningMsg] = useState<string | null>(null);
+  const [suggestedFixText, setSuggestedFixText] = useState<string | null>(null);
+
+  // Toast State
   const [toastMessage, setToastMessage] = useState<string>("");
   const [showToast, setShowToast] = useState<boolean>(false);
 
@@ -170,22 +326,24 @@ export default function BarcodeStudio() {
     if (activeTab !== "single") return;
     if (!canvasRef.current) return;
 
-    const currentSymbology = SYMBOLOGY_OPTIONS.find((s) => s.id === symbology);
-    if (currentSymbology?.validate) {
-      const err = currentSymbology.validate(codeText);
-      if (err) {
-        setErrorMsg(err);
-        const ctx = canvasRef.current.getContext("2d");
-        if (ctx) ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-        return;
-      }
-    }
+    const prep = prepareCodeText(symbology, codeText);
+    const bcid = getBwipBcid(symbology);
+
+    setWarningMsg(prep.warning || null);
+    setSuggestedFixText(prep.suggestedFix || null);
     setErrorMsg(null);
+
+    const renderText = prep.processedText || codeText.trim();
+    if (!renderText) {
+      const ctx = canvasRef.current.getContext("2d");
+      if (ctx) ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+      return;
+    }
 
     try {
       bwipjs.toCanvas(canvasRef.current, {
-        bcid: symbology,
-        text: codeText.trim(),
+        bcid: bcid,
+        text: renderText,
         scale: scale,
         height: height,
         includetext: showHumanReadable,
@@ -196,7 +354,10 @@ export default function BarcodeStudio() {
         rotate: rotation,
       });
     } catch (e: any) {
-      setErrorMsg(e.message || "Failed to render barcode. Please check your text format.");
+      const cleanErr = e.message
+        ? e.message.replace(/^bwipp\.[^:]+:\s*/i, "").replace(/#[0-9]+/g, "")
+        : "Failed to render barcode. Please verify data format.";
+      setErrorMsg(cleanErr);
     }
   }, [
     activeTab,
@@ -241,9 +402,13 @@ export default function BarcodeStudio() {
   const handleDownloadSVG = () => {
     if (errorMsg) return;
     try {
+      const prep = prepareCodeText(symbology, codeText);
+      const bcid = getBwipBcid(symbology);
+      const renderText = prep.processedText || codeText.trim();
+
       const svgStr = (bwipjs as any).toSVG({
-        bcid: symbology,
-        text: codeText.trim(),
+        bcid: bcid,
+        text: renderText,
         scale: scale,
         height: height,
         includetext: showHumanReadable,
@@ -274,13 +439,21 @@ export default function BarcodeStudio() {
     triggerToast(`Applied "${preset.name}" preset`);
   };
 
+  // Apply Suggested Auto-Fix
+  const handleApplyFix = () => {
+    if (suggestedFixText) {
+      setCodeText(suggestedFixText);
+      triggerToast("Barcode text auto-corrected!");
+    }
+  };
+
   // Export PDF Label Sheet
   const handleExportPDF = () => {
     try {
       const doc = new jsPDF({
         orientation: "portrait",
         unit: "mm",
-        format: sheetPaper === "a4" ? "a4" : [101.6, 152.4], // 4x6 inches in mm
+        format: sheetPaper === "a4" ? "a4" : [101.6, 152.4],
       });
 
       const items = activeTab === "batch"
@@ -292,14 +465,17 @@ export default function BarcodeStudio() {
         return;
       }
 
+      const bcid = getBwipBcid(symbology);
+
       if (sheetPaper === "thermal") {
-        // Single 4x6 Thermal Label
         items.forEach((item, index) => {
           if (index > 0) doc.addPage([101.6, 152.4], "portrait");
+          const prep = prepareCodeText(symbology, item);
+          const renderText = prep.processedText || item;
           const tempCanvas = document.createElement("canvas");
           bwipjs.toCanvas(tempCanvas, {
-            bcid: symbology,
-            text: item,
+            bcid: bcid,
+            text: renderText,
             scale: 4,
             height: 25,
             includetext: showHumanReadable,
@@ -316,7 +492,6 @@ export default function BarcodeStudio() {
           doc.text(`Item ${index + 1} of ${items.length}`, 50.8, 140, { align: "center" });
         });
       } else {
-        // A4 Grid Layout
         let cols = 3;
         let rows = 8;
         if (sheetGrid === "2x7") { cols = 2; rows = 7; }
@@ -341,15 +516,16 @@ export default function BarcodeStudio() {
           const x = marginX + col * cellWidth;
           const y = marginY + row * cellHeight;
 
-          // Draw cell border guideline
           doc.setDrawColor(220, 220, 220);
           doc.rect(x, y, cellWidth, cellHeight);
 
           try {
+            const prep = prepareCodeText(symbology, item);
+            const renderText = prep.processedText || item;
             const tempCanvas = document.createElement("canvas");
             bwipjs.toCanvas(tempCanvas, {
-              bcid: symbology,
-              text: item,
+              bcid: bcid,
+              text: renderText,
               scale: 3,
               height: 15,
               includetext: showHumanReadable,
@@ -500,9 +676,10 @@ export default function BarcodeStudio() {
               <select
                 value={symbology}
                 onChange={(e) => {
-                  const selected = SYMBOLOGY_OPTIONS.find((s) => s.id === e.target.value);
-                  setSymbology(e.target.value);
-                  if (selected) setCodeText(selected.defaultText);
+                  const selectedId = e.target.value;
+                  const selectedOpt = SYMBOLOGY_OPTIONS.find((s) => s.id === selectedId);
+                  setSymbology(selectedId);
+                  if (selectedOpt) setCodeText(selectedOpt.defaultText);
                 }}
                 className="w-full bg-[#0a0a0c] border border-white/10 rounded-xl px-4 py-2.5 text-xs font-mono text-white focus:outline-none focus:border-lumora-highlight/50 transition-all cursor-pointer"
               >
@@ -670,6 +847,19 @@ export default function BarcodeStudio() {
                 <canvas ref={canvasRef} className="max-w-full h-auto" />
               </div>
 
+              {/* Warning / Fix Banner */}
+              {warningMsg && suggestedFixText && !errorMsg && (
+                <div className="mt-4 px-4 py-2.5 bg-amber-500/10 border border-amber-500/20 rounded-2xl text-center flex items-center justify-between gap-3 max-w-md w-full">
+                  <p className="text-[11px] text-amber-300 font-mono text-left">{warningMsg}</p>
+                  <button
+                    onClick={handleApplyFix}
+                    className="shrink-0 px-3 py-1 bg-amber-400 text-black hover:bg-amber-300 text-[10px] font-display font-bold uppercase rounded-lg transition-all flex items-center gap-1 cursor-pointer"
+                  >
+                    <Wrench className="h-3 w-3" /> Auto-Fix
+                  </button>
+                </div>
+              )}
+
               {/* Error Banner */}
               {errorMsg && (
                 <div className="mt-6 px-5 py-3 bg-red-500/10 border border-red-500/20 rounded-2xl text-center flex items-center gap-3">
@@ -811,9 +1001,13 @@ function BatchItemCard({
   useEffect(() => {
     if (!canvasRef.current) return;
     try {
+      const prep = prepareCodeText(symbology, codeText);
+      const bcid = getBwipBcid(symbology);
+      const renderText = prep.processedText || codeText;
+
       bwipjs.toCanvas(canvasRef.current, {
-        bcid: symbology,
-        text: codeText,
+        bcid: bcid,
+        text: renderText,
         scale: 2,
         height: 15,
         includetext: showText,
