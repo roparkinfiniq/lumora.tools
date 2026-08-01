@@ -70,16 +70,24 @@ function prepareCodeText(symbologyId: string, text: string): { processedText: st
     const upper = trimmed.toUpperCase();
     const hasStart = /^[ABCD]/.test(upper);
     const hasEnd = /[ABCD]$/.test(upper);
-    if (!hasStart || !hasEnd) {
-      const core = upper.replace(/^[ABCD]/, "").replace(/[ABCD]$/, "");
-      const fixed = `A${core || "12345678"}B`;
+    let startChar = hasStart ? upper[0] : "A";
+    let endChar = hasEnd ? upper[upper.length - 1] : "B";
+    
+    let body = upper;
+    if (hasStart) body = body.slice(1);
+    if (hasEnd && body.length > 0) body = body.slice(0, body.length - 1);
+    
+    const cleanBody = body.replace(/[^0-9\-\$\:\/\.\+]/g, "");
+    const fixed = `${startChar}${cleanBody || "12345678"}${endChar}`;
+    
+    if (!hasStart || !hasEnd || cleanBody !== body) {
       return {
         processedText: fixed,
         suggestedFix: fixed,
-        warning: "Codabar requires start/stop letters (A, B, C, D). Auto-formatted with A...B.",
+        warning: "Codabar requires A-D start/end and valid digits/symbols (0-9 - $ : / . +). Auto-formatted.",
       };
     }
-    return { processedText: upper };
+    return { processedText: fixed };
   }
 
   if (symbologyId === "ean13") {
