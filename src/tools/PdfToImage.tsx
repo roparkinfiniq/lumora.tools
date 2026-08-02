@@ -108,28 +108,26 @@ export default function PdfToImage() {
     return page;
   };
 
-  // Render current page to canvas
-  const renderViewer = async (currentPageNum: number, currentScale: number, resetViewport: boolean = false) => {
-    if (!state.pdfDoc || !canvasRef.current) return;
+  // Render current page to canvas at crisp base resolution
+  const renderViewer = async (currentPageNum: number) => {
+    if (!state.pdfDoc || !canvasRef.current || !stageRef.current) return;
 
     try {
       const page = await getPage(currentPageNum);
-      let targetScale = currentScale;
+      const trial = page.getViewport({ scale: 1.0 });
+      const containerW = Math.max(stageRef.current.clientWidth - 40, 200);
+      const containerH = Math.max(stageRef.current.clientHeight - 40, 200);
+      const sx = containerW / trial.width;
+      const sy = containerH / trial.height;
+      const baseScale = Math.max(Math.min(sx, sy), 0.2);
 
-      if (resetViewport && stageRef.current) {
-        const trial = page.getViewport({ scale: 1.0 });
-        const w = stageRef.current.clientWidth - 30;
-        const h = stageRef.current.clientHeight - 30;
-        const sx = w / trial.width;
-        const sy = h / trial.height;
-        targetScale = Math.max(Math.min(sx, sy), 0.25);
-        setState((prev) => ({ ...prev, scale: targetScale, transX: 0, transY: 0 }));
-      }
-
-      const vp = page.getViewport({ scale: targetScale });
+      // Render canvas at 2x base resolution for sharp crisp display when zooming
+      const vp = page.getViewport({ scale: baseScale * 2 });
       const canvas = canvasRef.current;
-      canvas.width = vp.width;
-      canvas.height = vp.height;
+      canvas.width = Math.floor(vp.width);
+      canvas.height = Math.floor(vp.height);
+      canvas.style.width = `${Math.floor(vp.width / 2)}px`;
+      canvas.style.height = `${Math.floor(vp.height / 2)}px`;
 
       const ctx = canvas.getContext("2d");
       if (ctx) {
@@ -146,12 +144,12 @@ export default function PdfToImage() {
     }
   };
 
-  // Trigger render when curPage or scale changes
+  // Trigger render when pdfDoc or curPage changes
   useEffect(() => {
     if (state.pdfDoc) {
-      renderViewer(state.curPage, state.scale);
+      renderViewer(state.curPage);
     }
-  }, [state.pdfDoc, state.curPage, state.scale]);
+  }, [state.pdfDoc, state.curPage]);
 
   const handleFile = async (f: File) => {
     if (f.type !== "application/pdf" && !f.name.toLowerCase().endsWith(".pdf")) {
@@ -173,12 +171,14 @@ export default function PdfToImage() {
         pdfDoc: pdfDoc,
         curPage: 1,
         totalPages: pdfDoc.numPages,
+        scale: 1.0,
+        transX: 0,
+        transY: 0,
       }));
       setStatus(`Loaded PDF: ${pdfDoc.numPages} pages.`);
       
-      // Delay slightly for layout to compute clientWidth
       setTimeout(() => {
-        renderViewer(1, 1.0, true);
+        renderViewer(1);
       }, 100);
     } catch (err: any) {
       console.error(err);
@@ -190,8 +190,8 @@ export default function PdfToImage() {
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsHovered(false);
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      handleFile(e.dataTransfer.files[0]);
+    if (e.target && (e.target as any).files && (e.target as any).files[0]) {
+      handleFile((e.target as any).files[0]);
     }
   };
 
@@ -199,6 +199,10 @@ export default function PdfToImage() {
     if (!state.pdfDoc) return;
     const nextScale = Math.min(Math.max(state.scale * mult, 0.25), 8.0);
     setState((prev) => ({ ...prev, scale: nextScale }));
+  };
+
+  const handleResetZoom = () => {
+    setState((prev) => ({ ...prev, scale: 1.0, transX: 0, transY: 0 }));
   };
 
   const handleWheel = (e: React.WheelEvent) => {
@@ -528,16 +532,16 @@ export default function PdfToImage() {
 
                 {/* Zoom Controls */}
                 <div className="flex items-center gap-1.5">
-                  <button onClick={() => setZoom(1 / 1.2)} className="p-1.5 bg-white/5 hover:bg-white/10 text-white/60 hover:text-white rounded-lg transition-colors border border-white/5">
+                  <button onClick={() => setZoom(1 / 1.2)} className="p-1.5 bg-black/30 hover:bg-white/10 text-white/60 hover:text-white rounded-lg transition-colors border border-white/10 cursor-pointer" title="Zoom Out">
                     <ZoomOut className="h-3 w-3" />
                   </button>
-                  <button onClick={() => renderViewer(state.curPage, state.scale, true)} className="px-2 py-1 bg-white/5 hover:bg-white/10 text-[10px] font-display font-bold text-white/60 hover:text-white rounded-lg transition-colors border border-white/5">
+                  <button onClick={handleResetZoom} className="px-2.5 py-1 bg-black/30 hover:bg-white/10 text-[10px] font-display font-bold text-white/60 hover:text-white rounded-lg transition-colors border border-white/10 cursor-pointer" title="Reset Fit">
                     Fit
                   </button>
-                  <button onClick={() => setZoom(1.2)} className="p-1.5 bg-white/5 hover:bg-white/10 text-white/60 hover:text-white rounded-lg transition-colors border border-white/5">
+                  <button onClick={() => setZoom(1.2)} className="p-1.5 bg-black/30 hover:bg-white/10 text-white/60 hover:text-white rounded-lg transition-colors border border-white/10 cursor-pointer" title="Zoom In">
                     <ZoomIn className="h-3 w-3" />
                   </button>
-                  <span className="font-mono text-[9px] text-white/40 ml-1.5">{Math.round(state.scale * 100)}%</span>
+                  <span className="font-mono text-[9px] text-white/50 ml-1.5 w-12 text-right">{Math.round(state.scale * 100)}%</span>
                 </div>
               </div>
 
@@ -549,16 +553,17 @@ export default function PdfToImage() {
                 onMouseMove={doPan}
                 onMouseUp={endPan}
                 onMouseLeave={endPan}
-                className="flex-1 min-h-[260px] bg-lumora-bg/40 border border-white/5 rounded-2xl relative overflow-hidden flex items-center justify-center cursor-grab"
+                className="flex-1 min-h-[300px] bg-lumora-bg/40 border border-white/5 rounded-2xl relative overflow-hidden flex items-center justify-center cursor-grab bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:16px_16px]"
               >
                 <div
                   style={{
-                    transform: `translate(${state.transX}px, ${state.transY}px)`,
+                    transform: `translate(${state.transX}px, ${state.transY}px) scale(${state.scale})`,
                     transition: state.isPanning ? "none" : "transform 0.15s ease-out",
+                    transformOrigin: "center center",
                   }}
-                  className="flex items-center justify-center max-h-[85%] max-w-[85%]"
+                  className="flex items-center justify-center"
                 >
-                  <canvas ref={canvasRef} className="max-w-full max-h-full object-contain pointer-events-none select-none rounded border border-white/5 shadow-lg bg-white" />
+                  <canvas ref={canvasRef} className="pointer-events-none select-none rounded border border-white/10 shadow-2xl bg-white" />
                 </div>
                 <div className="absolute bottom-3 right-3 p-1.5 rounded bg-black/60 backdrop-blur-sm border border-white/5 pointer-events-none">
                   <Move className="h-3.5 w-3.5 text-white/40" />
