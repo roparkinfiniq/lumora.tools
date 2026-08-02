@@ -108,8 +108,8 @@ export default function PdfToImage() {
     return page;
   };
 
-  // Render current page to canvas at crisp base resolution
-  const renderViewer = async (currentPageNum: number) => {
+  // Render current page to canvas with ultra-high resolution vector clarity
+  const renderViewer = async (currentPageNum: number, currentZoom: number = 1.0) => {
     if (!state.pdfDoc || !canvasRef.current || !stageRef.current) return;
 
     try {
@@ -121,19 +121,29 @@ export default function PdfToImage() {
       const sy = containerH / trial.height;
       const baseScale = Math.max(Math.min(sx, sy), 0.2);
 
-      // Render canvas at 2x base resolution for sharp crisp display when zooming
-      const vp = page.getViewport({ scale: baseScale * 2 });
+      const dpr = typeof window !== "undefined" ? (window.devicePixelRatio || 1) : 1;
+      // Combine base scale, user selected DPI scale, device pixel ratio, and current zoom level
+      const zoomFactor = Math.max(currentZoom, 1.0);
+      const targetRenderScale = baseScale * Math.max(resolutionScale, 1.5) * dpr * Math.min(zoomFactor, 2.5);
+
+      const vp = page.getViewport({ scale: targetRenderScale });
       const canvas = canvasRef.current;
       canvas.width = Math.floor(vp.width);
       canvas.height = Math.floor(vp.height);
-      canvas.style.width = `${Math.floor(vp.width / 2)}px`;
-      canvas.style.height = `${Math.floor(vp.height / 2)}px`;
+      
+      const displayW = Math.floor(trial.width * baseScale);
+      const displayH = Math.floor(trial.height * baseScale);
+      canvas.style.width = `${displayW}px`;
+      canvas.style.height = `${displayH}px`;
 
       const ctx = canvas.getContext("2d");
       if (ctx) {
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = "high";
+
         await page.render({
           canvasContext: ctx,
           viewport: vp,
@@ -144,12 +154,15 @@ export default function PdfToImage() {
     }
   };
 
-  // Trigger render when pdfDoc or curPage changes
+  // Re-render when pdfDoc, curPage, resolutionScale, or scale changes
   useEffect(() => {
     if (state.pdfDoc) {
-      renderViewer(state.curPage);
+      const timer = setTimeout(() => {
+        renderViewer(state.curPage, state.scale);
+      }, 50);
+      return () => clearTimeout(timer);
     }
-  }, [state.pdfDoc, state.curPage]);
+  }, [state.pdfDoc, state.curPage, resolutionScale, state.scale]);
 
   const handleFile = async (f: File) => {
     if (f.type !== "application/pdf" && !f.name.toLowerCase().endsWith(".pdf")) {
