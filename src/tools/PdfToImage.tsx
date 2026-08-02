@@ -566,7 +566,7 @@ export default function PdfToImage() {
                 onMouseMove={doPan}
                 onMouseUp={endPan}
                 onMouseLeave={endPan}
-                className="flex-1 min-h-[300px] bg-lumora-bg/40 border border-white/5 rounded-2xl relative overflow-hidden flex items-center justify-center cursor-grab bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:16px_16px]"
+                className="flex-1 min-h-[580px] md:min-h-[640px] bg-lumora-bg/40 border border-white/5 rounded-2xl relative overflow-hidden flex items-center justify-center cursor-grab bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:16px_16px]"
               >
                 <div
                   style={{
