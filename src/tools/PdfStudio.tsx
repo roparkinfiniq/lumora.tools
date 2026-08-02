@@ -261,114 +261,115 @@ export default function PdfStudio() {
             </div>
           </div>
 
-          <div className="flex-1 bg-white/[0.03] border border-white/5 rounded-[40px] overflow-auto no-scrollbar p-12 flex justify-center shadow-inner">
-            {/* The Actual A4 Page */}
-            <div 
-              ref={previewRef}
-              className="bg-[#ffffff] w-[210mm] min-h-[297mm] shadow-[0_30px_100px_rgba(0,0,0,0.5)] flex flex-col p-[20mm] text-[#000000] overflow-hidden origin-top transform"
-              style={{ 
-                fontFamily: "Inter, system-ui, sans-serif",
-                transform: "scale(0.8)", // Fixed scale for desktop preview visibility
-                backgroundColor: "#ffffff",
-                color: "#000000"
-              }}
-            >
-              {template === "note" && (
-                <div className="h-full flex flex-col">
-                  <div className="flex items-center justify-between border-b-2 border-[#000000] pb-8 mb-12">
-                    <div>
-                      <h1 className="text-4xl font-bold tracking-tighter mb-2">{noteData.title}</h1>
-                      <p className="text-sm font-medium opacity-40">{noteData.date}</p>
+          <div className="flex-1 bg-white/[0.03] border border-white/5 rounded-[40px] overflow-auto no-scrollbar p-6 md:p-8 flex justify-center items-start shadow-inner">
+            {/* The Responsive A4 Page Container */}
+            <div className="w-full max-w-[500px] aspect-[210/297] flex justify-center">
+              <div 
+                ref={previewRef}
+                className="bg-[#ffffff] w-full h-full shadow-[0_20px_60px_rgba(0,0,0,0.5)] flex flex-col p-8 md:p-10 text-[#000000] rounded-sm overflow-hidden select-none"
+                style={{ 
+                  fontFamily: "Inter, system-ui, sans-serif",
+                  backgroundColor: "#ffffff",
+                  color: "#000000"
+                }}
+              >
+                {template === "note" && (
+                  <div className="h-full flex flex-col">
+                    <div className="flex items-center justify-between border-b-2 border-[#000000] pb-6 mb-8">
+                      <div>
+                        <h1 className="text-2xl md:text-3xl font-bold tracking-tighter mb-1">{noteData.title}</h1>
+                        <p className="text-xs font-medium opacity-40">{noteData.date}</p>
+                      </div>
+                      <div className="h-10 w-10 bg-[#000000] rounded-xl flex items-center justify-center">
+                        <div className="h-3 w-3 border-2 border-[#ffffff] rounded-full" />
+                      </div>
                     </div>
-                    <div className="h-12 w-12 bg-[#000000] rounded-2xl flex items-center justify-center">
-                      <div className="h-4 w-4 border-2 border-[#ffffff] rounded-full" />
+                    <div className="flex-1 overflow-hidden">
+                      <p className="text-sm md:text-base leading-relaxed whitespace-pre-wrap">{noteData.content}</p>
+                    </div>
+                    <div className="pt-6 border-t border-[#f0f0f0]">
+                      <p className="text-[9px] font-bold uppercase tracking-widest opacity-20">Synthesized by Lumora PDF Studio — Confidential</p>
                     </div>
                   </div>
-                  <div className="flex-1">
-                    <p className="text-lg leading-[1.8] whitespace-pre-wrap">{noteData.content}</p>
-                  </div>
-                  <div className="pt-20 border-t border-[#f0f0f0]">
-                    <p className="text-[10px] font-bold uppercase tracking-widest opacity-20">Synthesized by Lumora PDF Studio — Confidential</p>
-                  </div>
-                </div>
-              )}
+                )}
 
-              {template === "resume" && (
-                <div className="h-full flex flex-col">
-                  <div className="mb-20">
-                    <h1 className="text-6xl font-bold tracking-tighter mb-4">{resumeData.name}</h1>
-                    <p className="text-xl font-medium text-[#444444] mb-6">{resumeData.role}</p>
-                    <p className="text-sm font-mono opacity-40">{resumeData.email}</p>
-                  </div>
-                  
-                  <div className="grid grid-cols-12 gap-12 flex-1">
-                    <div className="col-span-4">
-                      <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] mb-6 opacity-30">Profile</h3>
-                      <p className="text-sm leading-relaxed">{resumeData.summary}</p>
+                {template === "resume" && (
+                  <div className="h-full flex flex-col">
+                    <div className="mb-10">
+                      <h1 className="text-4xl md:text-5xl font-bold tracking-tighter mb-2">{resumeData.name}</h1>
+                      <p className="text-base font-medium text-[#444444] mb-3">{resumeData.role}</p>
+                      <p className="text-xs font-mono opacity-40">{resumeData.email}</p>
                     </div>
-                    <div className="col-span-8">
-                      <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] mb-8 opacity-30">Career Path</h3>
-                      <div className="space-y-12">
-                        {resumeData.experience.map(exp => (
-                          <div key={exp.id} className="relative pl-8 border-l border-[#eeeeee]">
-                            <div className="absolute left-[-4px] top-1.5 h-2 w-2 rounded-full bg-[#000000]" />
-                            <h4 className="text-xl font-bold mb-1">{exp.company}</h4>
-                            <p className="text-sm font-medium text-[#666666] mb-2">{exp.role}</p>
-                            <p className="text-[10px] font-mono opacity-30 uppercase">{exp.period}</p>
+                    
+                    <div className="grid grid-cols-12 gap-6 flex-1">
+                      <div className="col-span-4">
+                        <h3 className="text-[9px] font-bold uppercase tracking-[0.2em] mb-4 opacity-30">Profile</h3>
+                        <p className="text-xs leading-relaxed">{resumeData.summary}</p>
+                      </div>
+                      <div className="col-span-8">
+                        <h3 className="text-[9px] font-bold uppercase tracking-[0.2em] mb-6 opacity-30">Career Path</h3>
+                        <div className="space-y-6">
+                          {resumeData.experience.map(exp => (
+                            <div key={exp.id} className="relative pl-6 border-l border-[#eeeeee]">
+                              <div className="absolute left-[-4.5px] top-1.5 h-2 w-2 rounded-full bg-[#000000]" />
+                              <h4 className="text-base font-bold mb-0.5">{exp.company}</h4>
+                              <p className="text-xs font-medium text-[#666666] mb-1">{exp.role}</p>
+                              <p className="text-[9px] font-mono opacity-30 uppercase">{exp.period}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-auto pt-6 flex items-center justify-between opacity-20 border-t border-[#f0f0f0]">
+                      <p className="text-[9px] font-bold uppercase tracking-widest">Portfolio 2026</p>
+                      <p className="text-[9px] font-bold uppercase tracking-widest">Page 01</p>
+                    </div>
+                  </div>
+                )}
+
+                {template === "invoice" && (
+                  <div className="h-full flex flex-col">
+                    <div className="flex justify-between items-start mb-12">
+                      <div>
+                        <div className="h-8 w-8 bg-[#000000] rounded-lg mb-4" />
+                        <p className="text-[9px] font-bold uppercase tracking-widest opacity-30 mb-1">Invoice To</p>
+                        <p className="text-lg font-bold">{invoiceData.billTo}</p>
+                      </div>
+                      <div className="text-right">
+                        <h1 className="text-3xl font-bold tracking-tighter mb-2">Invoice</h1>
+                        <p className="text-xs font-mono opacity-40">{invoiceData.invoiceNo}</p>
+                      </div>
+                    </div>
+
+                    <div className="flex-1">
+                      <div className="grid grid-cols-12 border-b border-[#000000] pb-3 mb-4 opacity-30">
+                        <div className="col-span-9 text-[9px] font-bold uppercase tracking-widest">Description</div>
+                        <div className="col-span-3 text-[9px] font-bold uppercase tracking-widest text-right">Amount</div>
+                      </div>
+                      <div className="space-y-4">
+                        {invoiceData.items.map(item => (
+                          <div key={item.id} className="grid grid-cols-12 items-center">
+                            <div className="col-span-9 font-bold text-sm">{item.desc}</div>
+                            <div className="col-span-3 text-right font-mono text-sm">${item.price.toLocaleString()}</div>
                           </div>
                         ))}
                       </div>
                     </div>
-                  </div>
-                  
-                  <div className="mt-auto pt-12 flex items-center justify-between opacity-20">
-                    <p className="text-[10px] font-bold uppercase tracking-widest">Portfolio 2026</p>
-                    <p className="text-[10px] font-bold uppercase tracking-widest">Page 01</p>
-                  </div>
-                </div>
-              )}
 
-              {template === "invoice" && (
-                <div className="h-full flex flex-col">
-                  <div className="flex justify-between items-start mb-24">
-                    <div>
-                      <div className="h-10 w-10 bg-[#000000] rounded-xl mb-6" />
-                      <p className="text-[10px] font-bold uppercase tracking-widest opacity-30 mb-2">Invoice To</p>
-                      <p className="text-2xl font-bold">{invoiceData.billTo}</p>
-                    </div>
-                    <div className="text-right">
-                      <h1 className="text-5xl font-bold tracking-tighter mb-4">Invoice</h1>
-                      <p className="text-sm font-mono opacity-40">{invoiceData.invoiceNo}</p>
+                    <div className="mt-auto border-t-2 border-[#000000] pt-6 flex justify-between items-end">
+                      <div>
+                        <p className="text-[9px] font-bold uppercase tracking-widest opacity-30 mb-1">Payment Info</p>
+                        <p className="text-xs font-medium">Bank Transfer / Lumora Pay</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-[9px] font-bold uppercase tracking-widest opacity-30 mb-1">Total Synthesis</p>
+                        <p className="text-3xl font-bold tracking-tighter">${invoiceData.items.reduce((acc, i) => acc + i.price, 0).toLocaleString()}</p>
+                      </div>
                     </div>
                   </div>
-
-                  <div className="flex-1">
-                    <div className="grid grid-cols-12 border-b border-[#000000] pb-4 mb-6 opacity-30">
-                      <div className="col-span-9 text-[10px] font-bold uppercase tracking-widest">Description</div>
-                      <div className="col-span-3 text-[10px] font-bold uppercase tracking-widest text-right">Amount</div>
-                    </div>
-                    <div className="space-y-6">
-                      {invoiceData.items.map(item => (
-                        <div key={item.id} className="grid grid-cols-12 items-center">
-                          <div className="col-span-9 font-bold text-lg">{item.desc}</div>
-                          <div className="col-span-3 text-right font-mono text-lg">${item.price.toLocaleString()}</div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="mt-auto border-t-2 border-[#000000] pt-12 flex justify-between items-end">
-                    <div>
-                      <p className="text-[10px] font-bold uppercase tracking-widest opacity-30 mb-2">Payment Info</p>
-                      <p className="text-sm font-medium">Bank Transfer / Lumora Pay</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-[10px] font-bold uppercase tracking-widest opacity-30 mb-2">Total Synthesis</p>
-                      <p className="text-6xl font-bold tracking-tighter">${invoiceData.items.reduce((acc, i) => acc + i.price, 0).toLocaleString()}</p>
-                    </div>
-                  </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
         </div>
