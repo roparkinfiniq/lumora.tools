@@ -689,10 +689,10 @@ export default function BarcodeStudio() {
                   setSymbology(selectedId);
                   if (selectedOpt) setCodeText(selectedOpt.defaultText);
                 }}
-                className="w-full bg-[#0a0a0c] border border-white/10 rounded-xl px-4 py-2.5 text-xs font-mono text-white focus:outline-none focus:border-lumora-highlight/50 transition-all cursor-pointer"
+                className="w-full bg-black/30 border border-white/10 hover:border-white/20 focus:border-lumora-highlight/40 focus:bg-black/50 rounded-xl px-4 py-2.5 text-xs font-mono text-white focus:outline-none transition-all cursor-pointer"
               >
                 {SYMBOLOGY_OPTIONS.map((opt) => (
-                  <option key={opt.id} value={opt.id}>
+                  <option key={opt.id} value={opt.id} className="bg-[#0a0a0c]">
                     {opt.name} ({opt.category})
                   </option>
                 ))}
@@ -711,7 +711,7 @@ export default function BarcodeStudio() {
                     value={codeText}
                     onChange={(e) => setCodeText(e.target.value)}
                     placeholder="Enter barcode string..."
-                    className="w-full bg-[#0a0a0c] border border-white/10 rounded-xl px-4 py-2.5 text-xs font-mono text-white placeholder:text-white/20 focus:outline-none focus:border-lumora-highlight/50 transition-all"
+                    className="w-full bg-black/30 border border-white/10 hover:border-white/20 focus:border-lumora-highlight/40 focus:bg-black/50 rounded-xl px-4 py-2.5 text-xs font-mono text-white placeholder:text-white/20 focus:outline-none transition-all"
                   />
                 </div>
 
@@ -724,7 +724,7 @@ export default function BarcodeStudio() {
                     value={labelText}
                     onChange={(e) => setLabelText(e.target.value)}
                     placeholder="e.g. WAREHOUSE BIN A-04"
-                    className="w-full bg-[#0a0a0c] border border-white/10 rounded-xl px-4 py-2.5 text-xs font-mono text-white placeholder:text-white/20 focus:outline-none focus:border-lumora-highlight/50 transition-all"
+                    className="w-full bg-black/30 border border-white/10 hover:border-white/20 focus:border-lumora-highlight/40 focus:bg-black/50 rounded-xl px-4 py-2.5 text-xs font-mono text-white placeholder:text-white/20 focus:outline-none transition-all"
                   />
                 </div>
               </>
@@ -738,7 +738,7 @@ export default function BarcodeStudio() {
                   onChange={(e) => setBatchInput(e.target.value)}
                   rows={5}
                   placeholder="LOC-A01-01&#10;LOC-A01-02&#10;LOC-A01-03"
-                  className="w-full bg-[#0a0a0c] border border-white/10 rounded-xl p-4 text-xs font-mono text-white placeholder:text-white/20 focus:outline-none focus:border-lumora-highlight/50 transition-all resize-none"
+                  className="w-full bg-black/30 border border-white/10 hover:border-white/20 focus:border-lumora-highlight/40 focus:bg-black/50 rounded-xl p-4 text-xs font-mono text-white placeholder:text-white/20 focus:outline-none transition-all resize-none"
                 />
               </div>
             )}
@@ -936,10 +936,10 @@ export default function BarcodeStudio() {
                     <select
                       value={sheetPaper}
                       onChange={(e: any) => setSheetPaper(e.target.value)}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-xs font-display text-white focus:outline-none"
+                      className="w-full bg-black/30 border border-white/10 hover:border-white/20 focus:border-lumora-highlight/40 focus:bg-black/50 rounded-xl px-4 py-2.5 text-xs font-display text-white focus:outline-none transition-all cursor-pointer"
                     >
-                      <option value="a4">Standard A4 Sheet (210 x 297 mm)</option>
-                      <option value="thermal">4x6 Thermal Roll (101.6 x 152.4 mm)</option>
+                      <option value="a4" className="bg-[#0a0a0c]">Standard A4 Sheet (210 x 297 mm)</option>
+                      <option value="thermal" className="bg-[#0a0a0c]">4x6 Thermal Roll (101.6 x 152.4 mm)</option>
                     </select>
                   </div>
 
@@ -951,11 +951,11 @@ export default function BarcodeStudio() {
                       <select
                         value={sheetGrid}
                         onChange={(e: any) => setSheetGrid(e.target.value)}
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-xs font-display text-white focus:outline-none"
+                        className="w-full bg-black/30 border border-white/10 hover:border-white/20 focus:border-lumora-highlight/40 focus:bg-black/50 rounded-xl px-4 py-2.5 text-xs font-display text-white focus:outline-none transition-all cursor-pointer"
                       >
-                        <option value="2x7">2 x 7 Grid (14 Labels / Page)</option>
-                        <option value="3x8">3 x 8 Grid (24 Labels / Page)</option>
-                        <option value="4x10">4 x 10 Grid (40 Labels / Page)</option>
+                        <option value="2x7" className="bg-[#0a0a0c]">2 x 7 Grid (14 Labels / Page)</option>
+                        <option value="3x8" className="bg-[#0a0a0c]">3 x 8 Grid (24 Labels / Page)</option>
+                        <option value="4x10" className="bg-[#0a0a0c]">4 x 10 Grid (40 Labels / Page)</option>
                       </select>
                     </div>
                   )}

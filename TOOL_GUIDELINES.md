@@ -98,13 +98,27 @@ Add the new ID to the exclusion array in `ToolDetailView.tsx`:
 // ✅ DO: Use tokens with opacity modifiers
 className="bg-lumora-highlight/10 text-lumora-highlight border border-lumora-highlight/20"
 
-// ✅ DO: Dark backgrounds
-className="bg-[#0a0a0c]"          // Editor / input area background
+// ✅ DO: Dark backgrounds & Translucent Glass Inputs
+className="bg-black/30 border border-white/10 hover:border-white/20 focus:border-lumora-highlight/40 focus:bg-black/50 focus:outline-none transition-all" // Input fields / textareas / selects
 className="bg-white/[0.02]"        // Inner card section background
 
+// ❌ DON'T: Heavy solid pitch-black inputs
+// Avoid raw bg-[#0a0a0c] or bg-black on input boxes without borders — creates visual cutouts
 // ❌ DON'T: Use modern CSS color functions
 // oklch(), oklab() break html2canvas and other rendering libraries
 // ❌ DON'T: Hardcode arbitrary hex colors — prefer tokens
+```
+
+### ✏️ Text Input & Textarea Standard
+
+All text inputs, textareas, and select dropdowns inside tool components must use translucent glassmorphic styling:
+
+```tsx
+// Text Input / Select
+className="w-full bg-black/30 border border-white/10 hover:border-white/20 focus:border-lumora-highlight/40 focus:bg-black/50 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-white placeholder:text-white/20 transition-all"
+
+// Textarea / Code Editor
+className="w-full bg-black/30 border border-white/10 hover:border-white/20 focus:border-lumora-highlight/40 focus:bg-black/50 focus:outline-none rounded-[24px] p-5 text-xs font-mono text-white/90 placeholder:text-white/20 transition-all resize-none"
 ```
 
 ### Typography Rules

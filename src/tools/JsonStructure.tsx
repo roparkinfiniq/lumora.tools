@@ -145,7 +145,7 @@ export default function JsonStructure() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder='Paste your JSON here... e.g. {"name": "Lumora"}'
-              className={`w-full h-full bg-[#0a0a0c] border rounded-[24px] p-6 text-sm font-mono text-white/80 placeholder:text-white/10 focus:outline-none focus:ring-2 transition-all resize-none ${error ? 'border-red-500/30 focus:ring-red-500/20' : 'border-white/5 focus:border-lumora-highlight/30 focus:ring-lumora-highlight/10'}`}
+              className={`w-full h-full bg-black/30 border rounded-[24px] p-6 text-sm font-mono text-white/80 placeholder:text-white/20 focus:outline-none transition-all resize-none ${error ? 'border-red-500/40 focus:border-red-500/50' : 'border-white/10 hover:border-white/20 focus:border-lumora-highlight/40 focus:bg-black/50'}`}
               spellCheck="false"
             />
             <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">

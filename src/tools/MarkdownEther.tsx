@@ -125,7 +125,7 @@ export default function MarkdownEther() {
                 value={markdown}
                 onChange={(e) => setMarkdown(e.target.value)}
                 placeholder="Write your markdown here..."
-                className="w-full h-full bg-[#0a0a0c] border border-white/5 rounded-[24px] p-8 text-sm font-mono text-white/80 placeholder:text-white/10 focus:outline-none focus:border-lumora-highlight/30 focus:ring-2 focus:ring-lumora-highlight/5 transition-all resize-none leading-relaxed"
+                className="w-full h-full bg-black/30 border border-white/10 hover:border-white/20 focus:border-lumora-highlight/40 focus:bg-black/50 rounded-[24px] p-8 text-sm font-mono text-white/80 placeholder:text-white/20 focus:outline-none transition-all resize-none leading-relaxed"
                 spellCheck="false"
               />
             </motion.div>

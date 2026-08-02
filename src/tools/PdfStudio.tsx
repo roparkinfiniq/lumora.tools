@@ -160,7 +160,7 @@ export default function PdfStudio() {
                     type="text" 
                     value={noteData.title}
                     onChange={(e) => setNoteData({...noteData, title: e.target.value})}
-                    className="w-full bg-[#0a0a0c] border border-white/5 rounded-2xl px-5 py-4 text-sm text-white focus:outline-none focus:border-lumora-blue/50 transition-all"
+                    className="w-full bg-black/30 border border-white/10 hover:border-white/20 focus:border-lumora-highlight/40 focus:bg-black/50 rounded-2xl px-5 py-4 text-sm text-white focus:outline-none transition-all"
                   />
                 </div>
                 <div className="space-y-2">
@@ -168,7 +168,7 @@ export default function PdfStudio() {
                   <textarea 
                     value={noteData.content}
                     onChange={(e) => setNoteData({...noteData, content: e.target.value})}
-                    className="w-full h-48 bg-[#0a0a0c] border border-white/5 rounded-2xl px-5 py-4 text-sm text-white/80 focus:outline-none focus:border-lumora-blue/50 transition-all resize-none leading-relaxed"
+                    className="w-full h-48 bg-black/30 border border-white/10 hover:border-white/20 focus:border-lumora-highlight/40 focus:bg-black/50 rounded-2xl px-5 py-4 text-sm text-white/80 focus:outline-none transition-all resize-none leading-relaxed"
                   />
                 </div>
               </div>
@@ -182,7 +182,7 @@ export default function PdfStudio() {
                     type="text" 
                     value={resumeData.name}
                     onChange={(e) => setResumeData({...resumeData, name: e.target.value})}
-                    className="w-full bg-[#0a0a0c] border border-white/5 rounded-2xl px-5 py-4 text-sm text-white focus:outline-none focus:border-lumora-blue/50 transition-all"
+                    className="w-full bg-black/30 border border-white/10 hover:border-white/20 focus:border-lumora-highlight/40 focus:bg-black/50 rounded-2xl px-5 py-4 text-sm text-white focus:outline-none transition-all"
                   />
                 </div>
                 <div className="space-y-2">
@@ -190,7 +190,7 @@ export default function PdfStudio() {
                   <textarea 
                     value={resumeData.summary}
                     onChange={(e) => setResumeData({...resumeData, summary: e.target.value})}
-                    className="w-full h-24 bg-[#0a0a0c] border border-white/5 rounded-2xl px-5 py-4 text-sm text-white/80 focus:outline-none focus:border-lumora-blue/50 transition-all resize-none"
+                    className="w-full h-24 bg-black/30 border border-white/10 hover:border-white/20 focus:border-lumora-highlight/40 focus:bg-black/50 rounded-2xl px-5 py-4 text-sm text-white/80 focus:outline-none transition-all resize-none"
                   />
                 </div>
                 <div className="space-y-4">
@@ -219,7 +219,7 @@ export default function PdfStudio() {
                     type="text" 
                     value={invoiceData.billTo}
                     onChange={(e) => setInvoiceData({...invoiceData, billTo: e.target.value})}
-                    className="w-full bg-[#0a0a0c] border border-white/5 rounded-2xl px-5 py-4 text-sm text-white focus:outline-none focus:border-lumora-blue/50 transition-all"
+                    className="w-full bg-black/30 border border-white/10 hover:border-white/20 focus:border-lumora-highlight/40 focus:bg-black/50 rounded-2xl px-5 py-4 text-sm text-white focus:outline-none transition-all"
                   />
                 </div>
                 <div className="space-y-4">
@@ -227,12 +227,12 @@ export default function PdfStudio() {
                   {invoiceData.items.map((item) => (
                     <div key={item.id} className="grid grid-cols-12 gap-3">
                       <input 
-                        className="col-span-8 bg-[#0a0a0c] border border-white/5 rounded-xl px-4 py-3 text-xs text-white"
+                        className="col-span-8 bg-black/30 border border-white/10 hover:border-white/20 focus:border-lumora-highlight/40 focus:bg-black/50 rounded-xl px-4 py-3 text-xs text-white focus:outline-none transition-all"
                         value={item.desc}
                         onChange={(e) => setInvoiceData({...invoiceData, items: invoiceData.items.map(x => x.id === item.id ? {...x, desc: e.target.value} : x)})}
                       />
                       <input 
-                        className="col-span-4 bg-[#0a0a0c] border border-white/5 rounded-xl px-4 py-3 text-xs text-white text-right font-mono"
+                        className="col-span-4 bg-black/30 border border-white/10 hover:border-white/20 focus:border-lumora-highlight/40 focus:bg-black/50 rounded-xl px-4 py-3 text-xs text-white text-right font-mono focus:outline-none transition-all"
                         type="number"
                         value={item.price}
                         onChange={(e) => setInvoiceData({...invoiceData, items: invoiceData.items.map(x => x.id === item.id ? {...x, price: parseInt(e.target.value) || 0} : x)})}

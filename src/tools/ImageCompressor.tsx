@@ -392,11 +392,11 @@ export default function ImageCompressor() {
                 <select
                   value={format}
                   onChange={(e) => setFormat(e.target.value as any)}
-                  className="w-full bg-lumora-bg/85 border border-white/5 rounded-xl px-4 py-2.5 text-xs text-white/80 focus:outline-none focus:border-lumora-highlight/30 focus:ring-1 focus:ring-lumora-highlight/10 cursor-pointer"
+                  className="w-full bg-black/30 border border-white/10 hover:border-white/20 focus:border-lumora-highlight/40 focus:bg-black/50 rounded-xl px-4 py-2.5 text-xs text-white/80 focus:outline-none transition-all cursor-pointer"
                 >
-                  <option value="image/jpeg">JPG (Highly Recommended)</option>
-                  <option value="image/webp">WEBP (Modern Web Standard)</option>
-                  <option value="image/png">PNG (Lossless, Retains Transparency)</option>
+                  <option value="image/jpeg" className="bg-[#0a0a0c]">JPG (Highly Recommended)</option>
+                  <option value="image/webp" className="bg-[#0a0a0c]">WEBP (Modern Web Standard)</option>
+                  <option value="image/png" className="bg-[#0a0a0c]">PNG (Lossless, Retains Transparency)</option>
                 </select>
               </div>
 
@@ -406,13 +406,13 @@ export default function ImageCompressor() {
                 <select
                   value={resizeMode}
                   onChange={(e) => setResizeMode(e.target.value)}
-                  className="w-full bg-lumora-bg/85 border border-white/5 rounded-xl px-4 py-2.5 text-xs text-white/80 focus:outline-none focus:border-lumora-highlight/30 focus:ring-1 focus:ring-lumora-highlight/10 cursor-pointer"
+                  className="w-full bg-black/30 border border-white/10 hover:border-white/20 focus:border-lumora-highlight/40 focus:bg-black/50 rounded-xl px-4 py-2.5 text-xs text-white/80 focus:outline-none transition-all cursor-pointer"
                 >
-                  <option value="0">Keep Original Dimensions</option>
-                  <option value="1920">1920px (FHD / Wide Screens)</option>
-                  <option value="1280">1280px (HD / Standard Web)</option>
-                  <option value="800">800px (Blog / Articles)</option>
-                  <option value="600">600px (Mobile / Avatars)</option>
+                  <option value="0" className="bg-[#0a0a0c]">Keep Original Dimensions</option>
+                  <option value="1920" className="bg-[#0a0a0c]">1920px (FHD / Wide Screens)</option>
+                  <option value="1280" className="bg-[#0a0a0c]">1280px (HD / Standard Web)</option>
+                  <option value="800" className="bg-[#0a0a0c]">800px (Blog / Articles)</option>
+                  <option value="600" className="bg-[#0a0a0c]">600px (Mobile / Avatars)</option>
                   <option value="custom">Custom Width...</option>
                 </select>
 

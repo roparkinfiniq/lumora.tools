@@ -274,7 +274,7 @@ export default function GlobalSizeConverter() {
                 <select
                   value={shoesSize}
                   onChange={(e) => setShoesSize(parseInt(e.target.value))}
-                  className="w-full bg-lumora-bg/85 border border-white/5 rounded-xl px-4 py-2.5 text-xs text-white/80 focus:outline-none"
+                  className="w-full bg-black/30 border border-white/10 hover:border-white/20 focus:border-lumora-highlight/40 focus:bg-black/50 rounded-xl px-4 py-2.5 text-xs text-white/80 focus:outline-none transition-all cursor-pointer"
                 >
                   {SHOE_DATA.filter((s) => shoesGender === "men" ? s.mm >= 245 : s.mm <= 270).map((s) => (
                     <option key={s.mm} value={s.mm}>
@@ -346,10 +346,10 @@ export default function GlobalSizeConverter() {
                     <select
                       value={topsSize}
                       onChange={(e) => setTopsSize(e.target.value)}
-                      className="w-full bg-lumora-bg/85 border border-white/5 rounded-xl px-4 py-2.5 text-xs text-white/80 focus:outline-none"
+                      className="w-full bg-black/30 border border-white/10 hover:border-white/20 focus:border-lumora-highlight/40 focus:bg-black/50 rounded-xl px-4 py-2.5 text-xs text-white/80 focus:outline-none transition-all cursor-pointer"
                     >
                       {CLOTH_TOPS_DATA[clothingGender].map((c) => (
-                        <option key={c.kr} value={c.kr}>
+                        <option key={c.kr} value={c.kr} className="bg-[#0a0a0c]">
                           {c.kr}
                         </option>
                       ))}
@@ -362,7 +362,7 @@ export default function GlobalSizeConverter() {
                   <select
                     value={bottomsSize}
                     onChange={(e) => setBottomsSize(parseInt(e.target.value))}
-                    className="w-full bg-lumora-bg/85 border border-white/5 rounded-xl px-4 py-2.5 text-xs text-white/80 focus:outline-none"
+                    className="w-full bg-black/30 border border-white/10 hover:border-white/20 focus:border-lumora-highlight/40 focus:bg-black/50 rounded-xl px-4 py-2.5 text-xs text-white/80 focus:outline-none transition-all cursor-pointer"
                   >
                     {CLOTH_BOTTOMS_DATA.map((c) => (
                       <option key={c.waist} value={c.waist}>
@@ -409,7 +409,7 @@ export default function GlobalSizeConverter() {
                   value={ringCircumference}
                   onChange={(e) => setRingCircumference(e.target.value)}
                   placeholder="e.g. 52"
-                  className="w-full bg-lumora-bg/85 border border-white/5 rounded-xl px-4 py-2 text-xs text-white/80 focus:outline-none"
+                  className="w-full bg-black/30 border border-white/10 hover:border-white/20 focus:border-lumora-highlight/40 focus:bg-black/50 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none transition-all"
                 />
                 <span className="text-[9px] text-white/30">Typically ranges from 44mm to 70mm. (E.g. wraps around paper slip)</span>
               </div>
