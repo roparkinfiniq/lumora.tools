@@ -83,7 +83,7 @@ export default function ToolDetailView({ tool, onBack }: ToolDetailViewProps) {
   };
 
   return (
-    <div className={`mx-auto px-3 sm:px-6 py-8 md:py-12 ${tool.id === "7" ? "max-w-6xl w-full" : "container"}`}>
+    <div className="container max-w-6xl mx-auto px-3 sm:px-6 py-8 md:py-12">
       {/* Navigation Header */}
       <div className="flex items-center justify-between mb-10 md:mb-16 px-0.5 sm:px-2 gap-4">
         <button 

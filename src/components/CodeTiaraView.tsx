@@ -17,7 +17,7 @@ export default function CodeTiaraView() {
   return (
     <div className="pt-12">
       {/* Hero Section */}
-      <section className="container mx-auto px-6 mb-32">
+      <section className="container max-w-6xl mx-auto px-6 mb-32">
         <div className="flex flex-col lg:flex-row gap-16 items-center">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -184,7 +184,7 @@ export default function CodeTiaraView() {
       </section>
 
       {/* Feature Bento Grid */}
-      <section className="container mx-auto px-6 mb-32">
+      <section className="container max-w-6xl mx-auto px-6 mb-32">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:auto-rows-[340px]">
           {/* Cell 2: Pomodoro Timer (1x1 span) */}
           <div className="bento-card lg:col-span-1 lg:row-span-1 p-8 bg-[#0c0c0e] flex flex-col relative overflow-hidden group border border-white/5 hover:border-white/10 transition-colors">
@@ -343,7 +343,7 @@ export default function CodeTiaraView() {
       </section>
 
       {/* Bottom CTA */}
-      <section className="container mx-auto px-6 mb-32">
+      <section className="container max-w-6xl mx-auto px-6 mb-32">
         <div className="relative w-full max-w-4xl mx-auto rounded-[40px] p-[1px] overflow-hidden group">
           {/* Neon Border Gradient */}
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#c084fc] to-transparent opacity-30 group-hover:opacity-60 transition-opacity duration-700" />

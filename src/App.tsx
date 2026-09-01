@@ -479,7 +479,7 @@ export default function App() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.5, ease: "easeInOut" }}
-              className="container mx-auto px-6"
+              className="container max-w-6xl mx-auto px-6"
             >
               {/* Bento Hero Section */}
               <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-12">
@@ -726,7 +726,7 @@ export default function App() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.5, ease: "easeInOut" }}
-              className="container mx-auto px-6"
+              className="container max-w-6xl mx-auto px-6"
             >
               <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-start pb-24 border-t border-white/5 pt-12">
                 {/* Left Sidebar: Sticky */}
@@ -946,7 +946,7 @@ export default function App() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.5 }}
-              className="container mx-auto px-6 pb-24"
+              className="container max-w-6xl mx-auto px-6 pb-24"
             >
               <div className="max-w-3xl mx-auto mb-20 text-center lg:text-left mt-12">
                 <div className="inline-flex items-center justify-center p-2 rounded-full bg-white/5 border border-white/10 mb-8 max-w-fit mx-auto lg:mx-0 relative">

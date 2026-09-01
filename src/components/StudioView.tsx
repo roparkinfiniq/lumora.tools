@@ -43,8 +43,8 @@ export default function StudioView() {
       className="pb-32 pt-24"
     >
       {/* Friendly Header with Character Placeholder */}
-      <section className="container mx-auto px-6 mb-32 pt-12">
-        <div className="flex flex-col items-center text-center lg:items-start lg:text-left max-w-4xl mx-auto lg:mx-0">
+      <section className="container max-w-6xl mx-auto px-6 mb-32 pt-12">
+        <div className="flex flex-col items-center text-center max-w-4xl mx-auto">
           <motion.div 
             initial={{ scale: 0.8, rotate: -10 }}
             animate={{ scale: 1, rotate: 0 }}
@@ -69,7 +69,7 @@ export default function StudioView() {
       </section>
 
       {/* The Hybrid Creator Section */}
-      <section className="container mx-auto px-6 mb-40">
+      <section className="container max-w-6xl mx-auto px-6 mb-40">
         <div className="flex items-center gap-4 mb-16">
           <span className="text-[10px] font-display font-bold uppercase tracking-[0.3em] text-white/30">The Hybrid Creator</span>
           <div className="h-px flex-1 bg-white/5" />
@@ -99,7 +99,7 @@ export default function StudioView() {
       </section>
 
       {/* Simple Philosophy Section */}
-      <section className="container mx-auto px-6 mb-40">
+      <section className="container max-w-6xl mx-auto px-6 mb-40">
         <motion.div 
           whileHover={{ y: -2, backgroundColor: "rgba(255,255,255,0.03)" }}
           transition={{ duration: 0.5 }}
@@ -118,7 +118,7 @@ export default function StudioView() {
       </section>
 
       {/* Connect & Footer Teaser */}
-      <section className="container mx-auto px-6">
+      <section className="container max-w-6xl mx-auto px-6">
         <div className="max-w-4xl mx-auto p-8 md:p-12 lg:p-16 border border-white/10 rounded-[48px] bg-white/[0.02] relative overflow-hidden group shadow-[0_20px_50px_rgba(0,0,0,0.2)]">
           <div className="absolute inset-0 bg-lumora-highlight/5 opacity-0 group-hover:opacity-100 transition-opacity" />
           <div className="relative z-10">
