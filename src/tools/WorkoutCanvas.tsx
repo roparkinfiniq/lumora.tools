@@ -2121,57 +2121,63 @@ export default function WorkoutCanvas() {
               return (
                 <div key={item.id} className="bg-lumora-bg/40 border border-white/5 rounded-2xl p-4 space-y-4 shadow-sm">
                   {/* Exercise Card Header */}
-                  <div className="flex justify-between items-start gap-3">
-                    <div className="flex-1 min-w-0 space-y-1">
-                      <div className="flex items-center">
-                        <span className={`text-[9px] ${catColor} font-extrabold px-2 py-0.5 rounded-lg border uppercase tracking-wider`}>
-                          {lang === "ko" ? item.category : (item.category === "웜업" ? "Warmup" : (item.category === "유산소" ? "Cardio" : item.category))}
-                        </span>
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-start gap-2">
+                      <div className="space-y-1 min-w-0 flex-1">
+                        <div className="flex items-center">
+                          <span className={`text-[9px] ${catColor} font-extrabold px-2 py-0.5 rounded-lg border uppercase tracking-wider`}>
+                            {lang === "ko" ? item.category : (item.category === "웜업" ? "Warmup" : (item.category === "유산소" ? "Cardio" : item.category))}
+                          </span>
+                        </div>
+                        <h3 className="text-sm font-bold text-white mt-0.5 break-words leading-snug">{item.name}</h3>
                       </div>
-                      <h3 className="text-sm font-bold text-white mt-1 break-words">{item.name}</h3>
+                      <div className="flex items-center space-x-1 sm:space-x-1.5 shrink-0 pt-0.5">
+                        <button
+                          onClick={() => moveExerciseOrder(item.id, "up")}
+                          disabled={index === 0}
+                          className="btn-tap p-1.5 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-lg transition-all duration-200 disabled:opacity-20 disabled:pointer-events-none"
+                          title={t.moveUpLabel}
+                        >
+                          <ChevronUp className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => moveExerciseOrder(item.id, "down")}
+                          disabled={index === db[activeDay].items.length - 1}
+                          className="btn-tap p-1.5 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-lg transition-all duration-200 disabled:opacity-20 disabled:pointer-events-none"
+                          title={t.moveDownLabel}
+                        >
+                          <ChevronDown className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => openExerciseModal(item.id)}
+                          className="btn-tap p-1.5 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-lg transition-all duration-200"
+                          title={t.editLabel}
+                        >
+                          <Edit3 className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => deleteExercise(item.id)}
+                          className={`btn-tap p-1.5 border rounded-lg transition-all duration-200 ${
+                            deleteConfirmActive[item.id]
+                              ? "text-red-400 bg-red-950/40 border-red-500/30"
+                              : "bg-lumora-bg/60 border-white/5 text-lumora-sub hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/20"
+                          }`}
+                          title={t.deleteLabel}
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Guide & Tip Information (Full Width) */}
+                    <div className="space-y-1">
                       <p className="text-xs text-lumora-sub break-words">{t.guidePrefix}: {item.target}</p>
                       {item.tip && item.tip.trim() !== "" && (
-                        <div className="flex items-start gap-1.5 mt-1.5">
+                        <div className="flex items-start gap-1.5 pt-0.5">
                           <span className="text-[9px] px-1.5 py-0.5 bg-lumora-highlight/10 text-lumora-highlight rounded font-extrabold shrink-0 mt-0.5">TIP</span>
-                          <p className="text-[11px] text-lumora-sub font-medium leading-relaxed break-words">{item.tip}</p>
+                          <p className="text-[11px] text-lumora-sub font-medium leading-relaxed break-words flex-1">{item.tip}</p>
                         </div>
                       )}
-                    </div>
-                    <div className="flex items-center space-x-1.5 shrink-0 pt-0.5">
-                      <button
-                        onClick={() => moveExerciseOrder(item.id, "up")}
-                        disabled={index === 0}
-                        className="btn-tap p-1.5 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-lg transition-all duration-200 disabled:opacity-20 disabled:pointer-events-none"
-                        title={t.moveUpLabel}
-                      >
-                        <ChevronUp className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        onClick={() => moveExerciseOrder(item.id, "down")}
-                        disabled={index === db[activeDay].items.length - 1}
-                        className="btn-tap p-1.5 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-lg transition-all duration-200 disabled:opacity-20 disabled:pointer-events-none"
-                        title={t.moveDownLabel}
-                      >
-                        <ChevronDown className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        onClick={() => openExerciseModal(item.id)}
-                        className="btn-tap p-1.5 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-lg transition-all duration-200"
-                        title={t.editLabel}
-                      >
-                        <Edit3 className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        onClick={() => deleteExercise(item.id)}
-                        className={`btn-tap p-1.5 border rounded-lg transition-all duration-200 ${
-                          deleteConfirmActive[item.id]
-                            ? "text-red-400 bg-red-950/40 border-red-500/30"
-                            : "bg-lumora-bg/60 border-white/5 text-lumora-sub hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/20"
-                        }`}
-                        title={t.deleteLabel}
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
                     </div>
                   </div>
 
