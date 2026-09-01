@@ -1,7 +1,7 @@
-# 🧶 Lumora Tools — AI Developer Guidelines
+# 🧶 Lumora Tools — Official AI & Developer Guidelines
 
-> **This document is the canonical reference for building new utility tools in the Lumora Tools project.**
-> All AI assistants and developers must follow these rules to maintain consistent quality, design, and UX across all tools.
+> **This document is the canonical design, architecture, and coding standard for Lumora Tools.**
+> All AI assistants, peer agents, and human developers MUST consult and follow these rules to maintain consistent visual quality, responsive balance, and performance across all pages and tools.
 
 ---
 
@@ -10,112 +10,88 @@
 > [!IMPORTANT]
 > **Lumora Tools is an English-first product targeting an international audience.**
 > - All UI copy, button labels, tooltips, placeholder text, and `usageSteps` must be written in **English**.
-> - The codebase, comments, and this guidelines document may be in Korean for the developer's reference, but all user-facing strings must be English.
-> - Do **not** use Korean in: `step`, `detail`, `placeholder`, `title`, `aria-label`, or any visible text in tool components.
+> - The codebase, comments, commit messages, and guidelines may be written in Korean for developer convenience, but all user-facing strings MUST be English.
+> - Do **not** use Korean in user-facing elements: `step`, `detail`, `placeholder`, `title`, `aria-label`, or any visible UI text in components.
 
 ---
 
-## 📁 Project Structure
+## 📁 Project Structure & Key Files
 
 ```
-src/
-├── App.tsx                    ← Global routing, tool list (tools[]) definition
-├── types.ts                   ← Tool, BlogPost type definitions
-├── components/
-│   ├── GNB.tsx                ← Global navigation bar
-│   ├── ToolCard.tsx           ← Card component shown in the utilities list
-│   ├── ToolDetailView.tsx     ← Tool detail page layout (left: info panel, right: tool)
-│   └── Toast.tsx              ← Global toast notification component
-└── tools/
-    ├── PdfStudio.tsx          ← ID: "1" — Lumora PDF Studio
-    ├── VectorLabGradients.tsx ← ID: "3" — Vector Lab: Gradients
-    ├── JsonStructure.tsx      ← ID: "4" — Structure: JSON
-    ├── MarkdownEther.tsx      ← ID: "5" — Ether: Markdown
-    └── ChromaticExtractor.tsx ← ID: "6" — Chromatic Extractor
+c:\Github\lumora.tools\lumora.tools\
+├── TOOL_GUIDELINES.md         ← Official AI Developer Guidelines (this file)
+├── src/
+│   ├── App.tsx                ← Global state routing, URL mapping, tool list (tools[]) definition
+│   ├── types.ts               ← Tool, BlogPost type definitions
+│   ├── components/
+│   │   ├── GNB.tsx            ← Floating global navigation bar (max-w-4xl)
+│   │   ├── ToolCard.tsx       ← Card component shown in utilities list
+│   │   ├── ToolDetailView.tsx ← Tool workspace frame (max-w-6xl)
+│   │   ├── CodeTiaraView.tsx  ← Flagship Code Tiara product page (max-w-6xl)
+│   │   ├── StudioView.tsx     ← About Lumora page (max-w-6xl)
+│   │   └── Toast.tsx          ← Global centered toast notification component
+│   └── tools/
+│       ├── PdfStudio.tsx          ← ID: "1" — Lumora PDF Studio
+│       ├── VectorLabGradients.tsx ← ID: "3" — Vector Lab: Gradients
+│       ├── JsonStructure.tsx      ← ID: "4" — Structure: JSON
+│       ├── MarkdownEther.tsx      ← ID: "5" — Ether: Markdown
+│       ├── ChromaticExtractor.tsx ← ID: "6" — Chromatic Extractor
+│       ├── WorkoutCanvas.tsx      ← ID: "7" — Workout Canvas
+│       ├── PngJpgConverter.tsx    ← ID: "8" — PNG/JPG Converter
+│       ├── IcoConverter.tsx       ← ID: "9" — ICO Converter
+│       ├── ImageCompressor.tsx    ← ID: "10" — Image Compressor
+│       ├── HeicToJpg.tsx          ← ID: "11" — HEIC to JPG
+│       ├── ImageToPdf.tsx         ← ID: "12" — Image to PDF
+│       ├── PdfToImage.tsx         ← ID: "13" — PDF to Image Converter
+│       ├── PdfMerger.tsx          ← ID: "14" — PDF Merger
+│       ├── GlobalSizeConverter.tsx← ID: "15" — Global Size Converter
+│       └── BarcodeStudio.tsx      ← ID: "16" — Barcode & Label Studio
 ```
 
 ---
 
-## 🛠 How to Add a New Tool (Checklist)
-
-### Step 1 — Add an entry to `tools[]` in `src/App.tsx`
-
-```ts
-{
-  id: "7",                       // Next available numeric string ID
-  name: "Tool Name",
-  description: "One or two sentences. Lead with the function, then the benefit.",
-  icon: "LucideIconName",        // lucide-react icon name (type-only, not rendered)
-  category: "Dev Tools",         // "Synthesis" | "Design" | "Dev Tools" | "Content" | "Analysis"
-  link: "#",
-  usageSteps: [
-    { step: "Step title",  detail: "Short, specific instruction. Reference button/label names exactly." },
-    { step: "Step title",  detail: "..." },
-    // 3–4 steps recommended. 5 max.
-  ],
-}
-```
+## 📐 Page Layout & Container Max-Width Standard
 
 > [!IMPORTANT]
-> `step` and `detail` must always be in **English**.
+> **Never use unconstrained `container mx-auto px-6` without a `max-w-6xl` limit.**
+> On 2K, 4K, and 34"+ Ultrawide monitors, unconstrained containers expand across 2500px+, causing elements to stretch awkwardly apart and text to stick to far left walls.
 
-### Step 2 — Create `src/tools/MyNewTool.tsx`
-
-Follow the **Component Template** section below.
-
-### Step 3 — Wire routing in `src/components/ToolDetailView.tsx`
+### 1. Main Page Container Rule
+All main pages (`Home`, `Utilities`, `Code Tiara`, `About / Studio`, `Journal / Insights`, `ToolDetailView`) MUST wrap their main content in:
 
 ```tsx
-// Add to the renderToolLogic() switch statement:
-case "7":
-  return <MyNewTool />;
+<div className="container max-w-6xl mx-auto px-6">
 ```
+*`max-w-6xl` (1152px) is the official project container width.*
 
-### Step 4 — Hide the "Playground" label
-
-Add the new ID to the exclusion array in `ToolDetailView.tsx`:
-```tsx
-{!["1", "3", "4", "5", "6", "7"].includes(tool.id) && (
-```
+### 2. Header & Manifesto Centering
+- Do NOT use `lg:mx-0` or `lg:items-start` on section header text blocks if it causes text to stick to the far left screen edge while leaving empty black void on the right.
+- Use `max-w-4xl mx-auto text-center` or `max-w-4xl mx-auto` to keep section titles, quotes, and descriptions balanced and centered in the viewport.
 
 ---
 
-## 🎨 Design System
+## 🎨 Design System & Color Tokens
 
-### Color Tokens (Custom Tailwind)
+### Color Tokens (Tailwind)
 
-| Token | Purpose | Example use |
-|-------|---------|-------------|
+| Token | Purpose | Example Usage |
+|---|---|---|
 | `lumora-highlight` | Purple / primary highlight | Buttons, focus rings, step number badges |
 | `lumora-accent` | Pink / accent | Hero text, CTA buttons |
 | `lumora-blue` | Blue / info accent | Info elements, links, output indicators |
 | `lumora-sub` | Subdued text | Description copy, labels |
 | `lumora-text` | Body text | Monospace output text |
 
-### Color Usage Rules Inside Tool Components
+### ✏️ Text Input, Select & Textarea Standard
+
+All text inputs, textareas, and select dropdowns inside tool components MUST use translucent glassmorphic styling rather than heavy solid pitch-black (`bg-[#0a0a0c]`):
 
 ```tsx
-// ✅ DO: Use tokens with opacity modifiers
-className="bg-lumora-highlight/10 text-lumora-highlight border border-lumora-highlight/20"
-
-// ✅ DO: Dark backgrounds & Translucent Glass Inputs
-className="bg-black/30 border border-white/10 hover:border-white/20 focus:border-lumora-highlight/40 focus:bg-black/50 focus:outline-none transition-all" // Input fields / textareas / selects
-className="bg-white/[0.02]"        // Inner card section background
-
-// ❌ DON'T: Heavy solid pitch-black inputs
-// Avoid raw bg-[#0a0a0c] or bg-black on input boxes without borders — creates visual cutouts
-// ❌ DON'T: Use modern CSS color functions
-// oklch(), oklab() break html2canvas and other rendering libraries
-// ❌ DON'T: Hardcode arbitrary hex colors — prefer tokens
-```
-
-### ✏️ Text Input & Textarea Standard
-
-All text inputs, textareas, and select dropdowns inside tool components must use translucent glassmorphic styling:
-
-```tsx
-// Text Input / Select
+// Text Input / Select Dropdown
 className="w-full bg-black/30 border border-white/10 hover:border-white/20 focus:border-lumora-highlight/40 focus:bg-black/50 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-white placeholder:text-white/20 transition-all"
+
+// Select Dropdown Options (ensures readable dropdown menus)
+<option value="val" className="bg-[#0a0a0c]">Option Label</option>
 
 // Textarea / Code Editor
 className="w-full bg-black/30 border border-white/10 hover:border-white/20 focus:border-lumora-highlight/40 focus:bg-black/50 focus:outline-none rounded-[24px] p-5 text-xs font-mono text-white/90 placeholder:text-white/20 transition-all resize-none"
@@ -127,7 +103,7 @@ className="w-full bg-black/30 border border-white/10 hover:border-white/20 focus
 // Section label badge (always UPPERCASE)
 className="text-[10px] font-display font-bold uppercase tracking-widest text-white/30"
 
-// General body text inside tools
+// Body text
 className="text-sm font-medium text-white/80"
 
 // Monospace (code / JSON / HEX values)
@@ -137,195 +113,83 @@ className="text-sm font-mono text-lumora-text/90"
 className="text-xs text-red-400 font-mono"
 ```
 
-### Border Radius Rules
+---
 
-| Element | Class |
-|---------|-------|
-| Card containers | `rounded-[32px]` or `rounded-[24px]` |
-| Pill buttons | `rounded-full` |
-| Small buttons | `rounded-xl` or `rounded-2xl` |
-| Textareas / editors | `rounded-[24px]` |
-| Icon containers | `rounded-3xl` or `rounded-2xl` |
-| Tags / badges | `rounded-full` |
+## 🔎 Zoom, Magnification & Document Viewer Engine Standard
+
+For tools featuring canvas zoom, document viewing, or page extraction (e.g. `PdfToImage.tsx`, `ImageCompressor.tsx`):
+
+### 1. Zoom Multiplier & Pan Support
+- Zoom range MUST support from **100% up to 800% (8.0x)**.
+- Transform wrapper style:
+  ```tsx
+  style={{
+    transform: `translate(${transX}px, ${transY}px) scale(${scale})`,
+    transition: isPanning ? "none" : "transform 0.15s ease-out",
+    transformOrigin: "center center"
+  }}
+  ```
+- Do NOT add `max-w-full max-h-full` CSS constraints on the canvas container wrapper that clamp the element size during `scale()`.
+
+### 2. High-DPI Vector Clarity (PDF Rendering)
+- When rendering PDF pages via PDF.js to HTML5 Canvas, incorporate `resolutionScale * devicePixelRatio * currentZoom`:
+  ```tsx
+  const dpr = window.devicePixelRatio || 1;
+  const targetScale = baseScale * Math.max(resolutionScale, 1.5) * dpr * Math.min(currentZoom, 2.5);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = "high";
+  ```
+- This ensures PDF text glyphs, table lines, and seals remain **100% vector-sharp and crystal clear** at any zoom level.
+
+### 3. Viewer Container Height
+- Document stage containers MUST have generous vertical height:
+  ```tsx
+  className="flex-1 min-h-[580px] md:min-h-[640px] bg-lumora-bg/40 border border-white/5 rounded-2xl relative overflow-hidden flex items-center justify-center cursor-grab"
+  ```
+- This prevents portrait A4 documents from being vertically squished or clipped.
 
 ---
 
-## 📐 Tool Component Template
+## 🛠 How to Add a New Tool (Checklist)
 
-Every new tool **must** follow this structure:
+### Step 1 — Add entry to `tools[]` in `src/App.tsx`
 
-```tsx
-// src/tools/MyNewTool.tsx
-
-import { useState } from "react";
-import { motion } from "motion/react";
-import Toast from "../components/Toast";
-import { SomeLucideIcon, Trash2 } from "lucide-react";
-
-export default function MyNewTool() {
-  const [showToast, setShowToast] = useState(false);
-
-  const triggerToast = () => {
-    setShowToast(true);
-    setTimeout(() => setShowToast(false), 2000);
-  };
-
-  return (
-    <div className="w-full h-full flex flex-col gap-6">
-
-      {/* 1. Global Toast — always include */}
-      <Toast
-        isVisible={showToast}
-        message="Copied!"
-        onClose={() => setShowToast(false)}
-      />
-
-      {/* 2. Tool Header — tool name + primary action buttons */}
-      <div className="flex flex-wrap items-center justify-between gap-4 bg-white/[0.02] border border-white/5 p-4 rounded-2xl">
-        <div className="flex items-center gap-3">
-          <div className="h-8 w-8 rounded-full bg-lumora-highlight/20 flex items-center justify-center text-lumora-highlight">
-            <SomeLucideIcon className="h-4 w-4" />
-          </div>
-          <div>
-            <h3 className="text-sm font-display font-bold text-white uppercase tracking-wider">Tool Name</h3>
-            <p className="text-[10px] text-white/30 font-display font-bold uppercase tracking-widest">Subtitle V1.0</p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2">
-          {/* Primary CTA */}
-          <button
-            onClick={() => { /* action */ triggerToast(); }}
-            className="px-5 py-2 bg-white text-black hover:bg-white/90 text-[11px] font-display font-bold uppercase tracking-wider rounded-xl transition-all shadow-lg active:scale-95 flex items-center gap-2"
-          >
-            <SomeLucideIcon className="h-3.5 w-3.5" />
-            Main Action
-          </button>
-          {/* Secondary action (e.g. reset) */}
-          <button
-            className="p-2.5 bg-white/5 hover:bg-red-500/10 text-white/50 hover:text-red-400 rounded-xl transition-all border border-white/10"
-            title="Clear"
-          >
-            <Trash2 className="h-4 w-4" />
-          </button>
-        </div>
-      </div>
-
-      {/* 3. Main Workspace — tool-specific content here */}
-      <div className="flex-1 min-h-[450px]">
-        {/* ... core tool functionality ... */}
-      </div>
-
-      {/* 4. Footer Info Bar — always include */}
-      <div className="flex items-center gap-4 px-5 py-3 bg-white/[0.01] border border-white/5 rounded-2xl">
-        <SomeLucideIcon className="h-3.5 w-3.5 text-lumora-highlight" />
-        <p className="text-[10px] font-display font-bold text-white/30 uppercase tracking-widest">
-          Local-first processing. Your data never leaves your browser.
-        </p>
-      </div>
-    </div>
-  );
+```ts
+{
+  id: "17",                      // Next numeric string ID
+  name: "Tool Name",
+  description: "Lead with function, then the benefit.",
+  icon: "LucideIconName",
+  category: "Dev Tools",        // "Synthesis" | "Design" | "Dev Tools" | "Content" | "Analysis"
+  link: "#",
+  usageSteps: [
+    { step: "Step title",  detail: "Short, specific English instruction." },
+    { step: "Step title",  detail: "..." },
+  ],
 }
 ```
+
+### Step 2 — Create `src/tools/MyNewTool.tsx`
+Equip with `<Toast>`, Tool Header, Translucent Glass Inputs, and Local-First Footer Info Bar.
+
+### Step 3 — Wire routing in `src/components/ToolDetailView.tsx`
+Add `case "17": return <MyNewTool />;` to `renderToolLogic()`.
 
 ---
 
 ## ✅ UX Rules & Prohibitions
 
-### Required Elements (never omit these)
-
-- **Toast notification**: Use `<Toast>` for every copy/download action. Never create a custom alert.
-- **Empty state**: When there's no input or output, show a clear visual prompt. Never leave an empty area.
-- **Error state**: Invalid input → show a specific error message using `text-red-400`.
-- **Loading state**: Any async operation (image analysis, PDF generation) requires a loading indicator.
-- **Footer bar**: Each tool must have a bottom info bar showing "Local-first" or a key usage hint.
-
-### Prohibited Patterns
-
-- ❌ Do not add `Run Logic`, `Copy`, `Download`, or `Share` buttons to `ToolDetailView` — each tool manages its own actions internally.
-- ❌ No buttons without real `onClick` handlers.
-- ❌ No placeholder text like "Coming Soon" or "Under Construction".
-- ❌ No `oklch()` or `oklab()` CSS color functions — breaks `html2canvas` and similar libs.
-- ❌ No identical fake specs ("0.2s", "V3.2", "Safe") across all tools — these were removed.
-- ❌ **No Korean user-facing strings** — all copy must be English.
+- **Toast Notification**: Use `<Toast>` for every copy/download action.
+- **Local-First Bar**: Every tool component must end with a footer bar emphasizing local processing.
+- **No Korean User Strings**: All visible UI text must be in English.
+- **No Blocking Alerts**: Use inline toast notifications or red error labels.
+- **Animate State Transitions**: Use `AnimatePresence` + `motion.div` (`duration: 0.5` with `ease: "easeInOut"`).
 
 ---
 
-## 🔔 Toast Component Usage
+## 💡 Quick Checklist for AI Assistants
 
-```tsx
-import Toast from "../components/Toast";
-
-const [showToast, setShowToast] = useState(false);
-
-const triggerToast = () => {
-  setShowToast(true);
-  setTimeout(() => setShowToast(false), 2000);
-};
-
-<Toast
-  isVisible={showToast}
-  message="Copied!"           // or "Downloaded!", "Saved!" etc.
-  onClose={() => setShowToast(false)}
-/>
-```
-
-> **Note**: Toast is positioned `fixed bottom-8 left-1/2 -translate-x-1/2` — it always appears centered at the bottom of the screen, regardless of scroll position.
-
----
-
-## 📋 Category Reference
-
-Use one of these existing categories. Adding a new category requires updating both `App.tsx` and this doc.
-
-| Category | Description | Example Tool |
-|---|---|---|
-| `Synthesis` | Generation & conversion tools | PDF Studio |
-| `Design` | Visual / creative tools | Vector Lab: Gradients |
-| `Dev Tools` | Developer utilities | Structure: JSON |
-| `Content` | Writing & editing tools | Ether: Markdown |
-| `Analysis` | Extraction & analysis tools | Chromatic Extractor |
-
----
-
-## 🌐 Routing Rules
-
-This project uses **state-based routing** + `window.history.replaceState` instead of React Router.
-
-```ts
-// URL mapping in App.tsx
-const URL_TO_VIEW: Record<string, string> = {
-  "/": "home",
-  "/utilities": "utilities",
-  "/journal": "insights",
-  "/about": "studio",
-  "/code-tiara": "code-tiara",
-};
-```
-
-For new top-level pages, add entries to both `URL_TO_VIEW` and `VIEW_TO_URL`.  
-Individual tools have no URL — they're managed via the `selectedTool` state.
-
----
-
-## 📦 Key Dependencies
-
-| Package | Purpose |
-|---------|---------|
-| `motion/react` (Framer Motion v12) | Animations & transitions |
-| `lucide-react` | Icon set |
-| `marked` | Markdown → HTML parsing |
-| `jspdf` | PDF generation |
-| `html2canvas` | DOM → image capture (for PDF export) |
-
----
-
-## 💡 Tips for AI Assistants
-
-1. **Check existing tools first.** `JsonStructure.tsx` is the simplest and cleanest pattern to follow.
-2. **Tool IDs are strings.** Use `"7"`, `"8"`, etc.
-3. **`usageSteps` is required.** Without it, the "How to Use" section won't render in the left panel.
-4. **Component length.** If a single `.tsx` file exceeds ~300 lines, consider extracting sub-components.
-5. **Tokens over raw colors.** Use `bg-lumora-highlight` instead of `bg-purple-500`. Always check for a token first.
-6. **Animate state transitions.** Use `AnimatePresence` + `motion.div` for empty↔filled, tab-switch, and page/view transitions. Ensure all page/view entries and exits are animated smoothly (`duration: 0.5` with `ease: "easeInOut"`) to avoid abrupt jumps.
-7. **All copy is English.** If you're tempted to write a Korean string in the UI, don't — translate it first.
+1. **Check container width**: Keep all page sections wrapped in `container max-w-6xl mx-auto px-6`.
+2. **Check input styling**: Apply `bg-black/30 border border-white/10 hover:border-white/20 focus:border-lumora-highlight/40 focus:bg-black/50`.
+3. **Check zoom scaling**: Ensure `transform: scale()` wrapper is unconstrained up to 800%.
+4. **Run lint and build**: Execute `npm.cmd run lint` (`tsc --noEmit`) and `npm.cmd run build` (`vite build`) after making edits to guarantee zero compilation errors.
