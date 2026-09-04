@@ -997,7 +997,7 @@ export default function App() {
                   {allTags.map((tag) => (
                     <button
                       key={tag}
-                      onClick={() => setSelectedTag(tag)}
+                      onClick={() => setSelectedTag(selectedTag === tag ? null : tag)}
                       className={`px-4 py-2 rounded-full text-xs font-mono font-medium transition-all ${
                         selectedTag === tag
                           ? "bg-lumora-highlight text-white"
@@ -1012,32 +1012,29 @@ export default function App() {
 
               <AnimatePresence mode="wait">
                 <motion.div
-                  key={journalView}
-                  initial={{ opacity: 0, y: 20 }}
+                  key={`${journalView}-${selectedTag || "all"}`}
+                  initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                  exit={{ opacity: 0, y: -12 }}
+                  transition={{ duration: 0.25, ease: "easeOut" }}
                   className={
                     journalView === "photos"
                       ? "max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full"
                       : "max-w-3xl mx-auto flex flex-col gap-8 w-full"
                   }
                 >
-                  <AnimatePresence mode="popLayout">
-                    {filteredBlogPosts.map((post, idx) => (
-                      <motion.button
-                        key={post.id}
-                        layout
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        onClick={() => setSelectedPost(post)}
-                        whileHover={
-                          journalView === "photos" ? { scale: 1.02 } : {}
-                        }
-                        whileTap={{ scale: 0.98 }}
-                        transition={{ duration: 0.3 }}
-                        className={
+                  {filteredBlogPosts.map((post, idx) => (
+                    <motion.button
+                      key={post.id}
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3, delay: idx * 0.04, ease: "easeOut" }}
+                      onClick={() => setSelectedPost(post)}
+                      whileHover={
+                        journalView === "photos" ? { scale: 1.02 } : {}
+                      }
+                      whileTap={{ scale: 0.98 }}
+                      className={
                           journalView === "photos"
                             ? "text-left group relative flex flex-col h-[300px] rounded-3xl overflow-hidden border border-white/10 transition-all cursor-pointer w-full"
                             : "text-left group relative flex flex-col gap-6 py-10 border-b border-white/5 transition-all w-full items-start"
@@ -1089,7 +1086,7 @@ export default function App() {
                                     key={tag}
                                     onClick={(e) => {
                                       e.stopPropagation();
-                                      setSelectedTag(tag);
+                                      setSelectedTag(selectedTag === tag ? null : tag);
                                     }}
                                     className="text-[11px] font-mono font-medium text-lumora-highlight tracking-wide px-2 py-1 rounded-md bg-lumora-highlight/10 border border-lumora-highlight/20 hover:bg-lumora-highlight hover:text-white transition-colors"
                                   >
@@ -1128,7 +1125,6 @@ export default function App() {
                       )}
                     </motion.button>
                   ))}
-                </AnimatePresence>
 
                 {filteredBlogPosts.length === 0 && (
                   <motion.div
