@@ -3,12 +3,16 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import CommandPalette from './CommandPalette';
 
+import { Tool, BlogPost } from '../types';
+
 interface GNBProps {
   currentView: string;
   onViewChange: (view: string) => void;
+  onSelectTool?: (tool: Tool) => void;
+  onSelectPost?: (post: BlogPost) => void;
 }
 
-export default function GNB({ currentView, onViewChange }: GNBProps) {
+export default function GNB({ currentView, onViewChange, onSelectTool, onSelectPost }: GNBProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isCommandOpen, setIsCommandOpen] = useState(false);
 
@@ -137,7 +141,13 @@ export default function GNB({ currentView, onViewChange }: GNBProps) {
         </AnimatePresence>
       </nav>
 
-      <CommandPalette isOpen={isCommandOpen} onClose={() => setIsCommandOpen(false)} onViewChange={onViewChange} />
+      <CommandPalette 
+        isOpen={isCommandOpen} 
+        onClose={() => setIsCommandOpen(false)} 
+        onViewChange={onViewChange}
+        onSelectTool={onSelectTool}
+        onSelectPost={onSelectPost}
+      />
     </>
   );
 }

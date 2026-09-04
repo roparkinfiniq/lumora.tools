@@ -7,6 +7,7 @@ export interface Tool {
   category: string;
   link: string;
   usageSteps?: { step: string; detail: string }[];
+  keywords?: string[];
 }
 
 export interface BlogPost {
