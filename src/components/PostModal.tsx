@@ -88,47 +88,43 @@ export default function PostModal({ post, onClose }: PostModalProps) {
       }
 
       // 2. If scrolled near the bottom, highlight the last heading
-      const isAtBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 80;
+      const isAtBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 60;
       if (isAtBottom && toc.length > 0) {
         setActiveId(toc[toc.length - 1].id);
         return;
       }
 
-      // 3. Natural reading line: ~32% from container top (max 280px)
-      const containerRect = container.getBoundingClientRect();
-      const activationLine = containerRect.top + Math.min(280, container.clientHeight * 0.32);
+      const headingElements = contentRef.current
+        ? (Array.from(contentRef.current.querySelectorAll("h2, h3")) as HTMLElement[])
+        : [];
 
-      const items = toc
-        .map((item, index) => {
-          const el =
-            document.getElementById(item.id) ||
-            (contentRef.current?.querySelector(`[data-toc-id="${item.id}"]`) as HTMLElement | null) ||
-            (contentRef.current?.querySelectorAll("h2, h3")[index] as HTMLElement | null);
-          return { id: item.id, el };
-        })
-        .filter((entry): entry is { id: string; el: HTMLElement } => entry.el !== null);
+      if (headingElements.length === 0) return;
 
-      if (items.length === 0) return;
+      // 3. Eye-line reading threshold: 40% from top of viewport
+      const readingLine = window.innerHeight * 0.4;
 
-      // Find the last heading whose top has crossed the activation line
-      let currentId = items[0].id;
-      for (let i = 0; i < items.length; i++) {
-        const rect = items[i].el.getBoundingClientRect();
-        if (rect.top <= activationLine) {
-          currentId = items[i].id;
-        } else {
-          break;
+      // Find the last heading whose top has passed the reading line
+      let activeIndex = 0;
+      for (let i = 0; i < headingElements.length; i++) {
+        const top = headingElements[i].getBoundingClientRect().top;
+        if (top <= readingLine) {
+          activeIndex = i;
         }
       }
 
-      setActiveId(currentId);
+      if (toc[activeIndex]) {
+        setActiveId(toc[activeIndex].id);
+      }
     };
 
     const handleScroll = () => {
       if (!ticking) {
         requestAnimationFrame(() => {
-          updateActiveHeading();
-          ticking = false;
+          try {
+            updateActiveHeading();
+          } finally {
+            ticking = false;
+          }
         });
         ticking = true;
       }
@@ -151,11 +147,12 @@ export default function PostModal({ post, onClose }: PostModalProps) {
     if (!container) return;
 
     const targetIndex = toc.findIndex((t) => t.id === id);
-    const el =
-      document.getElementById(id) ||
-      (contentRef.current?.querySelector(`[data-toc-id="${id}"]`) as HTMLElement | null) ||
-      (targetIndex !== -1 ? (contentRef.current?.querySelectorAll("h2, h3")[targetIndex] as HTMLElement | null) : null);
+    if (targetIndex === -1) return;
 
+    const headingElements = contentRef.current
+      ? (Array.from(contentRef.current.querySelectorAll("h2, h3")) as HTMLElement[])
+      : [];
+    const el = headingElements[targetIndex];
     if (!el) return;
 
     setActiveId(id);
