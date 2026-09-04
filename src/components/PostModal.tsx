@@ -22,8 +22,22 @@ interface TocItem {
 
 export default function PostModal({ post, onClose }: PostModalProps) {
   const contentRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [toc, setToc] = useState<TocItem[]>([]);
   const [activeId, setActiveId] = useState<string>('');
+  const isScrollingViaClickRef = useRef<boolean>(false);
+  const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Close modal on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [onClose]);
 
   useEffect(() => {
     if (contentRef.current) {
@@ -39,20 +53,18 @@ export default function PostModal({ post, onClose }: PostModalProps) {
       
       headings.forEach((heading, index) => {
         const text = heading.textContent || "";
-        // Create an ID if the heading doesn't have one
-        const baseId = text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-        const id = heading.id || `heading-${index}-${baseId}`;
+        const baseSlug = text
+          .toLowerCase()
+          .replace(/[^a-z0-9\u3131-\uD79D]+/g, "-")
+          .replace(/(^-|-$)/g, "");
+        const id = heading.id || `heading-${index}${baseSlug ? `-${baseSlug}` : ""}`;
         heading.id = id;
-        
-        // Add scroll-margin-top so scrollIntoView leaves space below top header
-        if (heading instanceof HTMLElement) {
-          heading.style.scrollMarginTop = '120px';
-        }
+        heading.setAttribute("data-toc-id", id);
 
         tocItems.push({
           id,
           text,
-          level: parseInt(heading.tagName.replace('H', ''), 10)
+          level: parseInt(heading.tagName.replace("H", ""), 10),
         });
       });
       
@@ -65,25 +77,39 @@ export default function PostModal({ post, onClose }: PostModalProps) {
 
   // Track active heading on scroll
   useEffect(() => {
-    const container = document.getElementById('post-modal-scroll-container');
+    const container = scrollContainerRef.current || document.getElementById("post-modal-scroll-container");
     if (!container || toc.length === 0) return;
 
     const handleScroll = () => {
+      if (isScrollingViaClickRef.current) return;
+
+      // Bottom check: if scrolled to bottom, activate the last heading
+      const isAtBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 60;
+      if (isAtBottom && toc.length > 0) {
+        setActiveId(toc[toc.length - 1].id);
+        return;
+      }
+
       const headingElements = toc
-        .map((item) => document.getElementById(item.id))
+        .map((item, index) => {
+          return (
+            document.getElementById(item.id) ||
+            (contentRef.current?.querySelector(`[data-toc-id="${item.id}"]`) as HTMLElement | null) ||
+            (contentRef.current?.querySelectorAll("h2, h3")[index] as HTMLElement | null)
+          );
+        })
         .filter((el): el is HTMLElement => el !== null);
 
       if (headingElements.length === 0) return;
 
       const containerRect = container.getBoundingClientRect();
-      const activationLine = containerRect.top + 200; // 200px below top of container viewport
+      const activationLine = containerRect.top + 160;
 
-      // Find the last heading that has passed the activation line
-      let currentHeadingId = headingElements[0].id;
+      let currentHeadingId = headingElements[0].id || headingElements[0].getAttribute("data-toc-id") || toc[0].id;
       for (const el of headingElements) {
         const rect = el.getBoundingClientRect();
         if (rect.top <= activationLine) {
-          currentHeadingId = el.id;
+          currentHeadingId = el.id || el.getAttribute("data-toc-id") || currentHeadingId;
         } else {
           break;
         }
@@ -92,17 +118,62 @@ export default function PostModal({ post, onClose }: PostModalProps) {
       setActiveId(currentHeadingId);
     };
 
-    container.addEventListener('scroll', handleScroll, { passive: true });
+    const handleUserInteraction = () => {
+      if (isScrollingViaClickRef.current) {
+        isScrollingViaClickRef.current = false;
+        if (scrollTimeoutRef.current) {
+          clearTimeout(scrollTimeoutRef.current);
+          scrollTimeoutRef.current = null;
+        }
+      }
+    };
+
+    container.addEventListener("scroll", handleScroll, { passive: true });
+    container.addEventListener("wheel", handleUserInteraction, { passive: true });
+    container.addEventListener("touchmove", handleUserInteraction, { passive: true });
+
     handleScroll(); // Trigger once on mount
-    
-    return () => container.removeEventListener('scroll', handleScroll);
+
+    return () => {
+      container.removeEventListener("scroll", handleScroll);
+      container.removeEventListener("wheel", handleUserInteraction);
+      container.removeEventListener("touchmove", handleUserInteraction);
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
   }, [toc]);
 
   const scrollToHeading = (id: string) => {
-    const el = document.getElementById(id);
+    const container = scrollContainerRef.current || document.getElementById("post-modal-scroll-container");
+    if (!container) return;
+
+    const targetIndex = toc.findIndex((t) => t.id === id);
+    const el =
+      document.getElementById(id) ||
+      (contentRef.current?.querySelector(`[data-toc-id="${id}"]`) as HTMLElement | null) ||
+      (targetIndex !== -1 ? (contentRef.current?.querySelectorAll("h2, h3")[targetIndex] as HTMLElement | null) : null);
+
     if (!el) return;
+
+    isScrollingViaClickRef.current = true;
     setActiveId(id);
-    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current);
+    }
+    scrollTimeoutRef.current = setTimeout(() => {
+      isScrollingViaClickRef.current = false;
+    }, 800);
+
+    const containerRect = container.getBoundingClientRect();
+    const elRect = el.getBoundingClientRect();
+    const targetScrollTop = container.scrollTop + (elRect.top - containerRect.top) - 100;
+
+    container.scrollTo({
+      top: Math.max(0, targetScrollTop),
+      behavior: "smooth",
+    });
   };
 
 
@@ -144,6 +215,7 @@ const morning = () => {
         <div className="fixed inset-0 bg-lumora-bg/95 backdrop-blur-2xl" aria-hidden="true" onClick={onClose} />
         
         <div 
+          ref={scrollContainerRef}
           id="post-modal-scroll-container"
           className="fixed inset-0 overflow-y-auto"
           style={{ overscrollBehavior: 'contain' }}
@@ -233,7 +305,12 @@ const morning = () => {
                     return (
                       <li key={`${item.id}-${idx}`} className={`${item.level === 3 ? 'ml-3' : ''}`}>
                         <button 
-                          onClick={() => scrollToHeading(item.id)}
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            scrollToHeading(item.id);
+                          }}
                           className={`text-sm text-left transition-all block w-full py-1 ${
                             isActive
                               ? 'text-lumora-highlight font-semibold translate-x-1'
@@ -310,7 +387,12 @@ const morning = () => {
                         return (
                           <li key={`${item.id}-${idx}`} className={`${item.level === 3 ? 'ml-3' : ''}`}>
                             <button 
-                              onClick={() => scrollToHeading(item.id)}
+                              type="button"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                scrollToHeading(item.id);
+                              }}
                               className={`text-[13px] text-left transition-all duration-200 flex items-start gap-2.5 w-full py-2 px-2.5 rounded-lg group ${
                                 isActive 
                                   ? 'text-white font-semibold bg-white/[0.08] shadow-sm' 
