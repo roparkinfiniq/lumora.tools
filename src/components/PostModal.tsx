@@ -23,6 +23,7 @@ interface TocItem {
 export default function PostModal({ post, onClose }: PostModalProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const sidebarNavRef = useRef<HTMLElement>(null);
   const [toc, setToc] = useState<TocItem[]>([]);
   const [activeId, setActiveId] = useState<string>('');
 
@@ -37,13 +38,22 @@ export default function PostModal({ post, onClose }: PostModalProps) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
 
-  // Keep active TOC item visible inside sidebar when card has internal scroll
+  // Keep active TOC item visible inside sidebar without affecting modal scroll container
   useEffect(() => {
-    if (activeId) {
-      const activeBtn = document.querySelector(`[data-toc-btn="${activeId}"]`);
-      if (activeBtn && typeof activeBtn.scrollIntoView === "function") {
-        activeBtn.scrollIntoView({ block: "nearest", behavior: "smooth" });
-      }
+    if (!activeId || !sidebarNavRef.current) return;
+    const activeBtn = sidebarNavRef.current.querySelector<HTMLElement>(`[data-toc-btn="${activeId}"]`);
+    if (!activeBtn) return;
+
+    const nav = sidebarNavRef.current;
+    const navRect = nav.getBoundingClientRect();
+    const btnRect = activeBtn.getBoundingClientRect();
+
+    if (btnRect.top < navRect.top + 8) {
+      const diff = navRect.top + 8 - btnRect.top;
+      nav.scrollTo({ top: Math.max(0, nav.scrollTop - diff), behavior: "smooth" });
+    } else if (btnRect.bottom > navRect.bottom - 8) {
+      const diff = btnRect.bottom - (navRect.bottom - 8);
+      nav.scrollTo({ top: nav.scrollTop + diff, behavior: "smooth" });
     }
   }, [activeId]);
 
@@ -110,8 +120,9 @@ export default function PostModal({ post, onClose }: PostModalProps) {
 
       if (headingElements.length === 0) return;
 
-      // 3. Eye-line reading threshold: 40% from top of viewport
-      const readingLine = window.innerHeight * 0.4;
+      // 3. Eye-line reading threshold: 35% from top of container viewport
+      const containerRect = container.getBoundingClientRect();
+      const readingLine = containerRect.top + container.clientHeight * 0.35;
 
       // Find the last heading whose top has passed the reading line
       let activeIndex = 0;
@@ -141,14 +152,14 @@ export default function PostModal({ post, onClose }: PostModalProps) {
     };
 
     container.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("scroll", handleScroll, { capture: true, passive: true });
+    window.addEventListener("resize", handleScroll, { passive: true });
 
     // Initial check
     updateActiveHeading();
 
     return () => {
       container.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("scroll", handleScroll, { capture: true });
+      window.removeEventListener("resize", handleScroll);
     };
   }, [toc]);
 
@@ -381,7 +392,10 @@ const morning = () => {
                     </h3>
                   </div>
 
-                  <nav className="relative overflow-y-auto pr-1.5 scrollbar-thin scrollbar-thumb-white/10 hover:scrollbar-thumb-white/20">
+                  <nav 
+                    ref={sidebarNavRef}
+                    className="relative overflow-y-auto pr-1.5 scrollbar-thin scrollbar-thumb-white/10 hover:scrollbar-thumb-white/20"
+                  >
                     <ul className="space-y-1 relative">
                       {toc.map((item, idx) => {
                         const isActive = activeId === item.id;
