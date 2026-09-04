@@ -11,11 +11,7 @@ export const aiDilemma: BlogPost = {
   hideThumbnailInModal: true,
   tags: ["AI", "Productivity", "Career"],
   content: `
-    <p class="lead"><em>Originally written in Korean on my Tistory blog. Translated for lumora.tools.</em></p>
-
     <img src="/images/ai-dilemma-1.jpg" alt="The day I was praised, and the anxiety that followed" />
-
-    <hr class="border-white/10 my-12" />
 
     <h2>The Unfamiliar Fear That Came on the Day I Was Recognized</h2>
     <p>After moving to a new company, I found myself facing a real dilemma. My current company actively encourages the use of AI, so I have been using it heavily in my work. I automated many tasks, and whenever I handed a complex problem to AI, a high-quality result came back almost instantly. I could finish early and even have time to rest, so the temptation was hard to resist.</p>
