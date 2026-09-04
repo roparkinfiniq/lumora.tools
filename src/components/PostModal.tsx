@@ -24,7 +24,6 @@ export default function PostModal({ post, onClose }: PostModalProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   const [toc, setToc] = useState<TocItem[]>([]);
   const [activeId, setActiveId] = useState<string>('');
-  const [readingProgress, setReadingProgress] = useState<number>(0);
 
   useEffect(() => {
     if (contentRef.current) {
@@ -45,9 +44,9 @@ export default function PostModal({ post, onClose }: PostModalProps) {
         const id = heading.id || `heading-${index}-${baseId}`;
         heading.id = id;
         
-        // Ensure some styling for jumping accurately, maybe add scroll-margin-top
+        // Add scroll-margin-top so scrollIntoView leaves space below top header
         if (heading instanceof HTMLElement) {
-          heading.classList.add('scroll-mt-28');
+          heading.style.scrollMarginTop = '120px';
         }
 
         tocItems.push({
@@ -64,20 +63,12 @@ export default function PostModal({ post, onClose }: PostModalProps) {
     }
   }, [post]);
 
-  // Track active heading on scroll & calculate reading progress
+  // Track active heading on scroll
   useEffect(() => {
     const container = document.getElementById('post-modal-scroll-container');
-    if (!container) return;
+    if (!container || toc.length === 0) return;
 
     const handleScroll = () => {
-      // Calculate reading progress (0 - 100)
-      const { scrollTop, scrollHeight, clientHeight } = container;
-      const totalScroll = scrollHeight - clientHeight;
-      if (totalScroll > 0) {
-        setReadingProgress(Math.min(100, Math.max(0, (scrollTop / totalScroll) * 100)));
-      }
-
-      // Check headings
       const headingElements = toc
         .map((item) => document.getElementById(item.id))
         .filter((el): el is HTMLElement => el !== null);
@@ -85,16 +76,13 @@ export default function PostModal({ post, onClose }: PostModalProps) {
       if (headingElements.length === 0) return;
 
       const containerRect = container.getBoundingClientRect();
-      // An offset line roughly 180px below container top (where user eyes comfortably focus)
-      const targetOffset = 180;
+      const activationLine = containerRect.top + 200; // 200px below top of container viewport
 
+      // Find the last heading that has passed the activation line
       let currentHeadingId = headingElements[0].id;
-
       for (const el of headingElements) {
         const rect = el.getBoundingClientRect();
-        // Compare relative to container viewport top
-        const relativeTop = rect.top - containerRect.top;
-        if (relativeTop <= targetOffset) {
+        if (rect.top <= activationLine) {
           currentHeadingId = el.id;
         } else {
           break;
@@ -109,6 +97,13 @@ export default function PostModal({ post, onClose }: PostModalProps) {
     
     return () => container.removeEventListener('scroll', handleScroll);
   }, [toc]);
+
+  const scrollToHeading = (id: string) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    setActiveId(id);
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 
 
   const demoContent = `
@@ -148,18 +143,9 @@ const morning = () => {
     >
         <div className="fixed inset-0 bg-lumora-bg/95 backdrop-blur-2xl" aria-hidden="true" onClick={onClose} />
         
-        {/* Top Reading Progress Bar */}
-        <div className="fixed top-0 left-0 right-0 h-1 z-[110] bg-white/[0.04]">
-          <motion.div
-            className="h-full bg-gradient-to-r from-lumora-highlight via-lumora-accent to-lumora-blue shadow-[0_0_12px_rgba(196,181,253,0.5)]"
-            style={{ width: `${readingProgress}%` }}
-            transition={{ ease: "easeOut", duration: 0.1 }}
-          />
-        </div>
-
         <div 
           id="post-modal-scroll-container"
-          className="fixed inset-0 overflow-y-auto scroll-smooth"
+          className="fixed inset-0 overflow-y-auto"
           style={{ overscrollBehavior: 'contain' }}
         >
           <div className="relative z-10 w-full max-w-7xl mx-auto px-6 py-12 md:py-24 min-h-screen flex lg:gap-8 xl:gap-16 justify-center">
@@ -237,14 +223,9 @@ const morning = () => {
             {/* Mobile/Tablet Inline TOC */}
             {toc.length > 0 && (
               <div className="lg:hidden w-full mb-12 border border-white/5 bg-white/[0.02] rounded-2xl p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-2">
-                    <List className="h-4 w-4 text-lumora-highlight" />
-                    <h3 className="text-xs font-display font-bold text-white/80 uppercase tracking-widest">Table of Contents</h3>
-                  </div>
-                  <span className="text-[10px] font-mono text-white/40">
-                    {Math.round(readingProgress)}%
-                  </span>
+                <div className="flex items-center gap-2 mb-4">
+                  <List className="h-4 w-4 text-lumora-highlight" />
+                  <h3 className="text-xs font-display font-bold text-white/80 uppercase tracking-widest">Table of Contents</h3>
                 </div>
                 <ul className="space-y-2 border-l border-white/10 pl-3">
                   {toc.map((item, idx) => {
@@ -252,14 +233,7 @@ const morning = () => {
                     return (
                       <li key={`${item.id}-${idx}`} className={`${item.level === 3 ? 'ml-3' : ''}`}>
                         <button 
-                          onClick={() => {
-                            const el = document.getElementById(item.id);
-                            const container = document.getElementById('post-modal-scroll-container');
-                            if (el && container) {
-                              const top = el.getBoundingClientRect().top + container.scrollTop - container.getBoundingClientRect().top - 80;
-                              container.scrollTo({ top, behavior: 'smooth' });
-                            }
-                          }}
+                          onClick={() => scrollToHeading(item.id)}
                           className={`text-sm text-left transition-all block w-full py-1 ${
                             isActive
                               ? 'text-lumora-highlight font-semibold translate-x-1'
@@ -322,14 +296,11 @@ const morning = () => {
             <div className="sticky top-28">
               {toc.length > 0 && (
                 <div className="border border-white/10 bg-white/[0.02] backdrop-blur-xl rounded-2xl p-6 shadow-xl">
-                  <div className="flex items-center justify-between mb-6 pb-3 border-b border-white/5">
-                    <h3 className="text-xs font-display font-bold text-white uppercase tracking-widest flex items-center gap-2">
-                      <span className="h-1.5 w-1.5 rounded-full bg-lumora-highlight" />
+                  <div className="flex items-center gap-2 mb-6 pb-3 border-b border-white/5">
+                    <span className="h-1.5 w-1.5 rounded-full bg-lumora-highlight shadow-[0_0_8px_rgba(196,181,253,0.8)]" />
+                    <h3 className="text-xs font-display font-bold text-white uppercase tracking-widest">
                       Contents
                     </h3>
-                    <span className="text-[11px] font-mono text-white/40">
-                      {Math.round(readingProgress)}%
-                    </span>
                   </div>
 
                   <nav className="relative">
@@ -339,24 +310,17 @@ const morning = () => {
                         return (
                           <li key={`${item.id}-${idx}`} className={`${item.level === 3 ? 'ml-3' : ''}`}>
                             <button 
-                              onClick={() => {
-                                const el = document.getElementById(item.id);
-                                const container = document.getElementById('post-modal-scroll-container');
-                                if (el && container) {
-                                  const top = el.getBoundingClientRect().top + container.scrollTop - container.getBoundingClientRect().top - 80;
-                                  container.scrollTo({ top, behavior: 'smooth' });
-                                }
-                              }}
-                              className={`text-[13px] text-left transition-all duration-200 flex items-start gap-2.5 w-full py-1.5 px-2.5 rounded-lg group ${
+                              onClick={() => scrollToHeading(item.id)}
+                              className={`text-[13px] text-left transition-all duration-200 flex items-start gap-2.5 w-full py-2 px-2.5 rounded-lg group ${
                                 isActive 
-                                  ? 'text-white font-semibold bg-white/[0.06]' 
+                                  ? 'text-white font-semibold bg-white/[0.08] shadow-sm' 
                                   : 'text-white/40 hover:text-white/80 hover:bg-white/[0.02]'
                               }`}
                             >
                               <span 
                                 className={`mt-1.5 h-1.5 w-1.5 rounded-full shrink-0 transition-all duration-200 ${
                                   isActive 
-                                    ? 'bg-lumora-highlight scale-125 shadow-[0_0_8px_rgba(196,181,253,0.8)]' 
+                                    ? 'bg-lumora-highlight scale-125 shadow-[0_0_8px_rgba(196,181,253,0.9)]' 
                                     : 'bg-white/20 group-hover:bg-white/40'
                                 }`} 
                               />
