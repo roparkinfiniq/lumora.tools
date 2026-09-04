@@ -25,8 +25,6 @@ export default function PostModal({ post, onClose }: PostModalProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [toc, setToc] = useState<TocItem[]>([]);
   const [activeId, setActiveId] = useState<string>('');
-  const isScrollingViaClickRef = useRef<boolean>(false);
-  const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Close modal on Escape key
   useEffect(() => {
@@ -80,67 +78,71 @@ export default function PostModal({ post, onClose }: PostModalProps) {
     const container = scrollContainerRef.current || document.getElementById("post-modal-scroll-container");
     if (!container || toc.length === 0) return;
 
-    const handleScroll = () => {
-      if (isScrollingViaClickRef.current) return;
+    let ticking = false;
 
-      // Bottom check: if scrolled to bottom, activate the last heading
-      const isAtBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 60;
+    const updateActiveHeading = () => {
+      // 1. If at the very top of the post, highlight the first heading
+      if (container.scrollTop < 80) {
+        setActiveId(toc[0].id);
+        return;
+      }
+
+      // 2. If scrolled near the bottom, highlight the last heading
+      const isAtBottom = container.scrollHeight - container.scrollTop <= container.clientHeight + 80;
       if (isAtBottom && toc.length > 0) {
         setActiveId(toc[toc.length - 1].id);
         return;
       }
 
-      const headingElements = toc
+      // 3. Natural reading line: ~32% from container top (max 280px)
+      const containerRect = container.getBoundingClientRect();
+      const activationLine = containerRect.top + Math.min(280, container.clientHeight * 0.32);
+
+      const items = toc
         .map((item, index) => {
-          return (
+          const el =
             document.getElementById(item.id) ||
             (contentRef.current?.querySelector(`[data-toc-id="${item.id}"]`) as HTMLElement | null) ||
-            (contentRef.current?.querySelectorAll("h2, h3")[index] as HTMLElement | null)
-          );
+            (contentRef.current?.querySelectorAll("h2, h3")[index] as HTMLElement | null);
+          return { id: item.id, el };
         })
-        .filter((el): el is HTMLElement => el !== null);
+        .filter((entry): entry is { id: string; el: HTMLElement } => entry.el !== null);
 
-      if (headingElements.length === 0) return;
+      if (items.length === 0) return;
 
-      const containerRect = container.getBoundingClientRect();
-      const activationLine = containerRect.top + 160;
-
-      let currentHeadingId = headingElements[0].id || headingElements[0].getAttribute("data-toc-id") || toc[0].id;
-      for (const el of headingElements) {
-        const rect = el.getBoundingClientRect();
+      // Find the last heading whose top has crossed the activation line
+      let currentId = items[0].id;
+      for (let i = 0; i < items.length; i++) {
+        const rect = items[i].el.getBoundingClientRect();
         if (rect.top <= activationLine) {
-          currentHeadingId = el.id || el.getAttribute("data-toc-id") || currentHeadingId;
+          currentId = items[i].id;
         } else {
           break;
         }
       }
 
-      setActiveId(currentHeadingId);
+      setActiveId(currentId);
     };
 
-    const handleUserInteraction = () => {
-      if (isScrollingViaClickRef.current) {
-        isScrollingViaClickRef.current = false;
-        if (scrollTimeoutRef.current) {
-          clearTimeout(scrollTimeoutRef.current);
-          scrollTimeoutRef.current = null;
-        }
+    const handleScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          updateActiveHeading();
+          ticking = false;
+        });
+        ticking = true;
       }
     };
 
     container.addEventListener("scroll", handleScroll, { passive: true });
-    container.addEventListener("wheel", handleUserInteraction, { passive: true });
-    container.addEventListener("touchmove", handleUserInteraction, { passive: true });
+    window.addEventListener("scroll", handleScroll, { capture: true, passive: true });
 
-    handleScroll(); // Trigger once on mount
+    // Initial check
+    updateActiveHeading();
 
     return () => {
       container.removeEventListener("scroll", handleScroll);
-      container.removeEventListener("wheel", handleUserInteraction);
-      container.removeEventListener("touchmove", handleUserInteraction);
-      if (scrollTimeoutRef.current) {
-        clearTimeout(scrollTimeoutRef.current);
-      }
+      window.removeEventListener("scroll", handleScroll, { capture: true });
     };
   }, [toc]);
 
@@ -156,15 +158,7 @@ export default function PostModal({ post, onClose }: PostModalProps) {
 
     if (!el) return;
 
-    isScrollingViaClickRef.current = true;
     setActiveId(id);
-
-    if (scrollTimeoutRef.current) {
-      clearTimeout(scrollTimeoutRef.current);
-    }
-    scrollTimeoutRef.current = setTimeout(() => {
-      isScrollingViaClickRef.current = false;
-    }, 800);
 
     const containerRect = container.getBoundingClientRect();
     const elRect = el.getBoundingClientRect();
@@ -395,8 +389,8 @@ const morning = () => {
                               }}
                               className={`text-[13px] text-left transition-all duration-200 flex items-start gap-2.5 w-full py-2 px-2.5 rounded-lg group ${
                                 isActive 
-                                  ? 'text-white font-semibold bg-white/[0.08] shadow-sm' 
-                                  : 'text-white/40 hover:text-white/80 hover:bg-white/[0.02]'
+                                  ? 'text-lumora-highlight font-semibold bg-lumora-highlight/10 border border-lumora-highlight/20 shadow-sm' 
+                                  : 'text-white/40 hover:text-white/80 hover:bg-white/[0.02] border border-transparent'
                               }`}
                             >
                               <span 
