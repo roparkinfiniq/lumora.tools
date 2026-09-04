@@ -24,6 +24,7 @@ export default function PostModal({ post, onClose }: PostModalProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   const [toc, setToc] = useState<TocItem[]>([]);
   const [activeId, setActiveId] = useState<string>('');
+  const [readingProgress, setReadingProgress] = useState<number>(0);
 
   useEffect(() => {
     if (contentRef.current) {
@@ -46,7 +47,7 @@ export default function PostModal({ post, onClose }: PostModalProps) {
         
         // Ensure some styling for jumping accurately, maybe add scroll-margin-top
         if (heading instanceof HTMLElement) {
-          heading.classList.add('scroll-mt-32');
+          heading.classList.add('scroll-mt-28');
         }
 
         tocItems.push({
@@ -57,43 +58,56 @@ export default function PostModal({ post, onClose }: PostModalProps) {
       });
       
       setToc(tocItems);
+      if (tocItems.length > 0) {
+        setActiveId(tocItems[0].id);
+      }
     }
   }, [post]);
 
-  // Track active heading on scroll
+  // Track active heading on scroll & calculate reading progress
   useEffect(() => {
-    const handleScroll = () => {
-      const container = document.getElementById('post-modal-scroll-container');
-      if (!container) return;
+    const container = document.getElementById('post-modal-scroll-container');
+    if (!container) return;
 
-      const headings = Array.from(document.querySelectorAll('#post-modal-scroll-container h2, #post-modal-scroll-container h3'));
-      
-      let currentActiveId = '';
-      const offset = 200; // Activation point from top of viewport
-      
-      for (const heading of headings) {
-        const rect = heading.getBoundingClientRect();
-        if (rect.top <= offset) {
-          currentActiveId = heading.id;
+    const handleScroll = () => {
+      // Calculate reading progress (0 - 100)
+      const { scrollTop, scrollHeight, clientHeight } = container;
+      const totalScroll = scrollHeight - clientHeight;
+      if (totalScroll > 0) {
+        setReadingProgress(Math.min(100, Math.max(0, (scrollTop / totalScroll) * 100)));
+      }
+
+      // Check headings
+      const headingElements = toc
+        .map((item) => document.getElementById(item.id))
+        .filter((el): el is HTMLElement => el !== null);
+
+      if (headingElements.length === 0) return;
+
+      const containerRect = container.getBoundingClientRect();
+      // An offset line roughly 180px below container top (where user eyes comfortably focus)
+      const targetOffset = 180;
+
+      let currentHeadingId = headingElements[0].id;
+
+      for (const el of headingElements) {
+        const rect = el.getBoundingClientRect();
+        // Compare relative to container viewport top
+        const relativeTop = rect.top - containerRect.top;
+        if (relativeTop <= targetOffset) {
+          currentHeadingId = el.id;
         } else {
           break;
         }
       }
-      
-      if (currentActiveId) {
-        setActiveId(currentActiveId);
-      } else if (headings.length > 0) {
-        setActiveId(headings[0].id);
-      }
+
+      setActiveId(currentHeadingId);
     };
 
-    const container = document.getElementById('post-modal-scroll-container');
-    if (container) {
-      container.addEventListener('scroll', handleScroll);
-      handleScroll(); // Trigger once on mount
-    }
+    container.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); // Trigger once on mount
     
-    return () => container?.removeEventListener('scroll', handleScroll);
+    return () => container.removeEventListener('scroll', handleScroll);
   }, [toc]);
 
 
@@ -134,6 +148,15 @@ const morning = () => {
     >
         <div className="fixed inset-0 bg-lumora-bg/95 backdrop-blur-2xl" aria-hidden="true" onClick={onClose} />
         
+        {/* Top Reading Progress Bar */}
+        <div className="fixed top-0 left-0 right-0 h-1 z-[110] bg-white/[0.04]">
+          <motion.div
+            className="h-full bg-gradient-to-r from-lumora-highlight via-lumora-accent to-lumora-blue shadow-[0_0_12px_rgba(196,181,253,0.5)]"
+            style={{ width: `${readingProgress}%` }}
+            transition={{ ease: "easeOut", duration: 0.1 }}
+          />
+        </div>
+
         <div 
           id="post-modal-scroll-container"
           className="fixed inset-0 overflow-y-auto scroll-smooth"
@@ -180,11 +203,10 @@ const morning = () => {
               {post.title}
             </h1>
 
-            <div className="flex items-center gap-4 mb-10">
-              <div className="h-10 w-10 rounded-full bg-lumora-accent/20 flex items-center justify-center">
-                <span className="text-lumora-accent font-display font-bold">
-                  L
-                </span>
+            {/* Author Info */}
+            <div className="flex items-center gap-4 mb-12">
+              <div className="h-10 w-10 rounded-full bg-lumora-highlight/20 border border-lumora-highlight/30 flex items-center justify-center font-display font-bold text-lumora-highlight">
+                L
               </div>
               <div>
                 <p className="text-base font-display font-bold text-white/80">
@@ -215,28 +237,40 @@ const morning = () => {
             {/* Mobile/Tablet Inline TOC */}
             {toc.length > 0 && (
               <div className="lg:hidden w-full mb-12 border border-white/5 bg-white/[0.02] rounded-2xl p-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <List className="h-4 w-4 text-white/40" />
-                  <h3 className="text-xs font-display font-bold text-white/80 uppercase tracking-widest">Table of Contents</h3>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <List className="h-4 w-4 text-lumora-highlight" />
+                    <h3 className="text-xs font-display font-bold text-white/80 uppercase tracking-widest">Table of Contents</h3>
+                  </div>
+                  <span className="text-[10px] font-mono text-white/40">
+                    {Math.round(readingProgress)}%
+                  </span>
                 </div>
-                <ul className="space-y-3">
-                  {toc.map((item, idx) => (
-                    <li key={`${item.id}-${idx}`} className={`${item.level === 3 ? 'ml-4' : ''}`}>
-                      <button 
-                        onClick={() => {
-                          const el = document.getElementById(item.id);
-                          const container = document.getElementById('post-modal-scroll-container');
-                          if (el && container) {
-                            const top = el.getBoundingClientRect().top + container.scrollTop - container.getBoundingClientRect().top - 80;
-                            container.scrollTo({ top, behavior: 'smooth' });
-                          }
-                        }}
-                        className="text-sm text-left text-white/50 hover:text-white/90 transition-colors"
-                      >
-                        {item.text}
-                      </button>
-                    </li>
-                  ))}
+                <ul className="space-y-2 border-l border-white/10 pl-3">
+                  {toc.map((item, idx) => {
+                    const isActive = activeId === item.id;
+                    return (
+                      <li key={`${item.id}-${idx}`} className={`${item.level === 3 ? 'ml-3' : ''}`}>
+                        <button 
+                          onClick={() => {
+                            const el = document.getElementById(item.id);
+                            const container = document.getElementById('post-modal-scroll-container');
+                            if (el && container) {
+                              const top = el.getBoundingClientRect().top + container.scrollTop - container.getBoundingClientRect().top - 80;
+                              container.scrollTo({ top, behavior: 'smooth' });
+                            }
+                          }}
+                          className={`text-sm text-left transition-all block w-full py-1 ${
+                            isActive
+                              ? 'text-lumora-highlight font-semibold translate-x-1'
+                              : 'text-white/40 hover:text-white/80'
+                          }`}
+                        >
+                          {item.text}
+                        </button>
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             )}
@@ -284,30 +318,57 @@ const morning = () => {
           </div>
 
           {/* Right TOC Sidebar */}
-          <div className="hidden lg:block w-56 xl:w-64 shrink-0 relative mt-24">
-            <div className="sticky top-24">
+          <div className="hidden lg:block w-64 xl:w-72 shrink-0 relative mt-24">
+            <div className="sticky top-28">
               {toc.length > 0 && (
-                <div className="border border-white/5 bg-white/[0.02] rounded-2xl p-6">
-                  <h3 className="text-xs font-display font-bold text-white/80 uppercase tracking-widest mb-6">Contents</h3>
-                  <ul className="space-y-3">
-                    {toc.map((item, idx) => (
-                      <li key={`${item.id}-${idx}`} className={`${item.level === 3 ? 'ml-4' : ''}`}>
-                        <button 
-                          onClick={() => {
-                            const el = document.getElementById(item.id);
-                            const container = document.getElementById('post-modal-scroll-container');
-                            if (el && container) {
-                              const top = el.getBoundingClientRect().top + container.scrollTop - container.getBoundingClientRect().top - 80;
-                              container.scrollTo({ top, behavior: 'smooth' });
-                            }
-                          }}
-                          className={`text-sm text-left transition-colors font-medium ${activeId === item.id ? 'text-lumora-highlight' : 'text-white/40 hover:text-white/80'}`}
-                        >
-                          {item.text}
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
+                <div className="border border-white/10 bg-white/[0.02] backdrop-blur-xl rounded-2xl p-6 shadow-xl">
+                  <div className="flex items-center justify-between mb-6 pb-3 border-b border-white/5">
+                    <h3 className="text-xs font-display font-bold text-white uppercase tracking-widest flex items-center gap-2">
+                      <span className="h-1.5 w-1.5 rounded-full bg-lumora-highlight" />
+                      Contents
+                    </h3>
+                    <span className="text-[11px] font-mono text-white/40">
+                      {Math.round(readingProgress)}%
+                    </span>
+                  </div>
+
+                  <nav className="relative">
+                    <ul className="space-y-1 relative">
+                      {toc.map((item, idx) => {
+                        const isActive = activeId === item.id;
+                        return (
+                          <li key={`${item.id}-${idx}`} className={`${item.level === 3 ? 'ml-3' : ''}`}>
+                            <button 
+                              onClick={() => {
+                                const el = document.getElementById(item.id);
+                                const container = document.getElementById('post-modal-scroll-container');
+                                if (el && container) {
+                                  const top = el.getBoundingClientRect().top + container.scrollTop - container.getBoundingClientRect().top - 80;
+                                  container.scrollTo({ top, behavior: 'smooth' });
+                                }
+                              }}
+                              className={`text-[13px] text-left transition-all duration-200 flex items-start gap-2.5 w-full py-1.5 px-2.5 rounded-lg group ${
+                                isActive 
+                                  ? 'text-white font-semibold bg-white/[0.06]' 
+                                  : 'text-white/40 hover:text-white/80 hover:bg-white/[0.02]'
+                              }`}
+                            >
+                              <span 
+                                className={`mt-1.5 h-1.5 w-1.5 rounded-full shrink-0 transition-all duration-200 ${
+                                  isActive 
+                                    ? 'bg-lumora-highlight scale-125 shadow-[0_0_8px_rgba(196,181,253,0.8)]' 
+                                    : 'bg-white/20 group-hover:bg-white/40'
+                                }`} 
+                              />
+                              <span className="leading-snug">
+                                {item.text}
+                              </span>
+                            </button>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </nav>
                 </div>
               )}
             </div>
