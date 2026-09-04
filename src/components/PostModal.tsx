@@ -372,9 +372,10 @@ const morning = () => {
               </div>
               <button
                 onClick={onClose}
-                className="px-6 py-3 rounded-full bg-white text-black text-xs font-display font-bold uppercase tracking-widest hover:bg-white/90 active:scale-95 transition-all duration-300 shadow-md shrink-0"
+                className="group flex items-center gap-2 px-6 py-3 rounded-full bg-white text-black text-xs font-display font-bold uppercase tracking-widest hover:-translate-y-0.5 hover:shadow-[0_0_25px_rgba(255,255,255,0.3)] active:translate-y-0 active:scale-95 transition-all duration-300 shadow-md shrink-0 cursor-pointer"
               >
-                Back to Archive
+                <ArrowLeft className="h-3.5 w-3.5 transition-transform duration-300 group-hover:-translate-x-1" />
+                <span>Back to Archive</span>
               </button>
             </div>
           </motion.article>
