@@ -312,9 +312,9 @@ const morning = () => {
                             e.stopPropagation();
                             scrollToHeading(item.id);
                           }}
-                          className={`text-sm text-left transition-all block w-full py-1 ${
+                          className={`text-sm font-medium text-left transition-colors block w-full py-1 ${
                             isActive
-                              ? 'text-lumora-highlight font-semibold translate-x-1'
+                              ? 'text-lumora-highlight'
                               : 'text-white/40 hover:text-white/80'
                           }`}
                         >
@@ -395,20 +395,20 @@ const morning = () => {
                                 e.stopPropagation();
                                 scrollToHeading(item.id);
                               }}
-                              className={`text-[13px] text-left transition-all duration-200 flex items-start gap-2.5 w-full py-2 px-2.5 rounded-lg group ${
+                              className={`text-[13px] font-medium text-left transition-colors duration-150 flex items-start gap-2.5 w-full py-2 px-2.5 rounded-lg group ${
                                 isActive 
-                                  ? 'text-lumora-highlight font-semibold bg-lumora-highlight/10 border border-lumora-highlight/20 shadow-sm' 
+                                  ? 'text-lumora-highlight bg-lumora-highlight/10 border border-lumora-highlight/20 shadow-sm' 
                                   : 'text-white/40 hover:text-white/80 hover:bg-white/[0.02] border border-transparent'
                               }`}
                             >
                               <span 
-                                className={`mt-1.5 h-1.5 w-1.5 rounded-full shrink-0 transition-all duration-200 ${
+                                className={`mt-1.5 h-1.5 w-1.5 rounded-full shrink-0 transition-all duration-150 ${
                                   isActive 
-                                    ? 'bg-lumora-highlight scale-125 shadow-[0_0_8px_rgba(196,181,253,0.9)]' 
+                                    ? 'bg-lumora-highlight shadow-[0_0_8px_rgba(196,181,253,0.9)]' 
                                     : 'bg-white/20 group-hover:bg-white/40'
                                 }`} 
                               />
-                              <span className="leading-snug">
+                              <span className="leading-snug break-keep">
                                 {item.text}
                               </span>
                             </button>
