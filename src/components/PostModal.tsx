@@ -37,6 +37,16 @@ export default function PostModal({ post, onClose }: PostModalProps) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
 
+  // Keep active TOC item visible inside sidebar when card has internal scroll
+  useEffect(() => {
+    if (activeId) {
+      const activeBtn = document.querySelector(`[data-toc-btn="${activeId}"]`);
+      if (activeBtn && typeof activeBtn.scrollIntoView === "function") {
+        activeBtn.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      }
+    }
+  }, [activeId]);
+
   useEffect(() => {
     if (contentRef.current) {
       // Syntax highlighting
@@ -45,8 +55,8 @@ export default function PostModal({ post, onClose }: PostModalProps) {
         Prism.highlightElement(block);
       });
 
-      // Generate TOC
-      const headings = contentRef.current.querySelectorAll("h2, h3");
+      // Generate TOC (H2 headings only for clean, executive structure)
+      const headings = contentRef.current.querySelectorAll("h2");
       const tocItems: TocItem[] = [];
       
       headings.forEach((heading, index) => {
@@ -95,7 +105,7 @@ export default function PostModal({ post, onClose }: PostModalProps) {
       }
 
       const headingElements = contentRef.current
-        ? (Array.from(contentRef.current.querySelectorAll("h2, h3")) as HTMLElement[])
+        ? (Array.from(contentRef.current.querySelectorAll("h2")) as HTMLElement[])
         : [];
 
       if (headingElements.length === 0) return;
@@ -150,7 +160,7 @@ export default function PostModal({ post, onClose }: PostModalProps) {
     if (targetIndex === -1) return;
 
     const headingElements = contentRef.current
-      ? (Array.from(contentRef.current.querySelectorAll("h2, h3")) as HTMLElement[])
+      ? (Array.from(contentRef.current.querySelectorAll("h2")) as HTMLElement[])
       : [];
     const el = headingElements[targetIndex];
     if (!el) return;
@@ -294,7 +304,7 @@ const morning = () => {
                   {toc.map((item, idx) => {
                     const isActive = activeId === item.id;
                     return (
-                      <li key={`${item.id}-${idx}`} className={`${item.level === 3 ? 'ml-3' : ''}`}>
+                      <li key={`${item.id}-${idx}`}>
                         <button 
                           type="button"
                           onClick={(e) => {
@@ -363,22 +373,23 @@ const morning = () => {
           <div className="hidden lg:block w-64 xl:w-72 shrink-0 relative mt-24">
             <div className="sticky top-28">
               {toc.length > 0 && (
-                <div className="border border-white/10 bg-white/[0.02] backdrop-blur-xl rounded-2xl p-6 shadow-xl">
-                  <div className="flex items-center gap-2 mb-6 pb-3 border-b border-white/5">
+                <div className="border border-white/10 bg-white/[0.02] backdrop-blur-xl rounded-2xl p-6 shadow-xl max-h-[calc(100vh-9rem)] flex flex-col">
+                  <div className="flex items-center gap-2 mb-4 pb-3 border-b border-white/5 shrink-0">
                     <span className="h-1.5 w-1.5 rounded-full bg-lumora-highlight shadow-[0_0_8px_rgba(196,181,253,0.8)]" />
                     <h3 className="text-xs font-display font-bold text-white uppercase tracking-widest">
                       Contents
                     </h3>
                   </div>
 
-                  <nav className="relative">
+                  <nav className="relative overflow-y-auto pr-1.5 scrollbar-thin scrollbar-thumb-white/10 hover:scrollbar-thumb-white/20">
                     <ul className="space-y-1 relative">
                       {toc.map((item, idx) => {
                         const isActive = activeId === item.id;
                         return (
-                          <li key={`${item.id}-${idx}`} className={`${item.level === 3 ? 'ml-3' : ''}`}>
+                          <li key={`${item.id}-${idx}`}>
                             <button 
                               type="button"
+                              data-toc-btn={item.id}
                               onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
