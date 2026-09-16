@@ -529,14 +529,14 @@ export default function CodeTiaraView() {
                 <div className="text-left">
                   <div className="flex items-center gap-2">
                     <h3 className="text-xl font-display font-bold text-white tracking-tight">
-                      다운로드가 시작되었습니다!
+                      Your download has started!
                     </h3>
                     <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-[#10b981]/15 text-[#10b981] border border-[#10b981]/30">
                       macOS
                     </span>
                   </div>
                   <p className="text-xs sm:text-sm text-white/50 mt-0.5">
-                    Mac 최초 실행 시 1초 만에 여는 팁 안내
+                    Quick 10-second first launch guide
                   </p>
                 </div>
               </div>
@@ -550,10 +550,10 @@ export default function CodeTiaraView() {
                   </div>
                   <div className="flex-1 text-left">
                     <h4 className="text-sm font-bold text-white mb-0.5">
-                      1. DMG 열기 및 Applications로 드래그
+                      1. Open DMG & Move to Applications
                     </h4>
                     <p className="text-xs text-white/60 leading-relaxed">
-                      다운로드된 <span className="text-white font-medium">{CODE_TIARA_RELEASE.downloads.mac.fileName}</span> 파일을 열고, Code Tiara 아이콘을 <span className="text-white font-medium">Applications (응용 프로그램)</span> 폴더로 끌어다 놓습니다.
+                      Open the downloaded <span className="text-white font-medium">{CODE_TIARA_RELEASE.downloads.mac.fileName}</span> file, and drag the Code Tiara icon into your <span className="text-white font-medium">Applications</span> folder.
                     </p>
                   </div>
                 </div>
@@ -566,21 +566,21 @@ export default function CodeTiaraView() {
                   <div className="flex-1 text-left">
                     <div className="flex items-center gap-2 mb-1">
                       <h4 className="text-sm font-bold text-white">
-                        2. 최초 실행 시: 우클릭으로 [열기]
+                        2. First Launch: Right-Click to Open
                       </h4>
                       <span className="text-[9px] uppercase tracking-wider font-bold text-[#ff7eb3] bg-[#ff7eb3]/15 px-1.5 py-0.5 rounded border border-[#ff7eb3]/20">
-                        핵심 팁
+                        PRO TIP
                       </span>
                     </div>
                     <p className="text-xs text-white/80 leading-relaxed">
-                      더블 클릭 대신, 앱 아이콘을 <strong className="text-white underline decoration-[#c084fc] underline-offset-2">우클릭 (또는 Control + 클릭)</strong> 후 <strong className="text-[#c084fc]">[열기]</strong>를 누르시면 경고창 없이 바로 실행됩니다!
+                      Instead of double-clicking, <strong className="text-white underline decoration-[#c084fc] underline-offset-2">Right-Click (or Control + Click)</strong> the app icon and choose <strong className="text-[#c084fc]">[Open]</strong>. This bypasses the macOS Gatekeeper warning instantly!
                     </p>
                   </div>
                 </div>
 
                 {/* Step 3 (Sub info) */}
                 <div className="p-3 rounded-xl bg-white/[0.015] border border-white/5 text-[11px] text-white/40 text-left leading-relaxed">
-                  💡 혹시 차단 팝업이 이미 떴다면: <span className="text-white/70 font-medium">Mac 시스템 설정 &gt; 개인정보 보호 및 보안</span> 맨 아래의 <span className="text-white/70 font-medium">[확인 없이 열기]</span>를 누르셔도 바로 실행됩니다. (최초 1회 실행 후에는 더블 클릭으로 항상 열립니다)
+                  💡 If you see an "unidentified developer" prompt: Open <span className="text-white/70 font-medium">System Settings &gt; Privacy & Security</span>, scroll to the bottom, and click <span className="text-white/70 font-medium">[Open Anyway]</span>. (You only need to do this once—subsequent launches open normally.)
                 </div>
               </div>
 
@@ -590,14 +590,14 @@ export default function CodeTiaraView() {
                   href={CODE_TIARA_RELEASE.downloads.mac.url}
                   className="text-xs text-[#c084fc] hover:underline font-medium text-left"
                 >
-                  다운로드가 안 되나요? 다시 받기
+                  Download didn't start? Click here to retry
                 </a>
                 <button
                   type="button"
                   onClick={() => setShowMacGuide(false)}
                   className="px-5 py-2.5 rounded-xl bg-white text-black font-display font-bold text-xs hover:bg-white/90 active:scale-95 transition-all shadow-[0_4px_15px_rgba(255,255,255,0.2)] cursor-pointer"
                 >
-                  확인했습니다
+                  Got it
                 </button>
               </div>
             </motion.div>
