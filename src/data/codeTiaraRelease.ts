@@ -1,4 +1,4 @@
-﻿export interface DownloadOption {
+export interface DownloadOption {
   os: 'mac' | 'windows';
   label: string;
   sublabel: string;
@@ -26,16 +26,16 @@ export const CODE_TIARA_RELEASE: CodeTiaraReleaseConfig = {
       label: "Download for Mac",
       sublabel: "macOS (.dmg)",
       ext: ".dmg",
-      fileName: "CodeTiara.dmg",
-      url: "https://github.com/roparkinfiniq/lumora.tools/releases/download/Code_Tiara/CodeTiara.dmg",
+      fileName: "Code.Tiara-1.7.5-arm64.dmg",
+      url: "https://github.com/roparkinfiniq/lumora.tools/releases/download/Code_Tiara/Code.Tiara-1.7.5-arm64.dmg",
     },
     windows: {
       os: "windows",
       label: "Download for PC",
       sublabel: "Windows (.exe)",
       ext: ".exe",
-      fileName: "CodeTiaraSetup.exe",
-      url: "https://github.com/roparkinfiniq/lumora.tools/releases/download/Code_Tiara/CodeTiaraSetup.exe",
+      fileName: "Code.Tiara.Setup.1.7.5.exe",
+      url: "https://github.com/roparkinfiniq/lumora.tools/releases/download/Code_Tiara/Code.Tiara.Setup.1.7.5.exe",
     },
   },
   githubReleaseUrl: "https://github.com/roparkinfiniq/lumora.tools/releases",

@@ -553,7 +553,7 @@ export default function CodeTiaraView() {
                       1. DMG 열기 및 Applications로 드래그
                     </h4>
                     <p className="text-xs text-white/60 leading-relaxed">
-                      다운로드된 <span className="text-white font-medium">CodeTiara.dmg</span> 파일을 열고, Code Tiara 아이콘을 <span className="text-white font-medium">Applications (응용 프로그램)</span> 폴더로 끌어다 놓습니다.
+                      다운로드된 <span className="text-white font-medium">{CODE_TIARA_RELEASE.downloads.mac.fileName}</span> 파일을 열고, Code Tiara 아이콘을 <span className="text-white font-medium">Applications (응용 프로그램)</span> 폴더로 끌어다 놓습니다.
                     </p>
                   </div>
                 </div>
