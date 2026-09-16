@@ -131,7 +131,7 @@ export default function CodeTiaraView() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
-            className="lg:w-1/2 relative w-full aspect-square md:aspect-auto md:h-[600px] flex items-center justify-center group pointer-events-none"
+            className="lg:w-1/2 relative w-full aspect-square md:aspect-auto md:h-[600px] flex items-center justify-center group"
           >
             {/* Ambient Background Glow */}
             <div className="absolute inset-0 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-gradient-to-br from-[#c084fc]/10 to-[#ff7eb3]/10 blur-[100px] rounded-full pointer-events-none" />
