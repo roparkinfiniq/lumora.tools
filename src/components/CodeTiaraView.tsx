@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import {
   Download,
@@ -12,8 +13,38 @@ import {
   Palette,
   Grid3X3,
 } from "lucide-react";
+import { CODE_TIARA_RELEASE } from "../data/codeTiaraRelease";
+
+function AppleIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+      <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.62-.75 1.04-1.8 0.92-2.85-.9.04-1.99.6-2.61 1.34-.55.63-.99 1.68-.88 2.7.99.08 2.01-.51 2.57-1.19z" />
+    </svg>
+  );
+}
+
+function WindowsIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+      <path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.951-1.801" />
+    </svg>
+  );
+}
 
 export default function CodeTiaraView() {
+  const [userOs, setUserOs] = useState<"mac" | "windows">("windows");
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && typeof navigator !== "undefined") {
+      const ua = navigator.userAgent.toLowerCase();
+      const platform = ((navigator as unknown as { userAgentData?: { platform?: string } }).userAgentData?.platform || navigator.platform || "").toLowerCase();
+      if (ua.includes("mac") || platform.includes("mac")) {
+        setUserOs("mac");
+      } else {
+        setUserOs("windows");
+      }
+    }
+  }, []);
   return (
     <div className="pt-12">
       {/* Hero Section */}
@@ -39,23 +70,61 @@ export default function CodeTiaraView() {
               between your PC and mobile devices.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-4">
+            {/* Download Buttons Group */}
+            <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 mt-4 items-stretch sm:items-center">
+              {/* Mac Download Button */}
               <a
-                href="https://github.com/roparkinfiniq/lumora.tools/releases/download/Code_Tiara/CodeTiaraSetup.exe"
+                href={CODE_TIARA_RELEASE.downloads.mac.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex items-center justify-center gap-2 sm:gap-3 h-12 sm:h-14 lg:h-16 px-6 sm:px-8 rounded-xl bg-white text-black font-display font-bold text-base sm:text-lg hover:-translate-y-1 hover:shadow-[0_8px_20px_rgba(255,255,255,0.2)] active:translate-y-0 active:scale-95 transition-all duration-300"
+                className={`group flex items-center justify-center gap-2.5 sm:gap-3 h-12 sm:h-14 lg:h-16 px-5 sm:px-7 rounded-xl font-display font-bold text-sm sm:text-base hover:-translate-y-1 active:translate-y-0 active:scale-95 transition-all duration-300 ${
+                  userOs === "mac"
+                    ? "bg-white text-black hover:shadow-[0_8px_25px_rgba(255,255,255,0.25)]"
+                    : "bg-white/[0.04] hover:bg-white/[0.08] text-white border border-white/10 hover:border-white/20"
+                }`}
               >
-                <span className="whitespace-nowrap">Download for PC</span>
-                <div className="relative flex h-4 w-4 sm:h-5 sm:w-5 overflow-hidden">
+                <AppleIcon className={`w-5 h-5 shrink-0 ${userOs === "mac" ? "text-black" : "text-white"}`} />
+                <div className="flex flex-col items-start leading-tight">
+                  <span className="whitespace-nowrap font-bold">Download for Mac</span>
+                  <span className={`text-[10px] font-mono font-medium ${userOs === "mac" ? "text-black/60" : "text-white/40"}`}>
+                    Apple Silicon & Intel (.dmg)
+                  </span>
+                </div>
+                <div className="relative flex h-4 w-4 sm:h-5 sm:w-5 overflow-hidden ml-1">
                   <Download className="absolute top-0 left-0 h-4 w-4 sm:h-5 sm:w-5 shrink-0 transition-transform duration-300 group-hover:translate-y-full" />
                   <Download className="absolute -top-full left-0 h-4 w-4 sm:h-5 sm:w-5 shrink-0 transition-transform duration-300 group-hover:translate-y-full" />
                 </div>
               </a>
-              <div className="flex items-center justify-center gap-2 sm:gap-3 h-12 sm:h-14 lg:h-16 px-4 sm:px-6 rounded-xl bg-white/[0.02] border border-white/10 text-white/40 font-display font-medium text-base sm:text-lg select-none cursor-not-allowed relative group overflow-hidden opacity-50">
+
+              {/* Windows Download Button */}
+              <a
+                href={CODE_TIARA_RELEASE.downloads.windows.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`group flex items-center justify-center gap-2.5 sm:gap-3 h-12 sm:h-14 lg:h-16 px-5 sm:px-7 rounded-xl font-display font-bold text-sm sm:text-base hover:-translate-y-1 active:translate-y-0 active:scale-95 transition-all duration-300 ${
+                  userOs === "windows"
+                    ? "bg-white text-black hover:shadow-[0_8px_25px_rgba(255,255,255,0.25)]"
+                    : "bg-white/[0.04] hover:bg-white/[0.08] text-white border border-white/10 hover:border-white/20"
+                }`}
+              >
+                <WindowsIcon className={`w-4 h-4 shrink-0 ${userOs === "windows" ? "text-black" : "text-white"}`} />
+                <div className="flex flex-col items-start leading-tight">
+                  <span className="whitespace-nowrap font-bold">Download for PC</span>
+                  <span className={`text-[10px] font-mono font-medium ${userOs === "windows" ? "text-black/60" : "text-white/40"}`}>
+                    Windows 64-bit (.exe)
+                  </span>
+                </div>
+                <div className="relative flex h-4 w-4 sm:h-5 sm:w-5 overflow-hidden ml-1">
+                  <Download className="absolute top-0 left-0 h-4 w-4 sm:h-5 sm:w-5 shrink-0 transition-transform duration-300 group-hover:translate-y-full" />
+                  <Download className="absolute -top-full left-0 h-4 w-4 sm:h-5 sm:w-5 shrink-0 transition-transform duration-300 group-hover:translate-y-full" />
+                </div>
+              </a>
+
+              {/* Google Play (Coming Soon) */}
+              <div className="flex items-center justify-center gap-2 sm:gap-3 h-12 sm:h-14 lg:h-16 px-4 sm:px-5 rounded-xl bg-white/[0.02] border border-white/10 text-white/40 font-display font-medium text-sm select-none cursor-not-allowed relative group overflow-hidden opacity-50">
                 <svg
                   viewBox="0 0 24 24"
-                  className="w-6 h-6 sm:w-8 sm:h-8 shrink-0 opacity-30"
+                  className="w-5 h-5 sm:w-6 sm:h-6 shrink-0 opacity-30"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
@@ -77,14 +146,23 @@ export default function CodeTiaraView() {
                   />
                 </svg>
                 <div className="flex flex-col items-start justify-center text-left">
-                  <span className="text-[10px] uppercase font-bold tracking-[0.08em] text-[#ff7eb3] leading-none mb-1 whitespace-nowrap">
+                  <span className="text-[9px] uppercase font-bold tracking-[0.08em] text-[#ff7eb3] leading-none mb-0.5 whitespace-nowrap">
                     COMING SOON
                   </span>
-                  <span className="text-[20px] font-sans font-bold tracking-tight leading-none text-white/40 whitespace-nowrap">
+                  <span className="text-[17px] font-sans font-bold tracking-tight leading-none text-white/40 whitespace-nowrap">
                     Google Play
                   </span>
                 </div>
               </div>
+            </div>
+
+            {/* Version & OS Info */}
+            <div className="mt-4 flex items-center gap-3 text-xs font-mono text-white/40">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/[0.04] border border-white/10 text-lumora-highlight">
+                <span className="h-1.5 w-1.5 rounded-full bg-lumora-highlight animate-pulse" />
+                {CODE_TIARA_RELEASE.version}
+              </span>
+              <span>macOS 11+ & Windows 10+ supported</span>
             </div>
           </motion.div>
 
@@ -386,18 +464,53 @@ export default function CodeTiaraView() {
               </div>
             </div>
 
-            <a
-              href="https://github.com/roparkinfiniq/lumora.tools/releases/download/Code_Tiara/CodeTiaraSetup.exe"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group/btn inline-flex items-center justify-center gap-2 sm:gap-3 h-12 sm:h-14 lg:h-16 px-8 sm:px-10 rounded-xl bg-white text-black font-display font-bold text-base sm:text-lg hover:-translate-y-1 hover:shadow-[0_8px_20px_rgba(255,255,255,0.2)] active:translate-y-0 active:scale-95 transition-all duration-300"
-            >
-              <span>Download for PC</span>
-              <div className="relative flex h-4 w-4 sm:h-5 sm:w-5 overflow-hidden">
-                <Download className="absolute top-0 left-0 h-4 w-4 sm:h-5 sm:w-5 shrink-0 transition-transform duration-300 group-hover/btn:translate-y-full" />
-                <Download className="absolute -top-full left-0 h-4 w-4 sm:h-5 sm:w-5 shrink-0 transition-transform duration-300 group-hover/btn:translate-y-full" />
-              </div>
-            </a>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+              <a
+                href={CODE_TIARA_RELEASE.downloads.mac.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`group/btn flex items-center justify-center gap-2.5 sm:gap-3 h-12 sm:h-14 lg:h-16 px-6 sm:px-8 rounded-xl font-display font-bold text-sm sm:text-base hover:-translate-y-1 active:translate-y-0 active:scale-95 transition-all duration-300 ${
+                  userOs === "mac"
+                    ? "bg-white text-black hover:shadow-[0_8px_25px_rgba(255,255,255,0.25)]"
+                    : "bg-white/[0.05] hover:bg-white/[0.1] text-white border border-white/10 hover:border-white/20"
+                }`}
+              >
+                <AppleIcon className={`w-5 h-5 shrink-0 ${userOs === "mac" ? "text-black" : "text-white"}`} />
+                <div className="flex flex-col items-start leading-tight">
+                  <span>Download for Mac</span>
+                  <span className={`text-[10px] font-mono font-medium ${userOs === "mac" ? "text-black/60" : "text-white/40"}`}>
+                    Apple Silicon & Intel (.dmg)
+                  </span>
+                </div>
+                <div className="relative flex h-4 w-4 sm:h-5 sm:w-5 overflow-hidden ml-1">
+                  <Download className="absolute top-0 left-0 h-4 w-4 sm:h-5 sm:w-5 shrink-0 transition-transform duration-300 group-hover/btn:translate-y-full" />
+                  <Download className="absolute -top-full left-0 h-4 w-4 sm:h-5 sm:w-5 shrink-0 transition-transform duration-300 group-hover/btn:translate-y-full" />
+                </div>
+              </a>
+
+              <a
+                href={CODE_TIARA_RELEASE.downloads.windows.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`group/btn flex items-center justify-center gap-2.5 sm:gap-3 h-12 sm:h-14 lg:h-16 px-6 sm:px-8 rounded-xl font-display font-bold text-sm sm:text-base hover:-translate-y-1 active:translate-y-0 active:scale-95 transition-all duration-300 ${
+                  userOs === "windows"
+                    ? "bg-white text-black hover:shadow-[0_8px_25px_rgba(255,255,255,0.25)]"
+                    : "bg-white/[0.05] hover:bg-white/[0.1] text-white border border-white/10 hover:border-white/20"
+                }`}
+              >
+                <WindowsIcon className={`w-4 h-4 shrink-0 ${userOs === "windows" ? "text-black" : "text-white"}`} />
+                <div className="flex flex-col items-start leading-tight">
+                  <span>Download for PC</span>
+                  <span className={`text-[10px] font-mono font-medium ${userOs === "windows" ? "text-black/60" : "text-white/40"}`}>
+                    Windows 64-bit (.exe)
+                  </span>
+                </div>
+                <div className="relative flex h-4 w-4 sm:h-5 sm:w-5 overflow-hidden ml-1">
+                  <Download className="absolute top-0 left-0 h-4 w-4 sm:h-5 sm:w-5 shrink-0 transition-transform duration-300 group-hover/btn:translate-y-full" />
+                  <Download className="absolute -top-full left-0 h-4 w-4 sm:h-5 sm:w-5 shrink-0 transition-transform duration-300 group-hover/btn:translate-y-full" />
+                </div>
+              </a>
+            </div>
           </div>
         </div>
       </section>
