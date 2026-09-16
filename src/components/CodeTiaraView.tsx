@@ -1,4 +1,5 @@
-import { motion } from "motion/react";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import {
   Download,
   CheckSquare,
@@ -8,6 +9,9 @@ import {
   Layers,
   Palette,
   Grid3X3,
+  X,
+  MousePointerClick,
+  FolderDown,
 } from "lucide-react";
 import { CODE_TIARA_RELEASE } from "../data/codeTiaraRelease";
 
@@ -28,6 +32,25 @@ function WindowsIcon({ className = "w-5 h-5" }: { className?: string }) {
 }
 
 export default function CodeTiaraView() {
+  const [showMacGuide, setShowMacGuide] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setShowMacGuide(false);
+      }
+    };
+    if (showMacGuide) {
+      document.body.style.overflow = "hidden";
+      window.addEventListener("keydown", handleKeyDown);
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [showMacGuide]);
   return (
     <div className="pt-12">
       {/* Hero Section */}
@@ -62,7 +85,8 @@ export default function CodeTiaraView() {
                   href={CODE_TIARA_RELEASE.downloads.mac.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-between h-14 px-5 rounded-xl bg-white text-black font-display hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(255,255,255,0.2)] active:scale-95 transition-all duration-200"
+                  onClick={() => setShowMacGuide(true)}
+                  className="flex items-center justify-between h-14 px-5 rounded-xl bg-white text-black font-display hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(255,255,255,0.2)] active:scale-95 transition-all duration-200 cursor-pointer"
                 >
                   <div className="flex items-center gap-2.5 min-w-0">
                     <AppleIcon className="w-5 h-5 shrink-0 text-black" />
@@ -430,7 +454,8 @@ export default function CodeTiaraView() {
                 href={CODE_TIARA_RELEASE.downloads.mac.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-between h-14 px-6 rounded-xl bg-white text-black font-display hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(255,255,255,0.2)] active:scale-95 transition-all duration-200 text-left"
+                onClick={() => setShowMacGuide(true)}
+                className="flex items-center justify-between h-14 px-6 rounded-xl bg-white text-black font-display hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(255,255,255,0.2)] active:scale-95 transition-all duration-200 text-left cursor-pointer"
               >
                 <div className="flex items-center gap-3 min-w-0">
                   <AppleIcon className="w-5 h-5 shrink-0 text-black" />
@@ -461,6 +486,124 @@ export default function CodeTiaraView() {
           </div>
         </div>
       </section>
+
+      {/* Mac Installation Guide Modal */}
+      <AnimatePresence>
+        {showMacGuide && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowMacGuide(false)}
+              className="absolute inset-0 bg-black/75 backdrop-blur-md cursor-pointer"
+            />
+
+            {/* Modal Dialog Card */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 15 }}
+              transition={{ type: "spring", duration: 0.45, bounce: 0.1 }}
+              className="relative w-full max-w-lg bg-[#0f0f13] border border-white/10 rounded-3xl p-6 sm:p-8 shadow-[0_25px_70px_rgba(0,0,0,0.85)] z-10 overflow-hidden"
+            >
+              {/* Glow ambient */}
+              <div className="absolute top-0 right-0 w-64 h-64 bg-[#c084fc]/15 blur-[90px] rounded-full pointer-events-none" />
+
+              {/* Close Button */}
+              <button
+                type="button"
+                onClick={() => setShowMacGuide(false)}
+                className="absolute top-5 right-5 h-9 w-9 rounded-full bg-white/5 hover:bg-white/10 text-white/60 hover:text-white flex items-center justify-center transition-colors border border-white/10 cursor-pointer"
+                aria-label="Close"
+              >
+                <X className="w-4 h-4" />
+              </button>
+
+              {/* Header */}
+              <div className="flex items-center gap-3.5 mb-6">
+                <div className="h-12 w-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white shrink-0 shadow-inner">
+                  <AppleIcon className="w-6 h-6 text-white" />
+                </div>
+                <div className="text-left">
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-xl font-display font-bold text-white tracking-tight">
+                      다운로드가 시작되었습니다!
+                    </h3>
+                    <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-[#10b981]/15 text-[#10b981] border border-[#10b981]/30">
+                      macOS
+                    </span>
+                  </div>
+                  <p className="text-xs sm:text-sm text-white/50 mt-0.5">
+                    Mac 최초 실행 시 1초 만에 여는 팁 안내
+                  </p>
+                </div>
+              </div>
+
+              {/* Steps */}
+              <div className="space-y-3.5 my-6">
+                {/* Step 1 */}
+                <div className="flex gap-3.5 p-3.5 rounded-2xl bg-white/[0.02] border border-white/5 items-start">
+                  <div className="h-7 w-7 rounded-xl bg-white/5 border border-white/10 text-white/80 flex items-center justify-center shrink-0 mt-0.5">
+                    <FolderDown className="w-4 h-4" />
+                  </div>
+                  <div className="flex-1 text-left">
+                    <h4 className="text-sm font-bold text-white mb-0.5">
+                      1. DMG 열기 및 Applications로 드래그
+                    </h4>
+                    <p className="text-xs text-white/60 leading-relaxed">
+                      다운로드된 <span className="text-white font-medium">CodeTiara.dmg</span> 파일을 열고, Code Tiara 아이콘을 <span className="text-white font-medium">Applications (응용 프로그램)</span> 폴더로 끌어다 놓습니다.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Step 2 (Key Tip) */}
+                <div className="flex gap-3.5 p-4 rounded-2xl bg-gradient-to-br from-[#c084fc]/15 to-[#ff7eb3]/10 border border-[#c084fc]/30 items-start">
+                  <div className="h-7 w-7 rounded-xl bg-[#c084fc] text-black flex items-center justify-center shrink-0 mt-0.5 shadow-[0_0_12px_rgba(192,132,252,0.5)]">
+                    <MousePointerClick className="w-4 h-4" />
+                  </div>
+                  <div className="flex-1 text-left">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h4 className="text-sm font-bold text-white">
+                        2. 최초 실행 시: 우클릭으로 [열기]
+                      </h4>
+                      <span className="text-[9px] uppercase tracking-wider font-bold text-[#ff7eb3] bg-[#ff7eb3]/15 px-1.5 py-0.5 rounded border border-[#ff7eb3]/20">
+                        핵심 팁
+                      </span>
+                    </div>
+                    <p className="text-xs text-white/80 leading-relaxed">
+                      더블 클릭 대신, 앱 아이콘을 <strong className="text-white underline decoration-[#c084fc] underline-offset-2">우클릭 (또는 Control + 클릭)</strong> 후 <strong className="text-[#c084fc]">[열기]</strong>를 누르시면 경고창 없이 바로 실행됩니다!
+                    </p>
+                  </div>
+                </div>
+
+                {/* Step 3 (Sub info) */}
+                <div className="p-3 rounded-xl bg-white/[0.015] border border-white/5 text-[11px] text-white/40 text-left leading-relaxed">
+                  💡 혹시 차단 팝업이 이미 떴다면: <span className="text-white/70 font-medium">Mac 시스템 설정 &gt; 개인정보 보호 및 보안</span> 맨 아래의 <span className="text-white/70 font-medium">[확인 없이 열기]</span>를 누르셔도 바로 실행됩니다. (최초 1회 실행 후에는 더블 클릭으로 항상 열립니다)
+                </div>
+              </div>
+
+              {/* Footer */}
+              <div className="flex items-center justify-between gap-3 pt-3 border-t border-white/5">
+                <a
+                  href={CODE_TIARA_RELEASE.downloads.mac.url}
+                  className="text-xs text-[#c084fc] hover:underline font-medium text-left"
+                >
+                  다운로드가 안 되나요? 다시 받기
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setShowMacGuide(false)}
+                  className="px-5 py-2.5 rounded-xl bg-white text-black font-display font-bold text-xs hover:bg-white/90 active:scale-95 transition-all shadow-[0_4px_15px_rgba(255,255,255,0.2)] cursor-pointer"
+                >
+                  확인했습니다
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
