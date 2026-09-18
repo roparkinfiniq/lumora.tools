@@ -83,8 +83,7 @@ export default function CodeTiaraView() {
                 {/* Mac Download Button */}
                 <a
                   href={CODE_TIARA_RELEASE.downloads.mac.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  download
                   onClick={() => setShowMacGuide(true)}
                   className="flex items-center justify-between h-14 px-5 rounded-xl bg-white text-black font-display hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(255,255,255,0.2)] active:scale-95 transition-all duration-200 cursor-pointer"
                 >
@@ -101,8 +100,7 @@ export default function CodeTiaraView() {
                 {/* Windows Download Button */}
                 <a
                   href={CODE_TIARA_RELEASE.downloads.windows.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  download
                   className="flex items-center justify-between h-14 px-5 rounded-xl bg-white text-black font-display hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(255,255,255,0.2)] active:scale-95 transition-all duration-200"
                 >
                   <div className="flex items-center gap-2.5 min-w-0">
@@ -452,8 +450,7 @@ export default function CodeTiaraView() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 max-w-lg mx-auto w-full">
               <a
                 href={CODE_TIARA_RELEASE.downloads.mac.url}
-                target="_blank"
-                rel="noopener noreferrer"
+                download
                 onClick={() => setShowMacGuide(true)}
                 className="flex items-center justify-between h-14 px-6 rounded-xl bg-white text-black font-display hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(255,255,255,0.2)] active:scale-95 transition-all duration-200 text-left cursor-pointer"
               >
@@ -469,8 +466,7 @@ export default function CodeTiaraView() {
 
               <a
                 href={CODE_TIARA_RELEASE.downloads.windows.url}
-                target="_blank"
-                rel="noopener noreferrer"
+                download
                 className="flex items-center justify-between h-14 px-6 rounded-xl bg-white text-black font-display hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(255,255,255,0.2)] active:scale-95 transition-all duration-200 text-left"
               >
                 <div className="flex items-center gap-3 min-w-0">
