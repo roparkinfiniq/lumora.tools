@@ -18,8 +18,8 @@ export interface CodeTiaraReleaseConfig {
 }
 
 export const CODE_TIARA_RELEASE: CodeTiaraReleaseConfig = {
-  version: "v1.8.0",
-  releaseDate: "2026-09-18",
+  version: "v1.8.1",
+  releaseDate: "2026-09-26",
   downloads: {
     mac: {
       os: "mac",
@@ -27,8 +27,8 @@ export const CODE_TIARA_RELEASE: CodeTiaraReleaseConfig = {
       sublabel: "macOS (.dmg) · Apple Silicon & Intel",
       ext: ".dmg",
       // Universal build: one file runs on both Apple Silicon and Intel Macs.
-      fileName: "Code.Tiara-1.8.0-universal.dmg",
-      url: "https://github.com/roparkinfiniq/lumora.tools/releases/download/Code_Tiara/Code.Tiara-1.8.0-universal.dmg",
+      fileName: "Code.Tiara-1.8.1-universal.dmg",
+      url: "https://github.com/roparkinfiniq/lumora.tools/releases/download/Code_Tiara/Code.Tiara-1.8.1-universal.dmg",
     },
     windows: {
       os: "windows",
