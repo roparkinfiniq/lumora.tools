@@ -5,6 +5,9 @@ import PostModal from "./components/PostModal";
 import StudioView from "./components/StudioView";
 import ToolDetailView from "./components/ToolDetailView";
 import CodeTiaraView from "./components/CodeTiaraView";
+import DoquariumView from "./components/DoquariumView";
+import DoquariumDocView from "./components/DoquariumDocView";
+import { DELETE_PATH, DOQUARIUM_DELETE, DOQUARIUM_PRIVACY, PRIVACY_PATH } from "./data/doquarium";
 import { Tool, BlogPost } from "./types";
 import { blogPosts } from "./data/posts";
 import {
@@ -62,6 +65,9 @@ const URL_TO_VIEW: Record<string, string> = {
   "/journal": "insights",
   "/about": "studio",
   "/code-tiara": "code-tiara",
+  "/doquarium": "doquarium",
+  [PRIVACY_PATH]: "doquarium-privacy",
+  [DELETE_PATH]: "doquarium-delete",
 };
 
 const VIEW_TO_URL: Record<string, string> = {
@@ -71,6 +77,23 @@ const VIEW_TO_URL: Record<string, string> = {
   insights: "/journal",
   studio: "/about",
   "code-tiara": "/code-tiara",
+  doquarium: "/doquarium",
+  "doquarium-privacy": PRIVACY_PATH,
+  "doquarium-delete": DELETE_PATH,
+};
+
+// Pages whose URL can carry a language sub-path (e.g. /doquarium/privacy/ko).
+const LANG_PAGES: Record<string, string> = {
+  "doquarium-privacy": PRIVACY_PATH,
+  "doquarium-delete": DELETE_PATH,
+};
+
+// Paths that carry a sub-path (e.g. a language) beyond their view's base URL.
+const viewFromPath = (path: string) => {
+  for (const [view, base] of Object.entries(LANG_PAGES)) {
+    if (path.startsWith(`${base}/`)) return view;
+  }
+  return URL_TO_VIEW[path.replace(/\/$/, "") || "/"] ?? "home";
 };
 
 const getToolSlug = (name: string) => {
@@ -87,7 +110,7 @@ export default function App() {
     if (path.startsWith("/journal/")) {
       return "insights";
     }
-    return URL_TO_VIEW[path] ?? "home";
+    return viewFromPath(path);
   });
   const [activeCategory, setActiveCategory] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -138,6 +161,8 @@ export default function App() {
       }
     } else if (currentView === "insights" && selectedPost) {
       url = `/journal/${selectedPost.id}`;
+    } else if (LANG_PAGES[currentView] && window.location.pathname.startsWith(LANG_PAGES[currentView])) {
+      url = window.location.pathname; // keep /ko; the view manages its own language
     }
     if (window.location.pathname !== url) {
       window.history.pushState({ view: currentView }, "", url);
@@ -164,7 +189,7 @@ export default function App() {
         setSelectedPost(foundPost);
         setSelectedTool(null);
       } else {
-        const view = URL_TO_VIEW[path] ?? "home";
+        const view = viewFromPath(path);
         setCurrentView(view);
         setSelectedTool(null);
         setSelectedPost(null);
@@ -956,6 +981,45 @@ export default function App() {
             </motion.div>
           )}
 
+          {currentView === "doquarium" && (
+            <motion.div
+              key="doquarium"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.5 }}
+            >
+              <DoquariumView
+                onOpenPrivacy={() => setCurrentView("doquarium-privacy")}
+                onOpenDelete={() => setCurrentView("doquarium-delete")}
+              />
+            </motion.div>
+          )}
+
+          {currentView === "doquarium-privacy" && (
+            <motion.div
+              key="doquarium-privacy"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.5 }}
+            >
+              <DoquariumDocView docs={DOQUARIUM_PRIVACY} basePath={PRIVACY_PATH} onBack={() => setCurrentView("doquarium")} />
+            </motion.div>
+          )}
+
+          {currentView === "doquarium-delete" && (
+            <motion.div
+              key="doquarium-delete"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.5 }}
+            >
+              <DoquariumDocView docs={DOQUARIUM_DELETE} basePath={DELETE_PATH} onBack={() => setCurrentView("doquarium")} />
+            </motion.div>
+          )}
+
           {currentView === "utility-detail" && selectedTool && (
             <motion.div
               key="utility-detail"
@@ -1045,6 +1109,28 @@ export default function App() {
                 >
                   <ArrowRight className="h-4 w-4 text-lumora-accent/50" /> About
                 </button>
+                <button
+                  onClick={() => setCurrentView("doquarium")}
+                  className="hover:text-white transition-colors text-left flex items-center gap-2"
+                >
+                  <ArrowRight className="h-4 w-4 text-[#3ef2ff]/50" /> Doquarium
+                </button>
+                {[
+                  { view: "doquarium-privacy", href: PRIVACY_PATH, label: "Doquarium Privacy Policy" },
+                  { view: "doquarium-delete", href: DELETE_PATH, label: "Delete Doquarium Account" },
+                ].map((link) => (
+                  <a
+                    key={link.view}
+                    href={link.href}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setCurrentView(link.view);
+                    }}
+                    className="hover:text-white transition-colors text-left flex items-center gap-2 text-sm text-white/40"
+                  >
+                    {link.label}
+                  </a>
+                ))}
               </nav>
             </div>
           </div>

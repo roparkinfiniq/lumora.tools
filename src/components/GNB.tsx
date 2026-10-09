@@ -29,6 +29,7 @@ export default function GNB({ currentView, onViewChange, onSelectTool, onSelectP
 
   const navItems = [
     { name: 'Code Tiara', id: 'code-tiara' },
+    { name: 'Doquarium', id: 'doquarium' },
     { name: 'Utilities', id: 'utilities' },
     { name: 'Journal', id: 'insights' },
     { name: 'About', id: 'studio' },
@@ -52,7 +53,7 @@ export default function GNB({ currentView, onViewChange, onSelectTool, onSelectP
           {/* Desktop Nav */}
           <div className="hidden items-center gap-1 md:flex">
             {navItems.map((item) => {
-              const isActive = currentView === item.id || (item.id === 'utilities' && currentView === 'utility-detail');
+              const isActive = currentView === item.id || (item.id === 'utilities' && currentView === 'utility-detail') || (item.id === 'doquarium' && currentView.startsWith('doquarium-'));
               const isSpecial = item.id === 'code-tiara';
               
               let styles = 'text-white/60 hover:text-white hover:bg-white/10';
@@ -117,7 +118,7 @@ export default function GNB({ currentView, onViewChange, onSelectTool, onSelectP
                   Home
                 </button>
                 {navItems.map((item) => {
-                  const isActive = currentView === item.id || (item.id === 'utilities' && currentView === 'utility-detail');
+                  const isActive = currentView === item.id || (item.id === 'utilities' && currentView === 'utility-detail') || (item.id === 'doquarium' && currentView.startsWith('doquarium-'));
                   const isSpecial = item.id === 'code-tiara';
                   
                   return (
