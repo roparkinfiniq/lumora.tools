@@ -7,8 +7,7 @@
 export const DOQUARIUM = {
   contactEmail: "doquarium@gmail.com",
   developer: "Doquarium",
-  // TODO(raewon): fill in before submitting to Play Console / App Store.
-  privacyOfficer: "[Privacy officer name]",
+  privacyOfficer: "Park Ra One",
   effectiveDate: { en: "October 9, 2026", ko: "2026년 10월 9일" },
   storeStatus: "Coming soon",
 };
