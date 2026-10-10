@@ -58,7 +58,7 @@ html {
     text-shadow: 0 0 12px rgba(251, 207, 232, 0.4);
   }
   .glass-card {
-    @apply bg-lumora-card/70 backdrop-blur-3xl border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.2)];
+    @apply bg-lumora-card/70 backdrop-blur-xl border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.2)];
   }
   .bento-card {
     @apply relative overflow-hidden rounded-[32px] bg-lumora-card border border-white/[0.04] transition-all duration-300;
@@ -74,6 +74,10 @@ html {
       transparent
     );
     background-size: 200% 100%;
+  }
+  /* Only sweep while the card is hovered: an always-running background
+     animation repaints every card on every frame, even when invisible. */
+  .group:hover .shimmer-effect {
     @apply animate-shimmer;
   }
   .no-scrollbar::-webkit-scrollbar {

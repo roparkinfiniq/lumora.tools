@@ -1,4 +1,4 @@
-import { useId, type ReactNode } from "react";
+import { useEffect, useId, useRef, type ReactNode, type RefObject } from "react";
 
 // Detailed neon creatures for the Doquarium rarity showcase.
 // Follows the app's art standard (doquarium docs/15): 3-layer neon tube
@@ -23,12 +23,14 @@ interface Ink {
   accent: string; // second color (head sheen / flow)
 }
 
+// The bloom layers come from ONE filter on the whole creature (`${id}-glow`),
+// not a blur per line: per-line blurs were re-computed ~60 times per frame
+// while the fish animate, which made the page stutter.
 function Neon({ ink, d, w = 1.6, glow = 1, core = true, stroke }: { ink: Ink; d: string; w?: number; glow?: number; core?: boolean; stroke?: string }) {
   const s = stroke ?? ink.line;
   return (
     <g fill="none" strokeLinecap="round" strokeLinejoin="round">
-      <path d={d} stroke={s} strokeWidth={w * 5} opacity={0.14 * glow} filter={`url(#${ink.id}-bw)`} />
-      <path d={d} stroke={s} strokeWidth={w * 2.2} opacity={0.42 * glow} filter={`url(#${ink.id}-bn)`} />
+      <path d={d} stroke={s} strokeWidth={w * 2.2} opacity={0.28 * glow} />
       <path d={d} stroke={s} strokeWidth={w} opacity={Math.min(1, glow)} />
       {core && <path d={d} stroke="#ffffff" strokeWidth={w * 0.32} opacity={0.7 * Math.min(1, glow)} />}
     </g>
@@ -58,7 +60,7 @@ function Membrane({ ink, name, d, root, reach, rays = [], edge = 0.5 }: { ink: I
 function Eye({ ink, x, y, r = 3 }: { ink: Ink; x: number; y: number; r?: number }) {
   return (
     <g>
-      <circle cx={x} cy={y} r={r * 2.4} fill={ink.base} opacity={0.22} filter={`url(#${ink.id}-bn)`} />
+      <circle cx={x} cy={y} r={r * 2.4} fill={`url(#${ink.id}-eyeglow)`} />
       <circle cx={x} cy={y} r={r} fill="#06121a" stroke={ink.base} strokeWidth={0.9} />
       <circle cx={x + r * 0.3} cy={y - r * 0.3} r={r * 0.38} fill="#ffffff" />
     </g>
@@ -319,6 +321,7 @@ const RF_STYLES = `
 .rf-leaf { transform-box: fill-box; transform-origin: 50% 100%; animation: rf-leaf 3s ease-in-out infinite; }
 .rf-twinkle { animation: rf-twinkle 2.4s ease-in-out infinite; }
 .rf-trail { animation: rf-trail 2.8s ease-out infinite; }
+.anim-paused * { animation-play-state: paused !important; }
 @media (prefers-reduced-motion: reduce) {
   .rf-breathe, .rf-bob, .rf-glide, .rf-tail, .rf-veil, .rf-fin, .rf-sail, .rf-pec, .rf-whisker, .rf-leaf, .rf-twinkle, .rf-trail { animation: none; }
 }
@@ -328,7 +331,31 @@ export function RarityFishStyles() {
   return <style>{RF_STYLES}</style>;
 }
 
+/**
+ * Pauses an animated SVG while it is off screen (CSS animations + SMIL
+ * gradients), so scrolling past it costs nothing. Shared with the hero tank.
+ */
+export function usePauseOffscreen(ref: RefObject<SVGSVGElement | null>) {
+  useEffect(() => {
+    const svg = ref.current;
+    if (!svg || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        const on = entry.isIntersecting;
+        svg.classList.toggle("anim-paused", !on);
+        if (on) svg.unpauseAnimations();
+        else svg.pauseAnimations();
+      },
+      { rootMargin: "120px" },
+    );
+    io.observe(svg);
+    return () => io.disconnect();
+  }, [ref]);
+}
+
 export default function RarityFish({ rarity, className = "" }: { rarity: Rarity; className?: string }) {
+  const svgRef = useRef<SVGSVGElement>(null);
+  usePauseOffscreen(svgRef);
   const raw = useId().replace(/[^a-zA-Z0-9]/g, "");
   const flows = rarity === "mystic" || rarity === "legendary";
   const id = `rf${raw}${flows ? "flow" : ""}`;
@@ -348,17 +375,33 @@ export default function RarityFish({ rarity, className = "" }: { rarity: Rarity;
   const motion = rarity === "legendary" ? "rf-glide" : "rf-bob";
 
   return (
-    <svg viewBox="-130 -88 260 176" className={className} aria-hidden="true">
+    <svg ref={svgRef} viewBox="-130 -88 260 176" className={className} aria-hidden="true">
       <defs>
-        <filter id={`${id}-bw`} x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="4" />
+        {/* neon tube: wide bloom + near bloom + the crisp drawing, in one pass */}
+        <filter id={`${id}-glow`} x="-25%" y="-30%" width="150%" height="160%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="3.5" result="wideBlur" />
+          <feComponentTransfer in="wideBlur" result="wide">
+            <feFuncA type="linear" slope="0.55" />
+          </feComponentTransfer>
+          <feGaussianBlur in="SourceGraphic" stdDeviation="1.1" result="nearBlur" />
+          <feComponentTransfer in="nearBlur" result="near">
+            <feFuncA type="linear" slope="0.6" />
+          </feComponentTransfer>
+          <feMerge>
+            <feMergeNode in="wide" />
+            <feMergeNode in="near" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
         </filter>
-        <filter id={`${id}-bn`} x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="1.4" />
-        </filter>
-        <filter id={`${id}-halo`} x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="14" />
-        </filter>
+        <radialGradient id={`${id}-halo`}>
+          <stop offset="0%" stopColor={p.accent} stopOpacity={p.halo * 1.6} />
+          <stop offset="55%" stopColor={p.accent} stopOpacity={p.halo * 0.6} />
+          <stop offset="100%" stopColor={p.accent} stopOpacity={0} />
+        </radialGradient>
+        <radialGradient id={`${id}-eyeglow`}>
+          <stop offset="0%" stopColor={p.base} stopOpacity={0.45} />
+          <stop offset="100%" stopColor={p.base} stopOpacity={0} />
+        </radialGradient>
         {/* body: darker on the back, lighter at the belly */}
         <linearGradient id={`${id}-body`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor={p.base} stopOpacity={0.34} />
@@ -403,7 +446,7 @@ export default function RarityFish({ rarity, className = "" }: { rarity: Rarity;
 
       <g transform={`translate(${shift} 0)`}>
       {/* soft bloom around the creature (wider for higher tiers) */}
-      <ellipse cx={-14} cy={0} rx={p.haloR} ry={p.haloR * 0.55} fill={p.accent} opacity={p.halo} filter={`url(#${id}-halo)`} />
+      <ellipse cx={-14} cy={0} rx={p.haloR * 1.25} ry={p.haloR * 0.7} fill={`url(#${id}-halo)`} />
 
       {rarity === "legendary" && (
         <g>
@@ -421,7 +464,7 @@ export default function RarityFish({ rarity, className = "" }: { rarity: Rarity;
       )}
 
       <g className={motion}>
-        <g className="rf-breathe" transform={`scale(${scale})`}>
+        <g className="rf-breathe" transform={`scale(${scale})`} filter={`url(#${id}-glow)`}>
           <Species ink={ink} />
         </g>
       </g>

@@ -1,24 +1,25 @@
+import { lazy, Suspense } from 'react';
 import { motion } from 'motion/react';
 import { Tool } from '../types';
-import JsonStructure from '../tools/JsonStructure';
-import MarkdownEther from '../tools/MarkdownEther';
-import ChromaticExtractor from '../tools/ChromaticExtractor';
-import VectorLabGradients from '../tools/VectorLabGradients';
-import PdfStudio from '../tools/PdfStudio';
-import WorkoutCanvas from '../tools/WorkoutCanvas';
-import PngJpgConverter from '../tools/PngJpgConverter';
-import IcoConverter from '../tools/IcoConverter';
-import ImageCompressor from '../tools/ImageCompressor';
-import HeicToJpg from '../tools/HeicToJpg';
-import ImageToPdf from '../tools/ImageToPdf';
-import PdfToImage from '../tools/PdfToImage';
-import PdfMerger from '../tools/PdfMerger';
-import GlobalSizeConverter from '../tools/GlobalSizeConverter';
-import BarcodeStudio from '../tools/BarcodeStudio';
-import { 
-  ArrowLeft, 
-  Activity,
-} from 'lucide-react';
+import { ArrowLeft, Activity } from 'lucide-react';
+
+// Each tool loads its own code only when it is opened, so the home page does
+// not download PDF, image, and barcode libraries up front.
+const JsonStructure = lazy(() => import('../tools/JsonStructure'));
+const MarkdownEther = lazy(() => import('../tools/MarkdownEther'));
+const ChromaticExtractor = lazy(() => import('../tools/ChromaticExtractor'));
+const VectorLabGradients = lazy(() => import('../tools/VectorLabGradients'));
+const PdfStudio = lazy(() => import('../tools/PdfStudio'));
+const WorkoutCanvas = lazy(() => import('../tools/WorkoutCanvas'));
+const PngJpgConverter = lazy(() => import('../tools/PngJpgConverter'));
+const IcoConverter = lazy(() => import('../tools/IcoConverter'));
+const ImageCompressor = lazy(() => import('../tools/ImageCompressor'));
+const HeicToJpg = lazy(() => import('../tools/HeicToJpg'));
+const ImageToPdf = lazy(() => import('../tools/ImageToPdf'));
+const PdfToImage = lazy(() => import('../tools/PdfToImage'));
+const PdfMerger = lazy(() => import('../tools/PdfMerger'));
+const GlobalSizeConverter = lazy(() => import('../tools/GlobalSizeConverter'));
+const BarcodeStudio = lazy(() => import('../tools/BarcodeStudio'));
 
 interface ToolDetailViewProps {
   tool: Tool;
@@ -145,7 +146,15 @@ export default function ToolDetailView({ tool, onBack }: ToolDetailViewProps) {
           }`}>
             <div className="shimmer-effect absolute inset-0 opacity-20 pointer-events-none" />
             
-            {renderToolLogic()}
+            <Suspense
+              fallback={
+                <div className="flex-1 flex items-center justify-center text-sm font-display font-bold text-white/30">
+                  Loading tool…
+                </div>
+              }
+            >
+              {renderToolLogic()}
+            </Suspense>
 
             {/* Technical Detail Overlays */}
             {!["1", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"].includes(tool.id) && (

@@ -23,25 +23,40 @@ import {
   Search,
   CheckSquare,
 } from "lucide-react";
-import { useState, useMemo, MouseEvent, useEffect } from "react";
+import { useState, useMemo, MouseEvent, useEffect, useRef } from "react";
 import { tools } from "./data/tools";
 
 
+// Soft light that follows the mouse. Moved with a GPU transform once per frame
+// (no React re-render, no blend mode), so it never forces a full-page repaint.
 function CursorSpotlight() {
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Touch screens have no hovering cursor to follow.
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    const el = ref.current;
+    if (!el) return;
+    let frame = 0;
+    let x = 0;
+    let y = 0;
     const handleMouseMove = (e: globalThis.MouseEvent) => {
-      setMousePos({ x: e.clientX, y: e.clientY });
-      setIsVisible(true);
+      x = e.clientX;
+      y = e.clientY;
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        el.style.transform = `translate3d(${x - 300}px, ${y - 300}px, 0)`;
+        el.style.opacity = "1";
+      });
     };
     const handleMouseLeave = () => {
-      setIsVisible(false);
+      el.style.opacity = "0";
     };
-    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
     document.addEventListener("mouseleave", handleMouseLeave);
     return () => {
+      cancelAnimationFrame(frame);
       window.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseleave", handleMouseLeave);
     };
@@ -49,11 +64,8 @@ function CursorSpotlight() {
 
   return (
     <div
-      className={`pointer-events-none fixed z-[110] h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.06)_0%,transparent_70%)] mix-blend-screen transition-opacity duration-300 ${isVisible ? 'opacity-100' : 'opacity-0'}`}
-      style={{
-        left: isVisible ? mousePos.x : -1000,
-        top: isVisible ? mousePos.y : -1000,
-      }}
+      ref={ref}
+      className="pointer-events-none fixed left-0 top-0 z-[110] h-[600px] w-[600px] rounded-full bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.06)_0%,transparent_70%)] opacity-0 transition-opacity duration-300 will-change-transform"
     />
   );
 }

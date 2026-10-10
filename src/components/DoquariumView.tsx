@@ -15,7 +15,8 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { DOQUARIUM } from "../data/doquarium";
-import RarityFish, { RarityFishStyles, type Rarity } from "./RarityFish";
+import { useRef } from "react";
+import RarityFish, { RarityFishStyles, usePauseOffscreen, type Rarity } from "./RarityFish";
 
 const NEON = "#3ef2ff";
 
@@ -39,13 +40,13 @@ function NeonFish({
   return (
     <g strokeLinejoin="round" strokeLinecap="round">
       <g className="dq-tail">
-        <path d={FISH_TAIL} fill={fill} stroke={s} strokeWidth={2} filter="url(#dq-glow)" />
+        <path d={FISH_TAIL} fill={fill} stroke={s} strokeWidth={2} />
       </g>
-      <path d={FISH_BODY} fill={fill} stroke={s} strokeWidth={2} filter="url(#dq-glow)" />
+      <path d={FISH_BODY} fill={fill} stroke={s} strokeWidth={2} />
       {FISH_FINS.map((d) => (
         <path key={d} d={d} fill="none" stroke={s} strokeWidth={1.4} opacity={0.8} />
       ))}
-      <circle cx={20} cy={-4} r={2.4} fill={eyeColor} filter="url(#dq-glow)" />
+      <circle cx={20} cy={-4} r={2.4} fill={eyeColor} />
     </g>
   );
 }
@@ -60,9 +61,6 @@ function GlowDefs() {
           <feMergeNode in="b" />
           <feMergeNode in="SourceGraphic" />
         </feMerge>
-      </filter>
-      <filter id="dq-soft" x="-50%" y="-50%" width="200%" height="200%">
-        <feGaussianBlur stdDeviation="6" />
       </filter>
       <linearGradient id="dq-mystic" x1="0" y1="0" x2="1" y2="0">
         <stop offset="0%" stopColor="#3ef2ff" />
@@ -95,14 +93,18 @@ const TANK_STYLES = `
 `;
 
 function NeonTank() {
+  const svgRef = useRef<SVGSVGElement>(null);
+  usePauseOffscreen(svgRef);
   return (
     <div className="relative w-full max-w-[460px] mx-auto">
       <style>{TANK_STYLES}</style>
       <div className="absolute -inset-10 bg-[#3ef2ff]/10 blur-[90px] rounded-full pointer-events-none" />
       <div className="relative rounded-[36px] border border-[#3ef2ff]/25 bg-black shadow-[0_0_60px_rgba(62,242,255,0.12),inset_0_0_40px_rgba(62,242,255,0.06)] overflow-hidden">
-        <svg viewBox="0 0 400 300" className="w-full h-auto block" role="img" aria-label="Two neon fish swimming in a dark tank while food pellets drift down">
+        <svg ref={svgRef} viewBox="0 0 400 300" className="w-full h-auto block" role="img" aria-label="Two neon fish swimming in a dark tank while food pellets drift down">
           <GlowDefs />
           <rect width="400" height="300" fill="url(#dq-water)" />
+          {/* one glow pass for the whole scene (cheaper than a blur per shape) */}
+          <g filter="url(#dq-glow)">
           {/* Water surface */}
           <path d="M0,28 Q50,20 100,28 T200,28 T300,28 T400,28" fill="none" stroke={NEON} strokeOpacity={0.35} strokeWidth={1.2} />
           {/* Falling food = your to-dos */}
@@ -111,7 +113,7 @@ function NeonTank() {
             { x: 230, d: "2.4s" },
             { x: 300, d: "4.8s" },
           ].map((f) => (
-            <circle key={f.x} className="dq-food" style={{ animationDelay: f.d }} cx={f.x} cy={30} r={3.2} fill="#ffe9a8" filter="url(#dq-glow)" />
+            <circle key={f.x} className="dq-food" style={{ animationDelay: f.d }} cx={f.x} cy={30} r={3.2} fill="#ffe9a8" />
           ))}
           {/* Bubbles */}
           {[
@@ -129,9 +131,10 @@ function NeonTank() {
           </g>
           {/* Sand line + plant */}
           <path d="M0,282 Q100,272 200,280 T400,276" fill="none" stroke={NEON} strokeOpacity={0.25} strokeWidth={1.2} />
-          <g fill="none" stroke={NEON} strokeOpacity={0.45} strokeWidth={1.6} strokeLinecap="round" filter="url(#dq-glow)">
+          <g fill="none" stroke={NEON} strokeOpacity={0.45} strokeWidth={1.6} strokeLinecap="round">
             <path d="M330,282 Q322,250 334,226 Q344,204 336,180" />
             <path d="M342,282 Q352,258 346,236" />
+          </g>
           </g>
         </svg>
       </div>

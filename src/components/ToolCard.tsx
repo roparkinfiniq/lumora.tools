@@ -1,14 +1,47 @@
 import { motion } from 'motion/react';
-import { LucideIcon, ArrowUpRight } from 'lucide-react';
-import * as Icons from 'lucide-react';
+import {
+  LucideIcon,
+  ArrowUpRight,
+  Braces,
+  Dumbbell,
+  Edit3,
+  FileCode,
+  FileDown,
+  FileImage,
+  FileUp,
+  Files,
+  Image,
+  Paintbrush,
+  Palette,
+  Ruler,
+  ScanBarcode,
+} from 'lucide-react';
 import { Tool } from '../types';
+
+// Only the icons tools actually use. Importing the whole icon set by name
+// (`import * as Icons`) pulled ~1,400 icons into every page load.
+const TOOL_ICONS: Record<string, LucideIcon> = {
+  Braces,
+  Dumbbell,
+  Edit3,
+  FileCode,
+  FileDown,
+  FileImage,
+  FileUp,
+  Files,
+  Image,
+  Paintbrush,
+  Palette,
+  Ruler,
+  ScanBarcode,
+};
 
 interface ToolCardProps {
   tool: Tool;
 }
 
 export default function ToolCard({ tool }: ToolCardProps) {
-  const Icon = (Icons as any)[tool.icon] as LucideIcon;
+  const Icon = TOOL_ICONS[tool.icon];
 
   return (
     <motion.div
