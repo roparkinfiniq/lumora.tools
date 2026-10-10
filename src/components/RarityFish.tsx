@@ -10,7 +10,7 @@ import { useEffect, useId, useRef, type ReactNode, type RefObject } from "react"
 //   Common    clean teal
 //   Rare      + a blue sheen on the head
 //   Mystic    + violet light flowing along the body, soft bloom
-//   Legendary + aurora (gold → violet → teal), wide bloom, 1.2x, sparkle trail
+//   Legendary + aurora (gold → violet → teal), wide bloom, sparkle trail
 
 export type Rarity = "common" | "rare" | "mystic" | "legendary";
 
@@ -369,6 +369,8 @@ export default function RarityFish({ rarity, className = "" }: { rarity: Rarity;
   const p = palette[rarity];
   const ink: Ink = { id, line: p.line, base: p.base, accent: p.accent };
   const Species = SPECIES[rarity];
+  // size follows each species (the app dropped the old "legendary = 1.2x" rule);
+  // the sea dragon is drawn a bit larger because it is a long-bodied species
   const scale = rarity === "legendary" ? 1.2 : rarity === "rare" ? 0.92 : 1;
   // long tails / bodies sit left of the head; nudge them back to the center
   const shift = { common: 8, rare: 4, mystic: 26, legendary: 18 }[rarity];

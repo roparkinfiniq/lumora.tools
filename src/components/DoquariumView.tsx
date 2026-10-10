@@ -185,8 +185,8 @@ const FEATURES = [
   },
   {
     icon: Gauge,
-    title: "Easy or Hard, per tank.",
-    body: "Easy for building habits without pressure. Hard for exams and deadlines: faster growth, but your fish goes hungry on days you do nothing.",
+    title: "Relaxed or Intense, per tank.",
+    body: "Relaxed for building habits without pressure. Intense for strong motivation during exams and deadlines: your fish grows faster, but goes hungry on days you do nothing.",
   },
   {
     icon: Palette,
