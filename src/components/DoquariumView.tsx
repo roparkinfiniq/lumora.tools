@@ -178,7 +178,7 @@ const FEATURES = [
   {
     icon: Users,
     title: "Shared tanks with friends.",
-    body: "Share a room code and your fish swim together in one tank. Friends see your fish and how much you got done, never what is on your list.",
+    body: "Share a room code and your fish swim together in one tank. Send a quick cheer, poke, or celebration. Friends see your fish and how much you got done, and only see your actual to-dos in tanks set up to share them.",
   },
   {
     icon: Gauge,
@@ -206,7 +206,7 @@ const PRINCIPLES = [
   {
     icon: Lock,
     title: "Your list stays yours",
-    body: "Used solo, everything stays on your phone. Your to-do text is never shown to friends.",
+    body: "Used solo, everything stays on your phone. Friends never see your to-dos unless you join a tank made for sharing them, and you can still hide any to-do with \"Only me\".",
   },
 ];
 
