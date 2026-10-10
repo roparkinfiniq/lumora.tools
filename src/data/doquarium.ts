@@ -262,7 +262,8 @@ export const DOQUARIUM_DELETE: Record<PolicyLang, PolicyDoc> = {
         items: [
           "Open the Doquarium app.",
           "Tap the gear (Settings) at the top → Account → Delete account.",
-          "Confirm. You may be asked to choose your Google account once more to verify it is you.",
+          "Type \"delete\" in the box to turn on the Delete account button, then tap it. (If the app is in Korean, type \"계정 삭제\".)",
+          "You may be asked to choose your Google account once more to verify it is you.",
           "Your account and server data are deleted right away. The app then asks whether to also erase the data stored on this phone.",
         ],
       },
@@ -307,7 +308,8 @@ export const DOQUARIUM_DELETE: Record<PolicyLang, PolicyDoc> = {
         items: [
           "두쿠아리움 앱을 엽니다.",
           "맨 위 톱니바퀴(설정) → 계정 → 계정 삭제를 누릅니다.",
-          "확인을 누릅니다. 본인 확인을 위해 Google 계정을 한 번 더 고를 수 있습니다.",
+          "입력칸에 \"계정 삭제\"를 입력하면 계정 삭제 버튼이 켜집니다. 버튼을 누릅니다. (앱이 영어로 되어 있으면 \"delete\"를 입력합니다.)",
+          "본인 확인을 위해 Google 계정을 한 번 더 고를 수 있습니다.",
           "계정과 서버 기록이 바로 지워집니다. 이어서 이 폰의 기록도 지울지 한 번 더 묻습니다.",
         ],
       },
