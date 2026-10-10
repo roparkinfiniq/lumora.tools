@@ -1,4 +1,4 @@
-import { Menu, X, Sparkles, Search, Command } from 'lucide-react';
+import { Menu, X, Sparkles, Search, Command, Fish } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import CommandPalette from './CommandPalette';
@@ -28,8 +28,8 @@ export default function GNB({ currentView, onViewChange, onSelectTool, onSelectP
   }, []);
 
   const navItems = [
-    { name: 'Code Tiara', id: 'code-tiara' },
     { name: 'Doquarium', id: 'doquarium' },
+    { name: 'Code Tiara', id: 'code-tiara' },
     { name: 'Utilities', id: 'utilities' },
     { name: 'Journal', id: 'insights' },
     { name: 'About', id: 'studio' },
@@ -54,14 +54,24 @@ export default function GNB({ currentView, onViewChange, onSelectTool, onSelectP
           <div className="hidden items-center gap-1 md:flex">
             {navItems.map((item) => {
               const isActive = currentView === item.id || (item.id === 'utilities' && currentView === 'utility-detail') || (item.id === 'doquarium' && currentView.startsWith('doquarium-'));
-              const isSpecial = item.id === 'code-tiara';
-              
-              let styles = 'text-white/60 hover:text-white hover:bg-white/10';
-              let iconColor = 'opacity-40';
-              
+              const isDoquarium = item.id === 'doquarium';
+              const isSpecial = isDoquarium || item.id === 'code-tiara';
+              const SpecialIcon = isDoquarium ? Fish : Sparkles;
+
+              // Doquarium is the lead product: a soft neon-teal tint even when inactive
+              let styles = isDoquarium
+                ? 'text-[#8ff7ff] hover:text-white hover:bg-[#3ef2ff]/10'
+                : 'text-white/60 hover:text-white hover:bg-white/10';
+              let iconColor = isDoquarium ? 'text-[#3ef2ff]' : 'opacity-40';
+
               if (isActive) {
-                styles = isSpecial ? 'text-pink-950 bg-pink-50 shadow-md shadow-pink-500/10' : 'text-black bg-white shadow-md';
-                iconColor = isSpecial ? 'text-pink-500' : '';
+                if (isDoquarium) {
+                  styles = 'text-[#062226] bg-[#c9fbff] shadow-md shadow-[#3ef2ff]/20';
+                  iconColor = 'text-[#0a8a96]';
+                } else {
+                  styles = isSpecial ? 'text-pink-950 bg-pink-50 shadow-md shadow-pink-500/10' : 'text-black bg-white shadow-md';
+                  iconColor = isSpecial ? 'text-pink-500' : '';
+                }
               }
 
               return (
@@ -71,7 +81,7 @@ export default function GNB({ currentView, onViewChange, onSelectTool, onSelectP
                   className={`text-sm font-display font-bold px-5 py-2.5 rounded-full transition-all duration-300 tracking-wide flex items-center gap-1.5 ${styles}`}
                 >
                   {item.name}
-                  {isSpecial && <Sparkles className={`w-3.5 h-3.5 mb-0.5 ${iconColor}`} />}
+                  {isSpecial && <SpecialIcon className={`w-3.5 h-3.5 mb-0.5 ${iconColor}`} />}
                 </button>
               );
             })}
@@ -119,8 +129,9 @@ export default function GNB({ currentView, onViewChange, onSelectTool, onSelectP
                 </button>
                 {navItems.map((item) => {
                   const isActive = currentView === item.id || (item.id === 'utilities' && currentView === 'utility-detail') || (item.id === 'doquarium' && currentView.startsWith('doquarium-'));
-                  const isSpecial = item.id === 'code-tiara';
-                  
+                  const isSpecial = item.id === 'code-tiara' || item.id === 'doquarium';
+                  const SpecialIcon = item.id === 'doquarium' ? Fish : Sparkles;
+
                   return (
                     <button
                       key={item.id}
@@ -132,7 +143,7 @@ export default function GNB({ currentView, onViewChange, onSelectTool, onSelectP
                       }`}
                     >
                       {item.name}
-                      {isSpecial && <Sparkles className={`w-4 h-4 ${isActive ? 'text-lumora-accent' : 'opacity-40'}`} />}
+                      {isSpecial && <SpecialIcon className={`w-4 h-4 ${isActive ? 'text-lumora-accent' : 'opacity-40'}`} />}
                     </button>
                   );
                 })}

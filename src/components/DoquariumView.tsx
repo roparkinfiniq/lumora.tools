@@ -92,7 +92,7 @@ const TANK_STYLES = `
 }
 `;
 
-function NeonTank() {
+export function NeonTank() {
   const svgRef = useRef<SVGSVGElement>(null);
   usePauseOffscreen(svgRef);
   return (

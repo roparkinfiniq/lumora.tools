@@ -5,7 +5,7 @@ import PostModal from "./components/PostModal";
 import StudioView from "./components/StudioView";
 import ToolDetailView from "./components/ToolDetailView";
 import CodeTiaraView from "./components/CodeTiaraView";
-import DoquariumView from "./components/DoquariumView";
+import DoquariumView, { NeonTank } from "./components/DoquariumView";
 import DoquariumDocView from "./components/DoquariumDocView";
 import { DELETE_PATH, DOQUARIUM_DELETE, DOQUARIUM_PRIVACY, PRIVACY_PATH } from "./data/doquarium";
 import { Tool, BlogPost } from "./types";
@@ -376,6 +376,49 @@ export default function App() {
                 </div>
               </section>
 
+              {/* Lead Product Teaser: Doquarium */}
+              <section className="mb-6">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6 }}
+                  onClick={() => setCurrentView("doquarium")}
+                  className="bento-card relative overflow-hidden group cursor-pointer bg-gradient-to-br from-[#0b1a1d] to-[#060a0c] border border-[#3ef2ff]/15 p-0"
+                >
+                  <div className="absolute inset-0 bg-[#3ef2ff]/[0.04] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                  <div className="flex flex-col md:flex-row">
+                    <div className="p-8 md:p-16 md:w-1/2 flex flex-col justify-center">
+                      <div className="inline-flex px-3 py-1.5 rounded-full bg-[#3ef2ff]/10 border border-[#3ef2ff]/25 w-fit mb-6 items-center gap-2">
+                        <span className="h-2 w-2 rounded-full bg-[#3ef2ff] shadow-[0_0_8px_rgba(62,242,255,0.9)] animate-pulse" />
+                        <span className="text-[10px] font-display font-bold text-[#8ff7ff] uppercase tracking-widest">
+                          New App · Coming Soon
+                        </span>
+                      </div>
+                      <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-4 tracking-tight">
+                        Doquarium.
+                      </h2>
+                      <p className="text-xl font-display font-bold text-[#3ef2ff] mb-3 [text-shadow:0_0_18px_rgba(62,242,255,0.35)]">
+                        Grow your aquarium with to-dos.
+                      </p>
+                      <p className="text-lg text-lumora-sub font-medium mb-8 leading-relaxed">
+                        Every task you finish feeds the neon fish in your tank.
+                        Coming soon to Android and iPhone.
+                      </p>
+                      <div className="flex items-center gap-3 text-sm font-display font-bold text-[#8ff7ff]/60 group-hover:text-[#8ff7ff] transition-colors">
+                        Meet Doquarium{" "}
+                        <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </div>
+                    <div className="md:w-1/2 relative border-t md:border-t-0 md:border-l border-white/5 flex items-center justify-center p-8 md:p-12 overflow-hidden">
+                      <div className="w-full max-w-sm group-hover:scale-[1.03] transition-transform duration-700 ease-out">
+                        <NeonTank />
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              </section>
+
               {/* Flagship Product Teaser */}
               <section className="mb-12">
                 <motion.div
@@ -629,6 +672,45 @@ export default function App() {
                       </div>
                     </div>
                   </div>
+
+                  {/* Lead App Showcase: Doquarium */}
+                  {activeCategory === "All" && searchQuery === "" && (
+                    <motion.div
+                      key="featured-doquarium"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5 }}
+                      onClick={() => setCurrentView("doquarium")}
+                      className="w-full relative rounded-[32px] overflow-hidden border border-[#3ef2ff]/15 group cursor-pointer bg-gradient-to-br from-[#0b1a1d] to-[#060a0c]"
+                    >
+                      <div className="flex flex-col lg:flex-row min-h-[300px]">
+                        <div className="p-8 md:p-10 lg:w-[45%] flex flex-col justify-center relative z-10">
+                          <div className="inline-flex px-3 py-1.5 rounded-full bg-[#3ef2ff]/10 text-[#8ff7ff] border border-[#3ef2ff]/25 w-fit mb-6 items-center gap-2">
+                            <span className="h-1.5 w-1.5 rounded-full bg-[#3ef2ff] animate-pulse" />
+                            <span className="text-[10px] font-display font-bold uppercase tracking-widest">
+                              New App · Coming Soon
+                            </span>
+                          </div>
+                          <h3 className="text-3xl md:text-4xl font-display font-bold text-white mb-4 tracking-tight">
+                            Doquarium.
+                          </h3>
+                          <p className="text-lumora-sub text-lg font-medium mb-8 leading-relaxed">
+                            A neon to-do app where finished tasks feed the fish
+                            in your tank. Android & iPhone.
+                          </p>
+                          <div className="flex items-center gap-3 text-sm font-display font-bold text-[#8ff7ff]/60 group-hover:text-[#8ff7ff] transition-colors">
+                            Meet Doquarium{" "}
+                            <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                          </div>
+                        </div>
+                        <div className="lg:w-[55%] flex items-center justify-center p-6 lg:p-8">
+                          <div className="w-full max-w-sm">
+                            <NeonTank />
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
 
                   {/* Featured App Showcase */}
                   {activeCategory === "All" && searchQuery === "" && (

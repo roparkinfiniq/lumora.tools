@@ -160,6 +160,7 @@ export default function CommandPalette({
     if (!trimmed) {
       // Default curated recommendations
       const featuredIds = [
+        'page-doquarium',
         'page-code-tiara',
         'tool-1',
         'tool-16',
