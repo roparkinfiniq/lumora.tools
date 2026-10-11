@@ -10,7 +10,7 @@ export const DOQUARIUM = {
   privacyOfficer: "Park Ra One",
   effectiveDate: { en: "October 9, 2026", ko: "2026년 10월 9일" },
   // Bump whenever the policy text changes (the effective date stays the same before launch).
-  lastUpdated: { en: "October 10, 2026", ko: "2026년 10월 10일" },
+  lastUpdated: { en: "October 11, 2026", ko: "2026년 10월 11일" },
   storeStatus: "Coming soon",
 };
 
@@ -84,12 +84,24 @@ export const DOQUARIUM_PRIVACY: Record<PolicyLang, PolicyDoc> = {
             why: "Keeping your progress when you change phones",
             where: "Google Firebase servers (only you can access it)",
           },
+          {
+            when: "Sending a question, bug report, or idea from the app (optional)",
+            what: "Your message, the reply email address if you enter one, app version, phone model, OS version, language, and an anonymous user ID (your to-dos are not included)",
+            why: "Replying to you and fixing bugs",
+            where: "Google Firebase servers (only the developer can read it)",
+          },
+          {
+            when: "When the app crashes or hits an error (everyone)",
+            what: "Error details and where in the app it happened, phone model, OS version, app version, and a random installation ID that changes if you reinstall the app (no account, name, or to-dos)",
+            why: "Finding and fixing bugs",
+            where: "Google Firebase Crashlytics",
+          },
         ],
         items: [
           "Your to-dos are not shown to friends. In a shared tank, friends only see your fish and how many to-dos you finished. The one exception is a tank its owner created with \"See each other's to-dos\" turned on: you are told before you join, and friends in that tank can see your to-do titles and whether you finished them (to-dos set to \"Only me\" stay hidden).",
           "Reminders are scheduled on your phone only and are not sent to a server.",
-          "If you only use the app on your own, nothing is sent to a server.",
-          "The app does not use analytics or ads, and does not collect advertising IDs, location, contacts, or photos.",
+          "If you only use the app on your own, no personal information is sent to a server. The only thing sent is a crash or error report when something goes wrong, which contains no account, name, or to-dos.",
+          "The app has no ads and does not track how you use it. It does not collect advertising IDs, location, contacts, or photos.",
         ],
       },
       {
@@ -98,14 +110,16 @@ export const DOQUARIUM_PRIVACY: Record<PolicyLang, PolicyDoc> = {
           "Data on your phone: until you delete it in the app or uninstall the app.",
           "Shared tank data: your member data (including any shared to-do titles) and the reactions you sent or received are removed as soon as you leave the tank. Reactions older than 7 days are deleted when the recipient opens the app, and are removed together with the tank when it is deleted. A tank's name and room code are removed when its last member leaves.",
           "Sign-in and backup data: kept while you have an account so you can sign back in and restore your progress (signing out does not delete the backup). Deleted when you delete your account (in the app or by email). Server copies may take up to 30 days to be fully removed.",
+          "Questions and bug reports: deleted once they have been handled, and no later than 1 year after we receive them. You can ask us to delete one sooner by email.",
+          "Crash and error reports: kept for 90 days by Firebase Crashlytics, then deleted automatically.",
         ],
       },
       {
         title: "3. Sharing and service providers",
         items: [
           "We do not sell your personal information or share it with advertisers.",
-          "We use Firebase by Google LLC (authentication and database) to run shared tanks and backups. Shared tank and backup data are stored on Google servers in Seoul, South Korea (asia-northeast3). Sign-in data is processed on Google servers, which may be located outside Korea. Data is transferred over the internet when you use a shared tank or sign in, and is kept for the periods in section 2.",
-          "If you do not use shared tanks or sign-in, no personal information is sent to a server, and every single-player feature still works.",
+          "We use Firebase by Google LLC (authentication, database, and Crashlytics crash reporting) to run shared tanks, backups, in-app questions, and crash reports. Shared tank, backup, and question data are stored on Google servers in Seoul, South Korea (asia-northeast3). Sign-in data and crash reports are processed on Google servers, which may be located outside Korea. Data is transferred over the internet when you use these features or when a crash report is sent, and is kept for the periods in section 2.",
+          "If you do not use shared tanks, sign-in, or the in-app question form, no personal information is sent to a server, and every single-player feature still works.",
         ],
       },
       {
@@ -186,12 +200,24 @@ export const DOQUARIUM_PRIVACY: Record<PolicyLang, PolicyDoc> = {
             why: "폰을 바꿔도 기록을 이어 쓰기",
             where: "Google Firebase 서버 (본인만 볼 수 있음)",
           },
+          {
+            when: "앱에서 문의 · 버그 · 제안을 보낼 때 (선택)",
+            what: "보낸 글, (적었다면) 답장 받을 이메일 주소, 앱 버전, 폰 기종, OS 버전, 언어, 익명 사용자 ID (할 일 내용은 보내지 않음)",
+            why: "문의 답장, 버그 고치기",
+            where: "Google Firebase 서버 (개발자만 볼 수 있음)",
+          },
+          {
+            when: "앱이 튕기거나 오류가 났을 때 (누구나)",
+            what: "오류 내용과 앱의 어느 부분에서 났는지, 폰 기종, OS 버전, 앱 버전, 앱을 다시 깔면 바뀌는 무작위 설치 번호 (계정 · 이름 · 할 일은 보내지 않음)",
+            why: "버그 찾고 고치기",
+            where: "Google Firebase Crashlytics",
+          },
         ],
         items: [
           "할 일 내용은 친구에게 보이지 않습니다. 단체 어항에서 친구에게는 물고기 모습과 끝낸 개수만 보입니다. 단, 방장이 \"할 일 서로 보기\"로 만든 단체 어항에서는 들어가기 전에 알려 드리고, 그 방 친구들이 할 일 제목과 끝냈는지를 볼 수 있습니다 (\"나만 보기\"로 둔 할 일은 보이지 않습니다).",
           "알림은 폰 안에서만 예약되며, 알림 내용을 서버로 보내지 않습니다.",
-          "혼자만 쓰면 서버로 보내는 정보가 없습니다.",
-          "앱은 분석 도구나 광고를 쓰지 않고, 광고 식별자 · 위치 · 연락처 · 사진을 모으지 않습니다.",
+          "혼자만 쓰면 서버로 보내는 개인정보가 없습니다. 문제가 생겼을 때의 오류 기록만 보내며, 여기에는 계정 · 이름 · 할 일이 들어가지 않습니다.",
+          "앱은 광고가 없고 앱을 어떻게 쓰는지 추적하지 않으며, 광고 식별자 · 위치 · 연락처 · 사진을 모으지 않습니다.",
         ],
       },
       {
@@ -200,14 +226,16 @@ export const DOQUARIUM_PRIVACY: Record<PolicyLang, PolicyDoc> = {
           "폰 안의 기록: 앱에서 지우거나 앱을 지울 때까지",
           "단체 어항 정보: 어항을 나가면 내 멤버 정보(보여 준 할 일 제목 포함)와 주고받은 반응을 바로 지웁니다. 주고받은 반응은 받은 사람이 앱을 열 때 7일이 지난 것부터 지워지고, 어항이 없어지면 함께 지워집니다. 어항 이름과 방 코드는 마지막 멤버가 나가면 지웁니다.",
           "로그인 · 백업 정보: 다시 로그인해 기록을 되찾을 수 있도록 계정이 있는 동안 보관합니다 (로그아웃해도 백업은 남습니다). 계정을 삭제하면(앱 안에서 또는 이메일 요청) 지웁니다. 서버에 남은 복사본이 완전히 지워지기까지 최대 30일이 걸릴 수 있습니다.",
+          "문의 · 버그 글: 처리한 뒤 지우고, 늦어도 받은 날부터 1년 안에 지웁니다. 더 일찍 지워 달라고 이메일로 요청할 수 있습니다.",
+          "오류 기록: Firebase Crashlytics가 90일 동안 보관한 뒤 저절로 지웁니다.",
         ],
       },
       {
         title: "3. 다른 곳에 맡기거나 넘기는 정보",
         items: [
           "개발자는 개인정보를 팔거나 광고 회사에 넘기지 않습니다.",
-          "서버 운영을 위해 Google LLC의 Firebase(인증 · 데이터베이스)를 씁니다. 단체 어항 · 백업 기록은 대한민국 서울의 Google 서버(asia-northeast3)에, 로그인 정보는 Google 서버(국외 포함)에서 처리됩니다. 단체 어항이나 로그인을 쓸 때 인터넷으로 보내지며, 보관 기간은 위 2번과 같습니다.",
-          "단체 어항과 로그인을 쓰지 않으면 서버로 보내는 정보가 없고, 혼자 쓰는 기능은 그대로 다 쓸 수 있습니다.",
+          "서버 운영을 위해 Google LLC의 Firebase(인증 · 데이터베이스 · Crashlytics 오류 기록)를 씁니다. 단체 어항 · 백업 · 문의 기록은 대한민국 서울의 Google 서버(asia-northeast3)에, 로그인 정보와 오류 기록은 Google 서버(국외 포함)에서 처리됩니다. 이 기능을 쓸 때나 오류 기록이 보내질 때 인터넷으로 보내지며, 보관 기간은 위 2번과 같습니다.",
+          "단체 어항 · 로그인 · 앱 안 문의를 쓰지 않으면 서버로 보내는 개인정보가 없고, 혼자 쓰는 기능은 그대로 다 쓸 수 있습니다.",
         ],
       },
       {
@@ -285,7 +313,8 @@ export const DOQUARIUM_DELETE: Record<PolicyLang, PolicyDoc> = {
       {
         title: "What is kept",
         items: [
-          "Nothing is kept on our servers. Copies in server backups may take up to 30 days to be fully removed.",
+          "Nothing linked to your account is kept on our servers. Copies in server backups may take up to 30 days to be fully removed.",
+          "Questions or bug reports you sent from the app are kept until they are handled (at most 1 year), and crash reports for 90 days. They are not linked to your account; email us if you want a question deleted sooner.",
           "If you choose to keep the data on your phone, it stays only on that phone until you delete it or uninstall the app.",
         ],
       },
@@ -331,7 +360,8 @@ export const DOQUARIUM_DELETE: Record<PolicyLang, PolicyDoc> = {
       {
         title: "남는 것",
         items: [
-          "서버에 남겨 두는 정보는 없습니다. 서버의 백업 복사본이 완전히 지워지기까지 최대 30일이 걸릴 수 있습니다.",
+          "계정과 이어진 정보는 서버에 남기지 않습니다. 서버의 백업 복사본이 완전히 지워지기까지 최대 30일이 걸릴 수 있습니다.",
+          "앱에서 보낸 문의 · 버그 글은 처리할 때까지(최대 1년), 오류 기록은 90일 동안 남습니다. 계정과 이어져 있지 않으며, 문의 글을 더 일찍 지우고 싶으면 이메일로 알려 주세요.",
           "이 폰의 기록을 남기기로 고르면, 지우거나 앱을 지울 때까지 그 폰에만 남습니다.",
         ],
       },

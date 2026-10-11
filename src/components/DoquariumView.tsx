@@ -209,7 +209,7 @@ const PRINCIPLES = [
   {
     icon: Lock,
     title: "Your list stays yours",
-    body: "Used solo, everything stays on your phone. Friends never see your to-dos unless you join a tank made for sharing them, and you can still hide any to-do with \"Only me\".",
+    body: "Used solo, your to-dos and tank stay on your phone. Friends never see your to-dos unless you join a tank made for sharing them, and you can still hide any to-do with \"Only me\".",
   },
 ];
 
