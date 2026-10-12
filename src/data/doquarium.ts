@@ -10,7 +10,7 @@ export const DOQUARIUM = {
   privacyOfficer: "Park Ra One",
   effectiveDate: { en: "October 9, 2026", ko: "2026년 10월 9일" },
   // Bump whenever the policy text changes (the effective date stays the same before launch).
-  lastUpdated: { en: "October 11, 2026", ko: "2026년 10월 11일" },
+  lastUpdated: { en: "October 12, 2026", ko: "2026년 10월 12일" },
   storeStatus: "Coming soon",
 };
 
@@ -73,6 +73,12 @@ export const DOQUARIUM_PRIVACY: Record<PolicyLang, PolicyDoc> = {
             where: "Google Firebase servers (only members of that tank can see it)",
           },
           {
+            when: "Using a shared tank (poke alerts)",
+            what: "This phone's notification address (push token), your anonymous or sign-in user ID, whether poke alerts are on, the alert language, and your phone's time zone. When a friend pokes you, a short record of the two user IDs and the day, so each friend can alert you at most once a day",
+            why: "Sending a phone alert when a friend pokes you (\"Sea poked you\", with no to-do content)",
+            where: "Google Firebase servers (only the server can read it)",
+          },
+          {
             when: "Signing in with Google (optional)",
             what: "Email address, name, and profile photo from your Google account, plus your sign-in ID",
             why: "Identifying your account, backup and restore",
@@ -112,13 +118,14 @@ export const DOQUARIUM_PRIVACY: Record<PolicyLang, PolicyDoc> = {
           "Sign-in and backup data: kept while you have an account so you can sign back in and restore your progress (signing out does not delete the backup). Deleted when you delete your account (in the app or by email). Server copies may take up to 30 days to be fully removed.",
           "Questions and bug reports: deleted once they have been handled, and no later than 1 year after we receive them. You can ask us to delete one sooner by email.",
           "Crash and error reports: kept for 90 days by Firebase Crashlytics, then deleted automatically.",
+          "Poke alert data: the notification address is deleted when you sign out or delete your account, and is cleaned up after you uninstall the app (the next time a friend pokes you). The once-a-day record is deleted automatically after 2 days.",
         ],
       },
       {
         title: "3. Sharing and service providers",
         items: [
           "We do not sell your personal information or share it with advertisers.",
-          "We use Firebase by Google LLC (authentication, database, and Crashlytics crash reporting) to run shared tanks, backups, in-app questions, and crash reports. Shared tank, backup, and question data are stored on Google servers in Seoul, South Korea (asia-northeast3). Sign-in data and crash reports are processed on Google servers, which may be located outside Korea. Data is transferred over the internet when you use these features or when a crash report is sent, and is kept for the periods in section 2.",
+          "We use Firebase by Google LLC (authentication, database, Cloud Functions, Cloud Messaging push notifications, and Crashlytics crash reporting) to run shared tanks, backups, poke alerts, in-app questions, and crash reports. Shared tank, backup, and question data are stored on Google servers in Seoul, South Korea (asia-northeast3). Sign-in data, push notifications, and crash reports are processed on Google servers, which may be located outside Korea. Data is transferred over the internet when you use these features or when a crash report is sent, and is kept for the periods in section 2.",
           "If you do not use shared tanks, sign-in, or the in-app question form, no personal information is sent to a server, and every single-player feature still works.",
         ],
       },
@@ -127,6 +134,7 @@ export const DOQUARIUM_PRIVACY: Record<PolicyLang, PolicyDoc> = {
         items: [
           "You can view, edit, or delete your to-dos, fish, and tanks in the app at any time.",
           "Leave a shared tank in the app to remove your member data from it.",
+          "Turn off poke alerts on this phone: Settings (gear) → Notifications → Poke alerts. You will still see pokes when you open the app.",
           "Delete your account in the app: Settings (gear) → Account → Delete account. Your sign-in account, server backup, and place in shared tanks are deleted right away.",
           `No longer have the app? See ${DELETE_URL}, or email ${contactEmail} with the subject "Account deletion request".`,
           `You can also email us to access, correct, or stop the processing of your information.`,
@@ -189,6 +197,12 @@ export const DOQUARIUM_PRIVACY: Record<PolicyLang, PolicyDoc> = {
             where: "Google Firebase 서버 (그 방 멤버만 볼 수 있음)",
           },
           {
+            when: "단체 어항을 쓸 때 (콕 알림)",
+            what: "이 폰의 알림 주소(푸시 토큰), 익명 · 로그인 사용자 ID, 콕 알림 켜짐 여부, 알림 글 언어, 폰의 시간대. 친구가 콕을 보내면 같은 친구의 알림이 하루 한 번만 오도록 두 사람의 사용자 ID와 날짜를 짧게 기록",
+            why: "친구가 콕 찔렀을 때 폰에 알림 보내기 (\"바다님이 콕 찔렀어요\", 할 일 내용 없음)",
+            where: "Google Firebase 서버 (서버만 읽을 수 있음)",
+          },
+          {
             when: "Google로 로그인할 때 (선택)",
             what: "Google 계정의 이메일 주소 · 이름 · 프로필 사진, 로그인 ID",
             why: "계정 확인, 기록 백업 · 복원",
@@ -228,13 +242,14 @@ export const DOQUARIUM_PRIVACY: Record<PolicyLang, PolicyDoc> = {
           "로그인 · 백업 정보: 다시 로그인해 기록을 되찾을 수 있도록 계정이 있는 동안 보관합니다 (로그아웃해도 백업은 남습니다). 계정을 삭제하면(앱 안에서 또는 이메일 요청) 지웁니다. 서버에 남은 복사본이 완전히 지워지기까지 최대 30일이 걸릴 수 있습니다.",
           "문의 · 버그 글: 처리한 뒤 지우고, 늦어도 받은 날부터 1년 안에 지웁니다. 더 일찍 지워 달라고 이메일로 요청할 수 있습니다.",
           "오류 기록: Firebase Crashlytics가 90일 동안 보관한 뒤 저절로 지웁니다.",
+          "콕 알림 정보: 알림 주소는 로그아웃하거나 계정을 지우면 지우고, 앱을 지우면 다음에 친구가 콕을 보낼 때 정리합니다. 하루 한 번 기록은 2일 뒤 저절로 지워집니다.",
         ],
       },
       {
         title: "3. 다른 곳에 맡기거나 넘기는 정보",
         items: [
           "개발자는 개인정보를 팔거나 광고 회사에 넘기지 않습니다.",
-          "서버 운영을 위해 Google LLC의 Firebase(인증 · 데이터베이스 · Crashlytics 오류 기록)를 씁니다. 단체 어항 · 백업 · 문의 기록은 대한민국 서울의 Google 서버(asia-northeast3)에, 로그인 정보와 오류 기록은 Google 서버(국외 포함)에서 처리됩니다. 이 기능을 쓸 때나 오류 기록이 보내질 때 인터넷으로 보내지며, 보관 기간은 위 2번과 같습니다.",
+          "서버 운영을 위해 Google LLC의 Firebase(인증 · 데이터베이스 · Cloud Functions · Cloud Messaging 푸시 알림 · Crashlytics 오류 기록)를 씁니다. 단체 어항 · 백업 · 문의 기록은 대한민국 서울의 Google 서버(asia-northeast3)에, 로그인 정보 · 푸시 알림 · 오류 기록은 Google 서버(국외 포함)에서 처리됩니다. 이 기능을 쓸 때나 오류 기록이 보내질 때 인터넷으로 보내지며, 보관 기간은 위 2번과 같습니다.",
           "단체 어항 · 로그인 · 앱 안 문의를 쓰지 않으면 서버로 보내는 개인정보가 없고, 혼자 쓰는 기능은 그대로 다 쓸 수 있습니다.",
         ],
       },
@@ -243,6 +258,7 @@ export const DOQUARIUM_PRIVACY: Record<PolicyLang, PolicyDoc> = {
         items: [
           "할 일 · 물고기 · 어항은 앱 안에서 언제든 보고 고치고 지울 수 있습니다.",
           "단체 어항에서 나가면 그 어항의 내 멤버 정보가 지워집니다.",
+          "이 폰의 콕 알림 끄기: 설정(톱니바퀴) → 알림 → 콕 알림. 꺼도 앱을 열면 콕은 그대로 보입니다.",
           "앱에서 계정 삭제: 설정(톱니바퀴) → 계정 → 계정 삭제. 로그인 계정, 서버 백업, 단체 어항의 내 자리가 바로 지워집니다.",
           `앱을 지웠다면 ${DELETE_URL}/ko 를 보시거나 ${contactEmail} 으로 제목 "계정 삭제 요청"을 보내 주세요.`,
           "내 정보 열람 · 정정 · 처리 정지도 같은 이메일로 요청할 수 있습니다.",
@@ -308,6 +324,7 @@ export const DOQUARIUM_DELETE: Record<PolicyLang, PolicyDoc> = {
           "Your sign-in account (Google email, name, and profile photo).",
           "Your full server backup: to-dos, fish, collection, coins, decorations, tanks, and settings.",
           "Your member data in shared tanks (nickname, fish status, and any shared to-do titles) and the reactions you sent and received. If you were the last member, the tank's name and room code are deleted too.",
+          "This phone's notification address for poke alerts.",
         ],
       },
       {
@@ -355,6 +372,7 @@ export const DOQUARIUM_DELETE: Record<PolicyLang, PolicyDoc> = {
           "로그인 계정 (Google 이메일 · 이름 · 프로필 사진)",
           "서버에 백업된 기록 전체: 할 일 · 물고기 · 도감 · 코인 · 꾸미기 · 어항 · 설정",
           "단체 어항의 내 멤버 정보(닉네임 · 물고기 상태 · 보여 준 할 일 제목)와 주고받은 반응. 내가 마지막 멤버였다면 어항 이름과 방 코드도 지워집니다.",
+          "이 폰의 콕 알림 주소",
         ],
       },
       {
