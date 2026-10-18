@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { PolicyDoc, PolicyLang } from "../data/doquarium";
 import { applySeo } from "../seo";
 
@@ -138,6 +138,22 @@ export default function DoquariumDocView({
                   </li>
                 ))}
               </ul>
+            )}
+
+            {section.links && (
+              <div className="flex flex-col sm:flex-row gap-3 mt-5">
+                {section.links.map((link) => (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 h-12 px-6 rounded-xl bg-[#3ef2ff]/10 border border-[#3ef2ff]/30 text-[#8ff7ff] font-display font-bold text-sm hover:bg-[#3ef2ff]/20 transition-colors"
+                  >
+                    {link.label} <ArrowUpRight className="h-4 w-4" />
+                  </a>
+                ))}
+              </div>
             )}
           </section>
         ))}

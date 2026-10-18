@@ -7,7 +7,7 @@ import ToolDetailView from "./components/ToolDetailView";
 import CodeTiaraView from "./components/CodeTiaraView";
 import DoquariumView, { NeonTank } from "./components/DoquariumView";
 import DoquariumDocView from "./components/DoquariumDocView";
-import { DELETE_PATH, DOQUARIUM_DELETE, DOQUARIUM_PRIVACY, PRIVACY_PATH } from "./data/doquarium";
+import { BETA, BETA_PATH, DELETE_PATH, DOQUARIUM_BETA, DOQUARIUM_DELETE, DOQUARIUM_PRIVACY, PRIVACY_PATH } from "./data/doquarium";
 import { applySeo, seoForPost, seoForTool, seoForView } from "./seo";
 import { Tool, BlogPost } from "./types";
 import { blogPosts } from "./data/posts";
@@ -81,6 +81,7 @@ const URL_TO_VIEW: Record<string, string> = {
   "/doquarium": "doquarium",
   [PRIVACY_PATH]: "doquarium-privacy",
   [DELETE_PATH]: "doquarium-delete",
+  [BETA_PATH]: "doquarium-beta",
 };
 
 const VIEW_TO_URL: Record<string, string> = {
@@ -93,12 +94,14 @@ const VIEW_TO_URL: Record<string, string> = {
   doquarium: "/doquarium",
   "doquarium-privacy": PRIVACY_PATH,
   "doquarium-delete": DELETE_PATH,
+  "doquarium-beta": BETA_PATH,
 };
 
 // Pages whose URL can carry a language sub-path (e.g. /doquarium/privacy/ko).
 const LANG_PAGES: Record<string, string> = {
   "doquarium-privacy": PRIVACY_PATH,
   "doquarium-delete": DELETE_PATH,
+  "doquarium-beta": BETA_PATH,
 };
 
 // Paths that carry a sub-path (e.g. a language) beyond their view's base URL.
@@ -397,7 +400,7 @@ export default function App() {
                       <div className="inline-flex px-3 py-1.5 rounded-full bg-[#3ef2ff]/10 border border-[#3ef2ff]/25 w-fit mb-6 items-center gap-2">
                         <span className="h-2 w-2 rounded-full bg-[#3ef2ff] shadow-[0_0_8px_rgba(62,242,255,0.9)] animate-pulse" />
                         <span className="text-[10px] font-display font-bold text-[#8ff7ff] uppercase tracking-widest">
-                          New App · Coming Soon
+                          {BETA.recruiting ? "Android Beta · Testers Wanted" : "New App · Coming Soon"}
                         </span>
                       </div>
                       <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-4 tracking-tight">
@@ -410,9 +413,22 @@ export default function App() {
                         Every task you finish feeds the neon fish in your tank.
                         Coming soon to Android and iPhone.
                       </p>
-                      <div className="flex items-center gap-3 text-sm font-display font-bold text-[#8ff7ff]/60 group-hover:text-[#8ff7ff] transition-colors">
-                        Meet Doquarium{" "}
-                        <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                      <div className="flex flex-wrap items-center gap-4">
+                        {BETA.recruiting && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setCurrentView("doquarium-beta");
+                            }}
+                            className="px-5 h-11 rounded-xl bg-[#3ef2ff] text-[#062226] font-display font-bold text-sm hover:-translate-y-0.5 hover:shadow-[0_0_24px_rgba(62,242,255,0.45)] transition-all"
+                          >
+                            Join the beta
+                          </button>
+                        )}
+                        <div className="flex items-center gap-3 text-sm font-display font-bold text-[#8ff7ff]/60 group-hover:text-[#8ff7ff] transition-colors">
+                          Meet Doquarium{" "}
+                          <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                        </div>
                       </div>
                     </div>
                     <div className="md:w-1/2 relative border-t md:border-t-0 md:border-l border-white/5 flex items-center justify-center p-8 md:p-12 overflow-hidden">
@@ -693,7 +709,7 @@ export default function App() {
                           <div className="inline-flex px-3 py-1.5 rounded-full bg-[#3ef2ff]/10 text-[#8ff7ff] border border-[#3ef2ff]/25 w-fit mb-6 items-center gap-2">
                             <span className="h-1.5 w-1.5 rounded-full bg-[#3ef2ff] animate-pulse" />
                             <span className="text-[10px] font-display font-bold uppercase tracking-widest">
-                              New App · Coming Soon
+                              {BETA.recruiting ? "Android Beta · Testers Wanted" : "New App · Coming Soon"}
                             </span>
                           </div>
                           <h3 className="text-3xl md:text-4xl font-display font-bold text-white mb-4 tracking-tight">
@@ -1091,6 +1107,7 @@ export default function App() {
               <DoquariumView
                 onOpenPrivacy={() => setCurrentView("doquarium-privacy")}
                 onOpenDelete={() => setCurrentView("doquarium-delete")}
+                onOpenBeta={() => setCurrentView("doquarium-beta")}
               />
             </motion.div>
           )}
@@ -1116,6 +1133,18 @@ export default function App() {
               transition={{ duration: 0.5 }}
             >
               <DoquariumDocView docs={DOQUARIUM_DELETE} basePath={DELETE_PATH} onBack={() => setCurrentView("doquarium")} />
+            </motion.div>
+          )}
+
+          {currentView === "doquarium-beta" && (
+            <motion.div
+              key="doquarium-beta"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.5 }}
+            >
+              <DoquariumDocView docs={DOQUARIUM_BETA} basePath={BETA_PATH} onBack={() => setCurrentView("doquarium")} />
             </motion.div>
           )}
 
@@ -1217,6 +1246,7 @@ export default function App() {
                 {[
                   { view: "doquarium-privacy", href: PRIVACY_PATH, label: "Doquarium Privacy Policy" },
                   { view: "doquarium-delete", href: DELETE_PATH, label: "Delete Doquarium Account" },
+                  ...(BETA.recruiting ? [{ view: "doquarium-beta", href: BETA_PATH, label: "Doquarium Beta Testing" }] : []),
                 ].map((link) => (
                   <a
                     key={link.view}

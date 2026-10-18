@@ -28,6 +28,7 @@ export interface PolicySection {
   table?: PolicyRow[];
   items: string[];
   ordered?: boolean; // numbered steps instead of bullets
+  links?: { label: string; href: string }[]; // buttons shown under the items
 }
 
 export interface PolicyDoc {
@@ -42,6 +43,17 @@ const { contactEmail, privacyOfficer, developer, effectiveDate, lastUpdated } = 
 
 export const PRIVACY_PATH = "/doquarium/privacy";
 export const DELETE_PATH = "/doquarium/delete-account";
+export const BETA_PATH = "/doquarium/beta";
+
+// Closed beta on Google Play: recruiting testers for the 12-testers / 14-days
+// rule (래원 2026-10-18). Set `recruiting` to false to hide the page links and
+// buttons once enough people have joined. Sign-up steps follow the doquarium
+// repo's docs/14 "테스터 모으는 방식".
+export const BETA = {
+  recruiting: true,
+  groupUrl: "https://groups.google.com/g/doquarium-testers",
+  optInUrl: "https://play.google.com/apps/testing/com.lumora.doquarium",
+};
 const DELETE_URL = `lumora.tools${DELETE_PATH}`;
 
 export const DOQUARIUM_PRIVACY: Record<PolicyLang, PolicyDoc> = {
@@ -389,6 +401,104 @@ export const DOQUARIUM_DELETE: Record<PolicyLang, PolicyDoc> = {
           "지울 계정이 없습니다. 앱에서 단체 어항을 나가면 그 어항의 내 정보가 지워지고, 앱을 지우면 폰에 있던 기록이 모두 지워집니다.",
           `도움이 필요하면 ${contactEmail} 으로 연락 주세요.`,
         ],
+      },
+    ],
+  },
+};
+
+// Beta tester recruiting page (/doquarium/beta, Korean at /ko).
+export const DOQUARIUM_BETA: Record<PolicyLang, PolicyDoc> = {
+  en: {
+    heading: "Become a Doquarium beta tester",
+    intro:
+      "Doquarium is in closed testing on Google Play. To launch publicly, Google asks for at least 12 testers who stay in the test for 14 days in a row. Your help would mean a lot!",
+    sections: [
+      {
+        title: "Who can join",
+        items: [
+          "Anyone with an Android phone that has the Google Play Store (iPhone testing comes later).",
+          "Stay in the test with the app installed for 14 days. Opening it now and then to finish a to-do is plenty.",
+        ],
+      },
+      {
+        title: "The easiest way",
+        items: [
+          `Email ${contactEmail} the Gmail address you use for the Play Store. We will add you to the tester list, and then you only need steps 3 and 4 below.`,
+        ],
+      },
+      {
+        title: "Join on your own",
+        ordered: true,
+        items: [
+          "Open this page in Chrome. If you opened it inside a messaging app such as KakaoTalk, tap ⋮ and choose \"Open in another browser\". Make sure Chrome is signed in to the same Google account as your Play Store.",
+          "Tap \"Join the tester group\" below and join the group.",
+          "Tap \"Become a tester\" below and, with the same account, tap \"Become a tester\".",
+          "Install Doquarium from the Play Store link on that page.",
+        ],
+        links: [
+          { label: "Join the tester group", href: BETA.groupUrl },
+          { label: "Become a tester", href: BETA.optInUrl },
+        ],
+      },
+      {
+        title: "If you get stuck",
+        items: [
+          "\"Item not found\" or \"You don't have permission\" usually means a different Google account is signed in. Open the links in a Chrome incognito tab and sign in with your Play Store account.",
+          `Still stuck? Email ${contactEmail} and we will sort it out.`,
+          "The tester group's member list is visible only to the developer.",
+        ],
+      },
+      {
+        title: "Send feedback",
+        items: [
+          "In the app: Settings (gear) → under Help → Contact · Report a bug. A single bug or a one-line impression helps a lot.",
+        ],
+      },
+    ],
+  },
+  ko: {
+    heading: "두쿠아리움 베타 테스터 모집",
+    intro:
+      "두쿠아리움이 Google Play에서 비공개 테스트 중이에요. 정식으로 출시하려면 구글 규칙상 테스터 12명 이상이 14일 동안 계속 참여해야 해요. 함께해 주시면 큰 힘이 돼요!",
+    sections: [
+      {
+        title: "누가 참여할 수 있나요",
+        items: [
+          "Play 스토어가 있는 안드로이드 폰이면 누구나 (아이폰은 나중에 따로 모아요)",
+          "14일 동안 앱을 지우지 않고 테스트에 남아 있기. 가끔 열어서 할 일 하나 끝내는 정도면 충분해요",
+        ],
+      },
+      {
+        title: "가장 쉬운 방법",
+        items: [
+          `${contactEmail} 으로 Play 스토어에 로그인된 Gmail 주소를 보내 주세요. 테스터 명단에 넣어 드리고, 아래 3 · 4번만 하시면 돼요.`,
+        ],
+      },
+      {
+        title: "직접 참여하기",
+        ordered: true,
+        items: [
+          "이 페이지를 크롬에서 열어 주세요. 카카오톡 안에서 열었다면 오른쪽 아래 ⋮ → \"다른 브라우저로 열기\"를 눌러요. 크롬이 Play 스토어와 같은 Google 계정으로 로그인되어 있는지도 확인해요.",
+          "아래 \"테스터 그룹 가입\"을 눌러 그룹에 가입해요.",
+          "아래 \"테스터 되기\"를 누르고, 같은 계정으로 \"테스터 되기\"를 눌러요.",
+          "그 페이지의 Play 스토어 링크에서 두쿠아리움을 설치해요.",
+        ],
+        links: [
+          { label: "테스터 그룹 가입", href: BETA.groupUrl },
+          { label: "테스터 되기", href: BETA.optInUrl },
+        ],
+      },
+      {
+        title: "막혔을 때",
+        items: [
+          "\"항목을 찾을 수 없습니다\"나 \"권한이 없습니다\"가 뜨면 대개 다른 Google 계정으로 로그인되어 있어서예요. 크롬 시크릿 탭에서 Play 스토어 계정으로 로그인한 뒤 링크를 다시 열어 보세요.",
+          `그래도 안 되면 ${contactEmail} 으로 알려 주세요. 같이 해결해 드릴게요.`,
+          "테스터 그룹의 멤버 목록은 개발자만 볼 수 있어요.",
+        ],
+      },
+      {
+        title: "의견 보내기",
+        items: ["앱의 설정(톱니바퀴) → 도움말 아래 \"문의 · 버그 알리기\"에서 바로 보낼 수 있어요. 버그 하나, 느낀 점 한 줄도 큰 도움이 돼요."],
       },
     ],
   },

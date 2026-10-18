@@ -13,6 +13,7 @@
 | **저널** | 쉼 · 고요함 · 종이 노트 · AI에 대한 개인 에세이 | `/journal`, `/journal/{id}` |
 | **소개** | "Less friction, More focus" 만드는 사람 | `/about` |
 | **두쿠아리움 문서** | 개인정보처리방침 · 계정 삭제 안내 (한 · 영) | `/doquarium/privacy(/ko)`, `/doquarium/delete-account(/ko)` |
+| **베타 테스터 모집** (잠시) | 안드로이드 비공개 테스트 참여 방법 (한 · 영) | `/doquarium/beta(/ko)` |
 
 - 사이트가 **"물고기 앱 사이트"는 아니다**. 홈 · 공통 문구는 "브라우저에서 도는 무료 도구 모음 + 래원의 앱 · 글"로 쓴다 (래원 2026-10-18)
 - **두쿠아리움이 맨 앞** (래원 결정 2026-10-10): 위 메뉴 첫 칸(청록 + 물고기 아이콘), 홈 카드는 Code Tiara 위, 도구 목록의 대표 칸 · 검색(Ctrl+K) 추천도 두쿠아리움 먼저
@@ -21,7 +22,7 @@
 ## 2. 언어
 
 - 화면에 보이는 글(버튼 · 제목 · 설명 · 알림 · `aria-label` · 블로그 글)은 **자연스러운 영어만** (`GEMINI.md`, `TOOL_GUIDELINES.md`)
-- 예외 (한국어판을 따로 둔 곳): 두쿠아리움 방침 · 계정 삭제 안내 `/ko` (한국 사용자 · 한국 법), 운동 캔버스 `/utilities/workout-canvas/ko`
+- 예외 (한국어판을 따로 둔 곳): 두쿠아리움 방침 · 계정 삭제 안내 · 베타 모집 `/ko` (한국 사용자 · 한국 법 · 한국 친구들), 운동 캔버스 `/utilities/workout-canvas/ko`
 - 코드 주석 · 래원에게 하는 설명은 한국어 가능. 커밋 메시지는 영어 (`feat:` `fix:` `perf:` `chore:` …)
 - 두쿠아리움 용어는 앱과 똑같이: 난이도 **Relaxed · Intense** (예전 Easy · Hard 아님), 등급 **Common · Rare · Mystic · Legendary**, 생물 이름은 앱 번역 파일(doquarium 레포 `lib/l10n/app_en.arb`) 기준
 
@@ -36,7 +37,8 @@
 | 도구 카드 아이콘 | `src/components/ToolCard.tsx`의 `TOOL_ICONS` |
 | 저널 글 | `src/data/posts/*.ts` |
 | 두쿠아리움 소개 · 그림 | `src/components/DoquariumView.tsx` (`NeonTank`), `RarityFish.tsx` (등급별 생물) |
-| 두쿠아리움 방침 · 삭제 안내 글 | `src/data/doquarium.ts` (원본) + 화면 `DoquariumDocView.tsx` |
+| 두쿠아리움 방침 · 삭제 안내 · 베타 모집 글 | `src/data/doquarium.ts` (원본) + 화면 `DoquariumDocView.tsx` (섹션에 `links`로 버튼) |
+| 베타 모집 켜고 끄기 | `src/data/doquarium.ts`의 `BETA.recruiting` (끄면 홈 · 두쿠아리움 · 푸터의 버튼과 "Testers Wanted" 배지가 사라지고 "Coming Soon"으로) |
 | 검색용 제목 · 설명 · 진짜 주소 | `src/seo.ts` |
 | 사이트맵 · 로봇 | `public/sitemap.xml` · `public/robots.txt` |
 
@@ -112,3 +114,4 @@
 | 2026-10-11 | 문의 글 보관: 처리 후 지우고 최대 1년 · 오류 기록 90일 |
 | 2026-10-12 | 콕 알림 하루 1번 기록(pushLog) 2일 뒤 자동 삭제 |
 | 2026-10-18 | 방문자 분석 Vercel Web Analytics (쿠키 없음) · Search Console(raonepark@gmail.com) · 페이지마다 제목 · 설명 · 진짜 주소 |
+| 2026-10-18 | 두쿠아리움 베타 테스터 모집 페이지 `/doquarium/beta`(한 · 영) + 홈 · 두쿠아리움 페이지 버튼 (12명 · 14일 규칙, 잠시). 가입: 가장 쉬운 길은 Gmail을 doquarium@gmail.com으로 보내기, 직접은 크롬 → 그룹 가입 → 테스터 되기 → 설치 (doquarium docs/14와 같게). 다 모이면 `BETA.recruiting = false` |

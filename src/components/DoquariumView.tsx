@@ -14,7 +14,7 @@ import {
   Mail,
   ArrowRight,
 } from "lucide-react";
-import { DOQUARIUM } from "../data/doquarium";
+import { BETA, DOQUARIUM } from "../data/doquarium";
 import { useRef } from "react";
 import RarityFish, { RarityFishStyles, usePauseOffscreen, type Rarity } from "./RarityFish";
 
@@ -224,7 +224,15 @@ function StoreBadge({ label }: { label: string }) {
   );
 }
 
-export default function DoquariumView({ onOpenPrivacy, onOpenDelete }: { onOpenPrivacy: () => void; onOpenDelete: () => void }) {
+export default function DoquariumView({
+  onOpenPrivacy,
+  onOpenDelete,
+  onOpenBeta,
+}: {
+  onOpenPrivacy: () => void;
+  onOpenDelete: () => void;
+  onOpenBeta: () => void;
+}) {
   return (
     <div className="pt-12">
       {/* Hero */}
@@ -252,6 +260,18 @@ export default function DoquariumView({ onOpenPrivacy, onOpenDelete }: { onOpenP
               <StoreBadge label="Google Play" />
               <StoreBadge label="App Store" />
             </div>
+            {BETA.recruiting && (
+              <button
+                onClick={onOpenBeta}
+                className="mt-4 w-full max-w-lg flex items-center justify-between h-14 px-5 rounded-xl bg-[#3ef2ff] text-[#062226] font-display font-bold hover:-translate-y-0.5 hover:shadow-[0_0_28px_rgba(62,242,255,0.45)] transition-all"
+              >
+                <span className="flex flex-col items-start leading-tight">
+                  <span className="text-sm">Join the Android beta</span>
+                  <span className="text-[11px] font-medium text-[#062226]/60">Testers wanted · help Doquarium launch</span>
+                </span>
+                <ArrowRight className="h-5 w-5" />
+              </button>
+            )}
           </motion.div>
 
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }} className="lg:w-1/2 w-full">
@@ -361,6 +381,14 @@ export default function DoquariumView({ onOpenPrivacy, onOpenDelete }: { onOpenP
             soon. Questions or feedback? We would love to hear from you.
           </p>
           <div className="relative flex flex-col sm:flex-row items-center justify-center gap-4">
+            {BETA.recruiting && (
+              <button
+                onClick={onOpenBeta}
+                className="flex items-center gap-2 px-6 h-12 rounded-xl bg-[#3ef2ff] text-[#062226] font-display font-bold text-sm hover:-translate-y-0.5 transition-transform"
+              >
+                Join the beta <ArrowRight className="h-4 w-4" />
+              </button>
+            )}
             <a
               href={`mailto:${DOQUARIUM.contactEmail}`}
               className="flex items-center gap-2 px-6 h-12 rounded-xl bg-white text-black font-display font-bold text-sm hover:-translate-y-0.5 transition-transform"

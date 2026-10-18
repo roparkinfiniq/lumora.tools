@@ -62,6 +62,16 @@ const PAGE_ITEMS: SearchItem[] = [
     keywords: ['doquarium', 'aquarium', 'fish', 'todo', 'to-do', '두쿠아리움', '어항', '물고기', '할 일'],
   },
   {
+    id: 'page-doquarium-beta',
+    type: 'page',
+    title: 'Doquarium Beta Testing',
+    subtitle: 'Join the Android closed beta and help Doquarium launch',
+    category: 'App',
+    iconType: 'sparkles',
+    view: 'doquarium-beta',
+    keywords: ['beta', 'tester', 'test', 'doquarium', '베타', '테스터', '테스트', '두쿠아리움'],
+  },
+  {
     id: 'page-doquarium-privacy',
     type: 'page',
     title: 'Doquarium Privacy Policy',
