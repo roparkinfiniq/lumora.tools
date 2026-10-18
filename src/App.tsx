@@ -368,7 +368,7 @@ export default function App() {
                         Super Private
                       </h3>
                       <p className="text-lumora-sub font-medium leading-relaxed">
-                        No tracking, no server uploads. Your data stays right
+                        No cookies, no file uploads. Your files stay right
                         here with you.
                       </p>
                     </div>

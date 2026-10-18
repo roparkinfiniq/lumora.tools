@@ -1,0 +1,5 @@
+# Search engines may read every page. The sitemap lists the site's addresses.
+User-agent: *
+Allow: /
+
+Sitemap: https://www.lumora.tools/sitemap.xml
