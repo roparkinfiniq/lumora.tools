@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { PolicyDoc, PolicyLang } from "../data/doquarium";
+import { applySeo } from "../seo";
 
 // Shared layout for Doquarium's legal pages (privacy policy, account deletion).
 // Korean is served at `${basePath}/ko` so the link can be given to Korean users
@@ -30,10 +31,11 @@ export default function DoquariumDocView({
       window.history.replaceState(window.history.state, "", url);
     }
     document.documentElement.lang = lang;
+    applySeo({ title: `${doc.heading} | Lumora`, description: doc.intro }, url);
     return () => {
       document.documentElement.lang = "en";
     };
-  }, [lang, basePath]);
+  }, [lang, basePath, doc]);
 
   return (
     <div className="container max-w-3xl mx-auto px-6 pt-12 pb-32">

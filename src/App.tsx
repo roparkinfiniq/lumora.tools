@@ -8,6 +8,7 @@ import CodeTiaraView from "./components/CodeTiaraView";
 import DoquariumView, { NeonTank } from "./components/DoquariumView";
 import DoquariumDocView from "./components/DoquariumDocView";
 import { DELETE_PATH, DOQUARIUM_DELETE, DOQUARIUM_PRIVACY, PRIVACY_PATH } from "./data/doquarium";
+import { applySeo, seoForPost, seoForTool, seoForView } from "./seo";
 import { Tool, BlogPost } from "./types";
 import { blogPosts } from "./data/posts";
 import {
@@ -179,6 +180,10 @@ export default function App() {
     if (window.location.pathname !== url) {
       window.history.pushState({ view: currentView }, "", url);
     }
+    // Title, description, and canonical address for search engines (src/seo.ts)
+    if (currentView === "utility-detail" && selectedTool) applySeo(seoForTool(selectedTool));
+    else if (currentView === "insights" && selectedPost) applySeo(seoForPost(selectedPost));
+    else if (!LANG_PAGES[currentView]) applySeo(seoForView(currentView)); // language pages set their own
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [currentView, selectedTool, selectedPost]);
 
