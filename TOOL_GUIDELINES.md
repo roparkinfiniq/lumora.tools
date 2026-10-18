@@ -21,7 +21,9 @@
 c:\Github\lumora.tools\lumora.tools\
 ├── TOOL_GUIDELINES.md         ← Official AI Developer Guidelines (this file)
 ├── src/
-│   ├── App.tsx                ← Global state routing, URL mapping, tool list (tools[]) definition
+│   ├── App.tsx                ← Global state routing, URL mapping
+│   ├── seo.ts                 ← Per-page title, description, canonical URL
+│   ├── data/tools.ts          ← Tool list (tools[]) definition
 │   ├── types.ts               ← Tool, BlogPost type definitions
 │   ├── components/
 │   │   ├── GNB.tsx            ← Floating global navigation bar (max-w-4xl)
@@ -152,7 +154,7 @@ For tools featuring canvas zoom, document viewing, or page extraction (e.g. `Pdf
 
 ## 🛠 How to Add a New Tool (Checklist)
 
-### Step 1 — Add entry to `tools[]` in `src/App.tsx`
+### Step 1 — Add entry to `tools[]` in `src/data/tools.ts`
 
 ```ts
 {
@@ -173,7 +175,11 @@ For tools featuring canvas zoom, document viewing, or page extraction (e.g. `Pdf
 Equip with `<Toast>`, Tool Header, Translucent Glass Inputs, and Local-First Footer Info Bar.
 
 ### Step 3 — Wire routing in `src/components/ToolDetailView.tsx`
-Add `case "17": return <MyNewTool />;` to `renderToolLogic()`.
+Declare `const MyNewTool = lazy(() => import('../tools/MyNewTool'));` at the top (tools load only when opened, keeping the first page small), then add `case "17": return <MyNewTool />;` to `renderToolLogic()`.
+
+### Step 4 — Icon, search, sitemap
+- Add the Lucide icon to `TOOL_ICONS` in `src/components/ToolCard.tsx` (import icons by name; never `import * as Icons`).
+- Add `https://www.lumora.tools/utilities/{slug}` to `public/sitemap.xml`. The search title comes from `src/seo.ts` automatically.
 
 ---
 
