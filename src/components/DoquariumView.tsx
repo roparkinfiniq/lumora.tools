@@ -17,6 +17,7 @@ import {
 import { BETA, DOQUARIUM } from "../data/doquarium";
 import { useRef } from "react";
 import RarityFish, { RarityFishStyles, usePauseOffscreen, type Rarity } from "./RarityFish";
+import DoquariumReel from "./DoquariumReel";
 
 const NEON = "#3ef2ff";
 
@@ -275,7 +276,8 @@ export default function DoquariumView({
           </motion.div>
 
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }} className="lg:w-1/2 w-full">
-            <NeonTank />
+            {/* Real app footage (the neon tank drawing stays on the home card) */}
+            <DoquariumReel />
           </motion.div>
         </div>
       </section>

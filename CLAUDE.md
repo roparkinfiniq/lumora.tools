@@ -36,7 +36,8 @@
 | 도구 화면 연결 | `src/components/ToolDetailView.tsx` (도구마다 `lazy()`로 따로 불러옴) |
 | 도구 카드 아이콘 | `src/components/ToolCard.tsx`의 `TOOL_ICONS` |
 | 저널 글 | `src/data/posts/*.ts` |
-| 두쿠아리움 소개 · 그림 | `src/components/DoquariumView.tsx` (`NeonTank`), `RarityFish.tsx` (등급별 생물) |
+| 두쿠아리움 소개 · 그림 | `src/components/DoquariumView.tsx` (`NeonTank`는 홈 카드), `RarityFish.tsx` (등급별 생물), `DoquariumReel.tsx` (홍보 영상, 소개 페이지 맨 위) |
+| 영상 · 큰 파일 | `public/media/` (웹용으로 줄인 것만) |
 | 두쿠아리움 방침 · 삭제 안내 · 베타 모집 글 | `src/data/doquarium.ts` (원본) + 화면 `DoquariumDocView.tsx` (섹션에 `links`로 버튼) |
 | 베타 모집 켜고 끄기 | `src/data/doquarium.ts`의 `BETA.recruiting` (끄면 홈 · 두쿠아리움 · 푸터의 버튼과 "Testers Wanted" 배지가 사라지고 "Coming Soon"으로) |
 | 검색용 제목 · 설명 · 진짜 주소 | `src/seo.ts` |
@@ -73,6 +74,7 @@
 - **SVG 빛 번짐 필터는 그룹에 한 번**. 선마다 `feGaussianBlur`를 걸지 않는다 (매 프레임 수십 번 다시 계산)
 - 마우스 따라가는 효과는 React 상태 대신 `ref` + `requestAnimationFrame` + `transform` (blend mode X)
 - 빌드 후 첫 파일(`dist/assets/index-*.js`)이 크게 늘었으면 이유를 찾는다 (지금 약 560KB)
+- **영상은 웹용으로 줄여서** `public/media/`에: 720px 폭 · 30fps · H.264 `-crf 27 -movflags +faststart` · AAC 96k (30초 영상이 약 1.5MB). 원본은 레포에 넣지 않는다. 화면에 보일 때만 불러와 소리 없이 재생, 벗어나면 멈춤, 소리는 버튼으로 (`DoquariumReel.tsx`). 처음엔 정지 화면(poster)만
 
 ## 7. 두쿠아리움 방침 · 계정 삭제 안내
 
@@ -114,4 +116,5 @@
 | 2026-10-11 | 문의 글 보관: 처리 후 지우고 최대 1년 · 오류 기록 90일 |
 | 2026-10-12 | 콕 알림 하루 1번 기록(pushLog) 2일 뒤 자동 삭제 |
 | 2026-10-18 | 방문자 분석 Vercel Web Analytics (쿠키 없음) · Search Console(raonepark@gmail.com) · 페이지마다 제목 · 설명 · 진짜 주소 |
+| 2026-10-18 | 두쿠아리움 홍보 영상(래원 `doquarium-reel-02-deep`, 세로 32초, 영어 자막)을 **두쿠아리움 페이지 맨 위에만** (홈은 가볍게 그대로). 13MB → 웹용 1.45MB |
 | 2026-10-18 | 두쿠아리움 베타 테스터 모집 페이지 `/doquarium/beta`(한 · 영) + 홈 · 두쿠아리움 페이지 버튼 (12명 · 14일 규칙, 잠시). 가입: 가장 쉬운 길은 Gmail을 doquarium@gmail.com으로 보내기, 직접은 크롬 → 그룹 가입 → 테스터 되기 → 설치 (doquarium docs/14와 같게). 다 모이면 `BETA.recruiting = false` |
