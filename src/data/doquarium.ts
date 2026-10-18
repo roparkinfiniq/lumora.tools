@@ -10,7 +10,7 @@ export const DOQUARIUM = {
   privacyOfficer: "Park Ra One",
   effectiveDate: { en: "October 9, 2026", ko: "2026년 10월 9일" },
   // Bump whenever the policy text changes (the effective date stays the same before launch).
-  lastUpdated: { en: "October 12, 2026", ko: "2026년 10월 12일" },
+  lastUpdated: { en: "October 18, 2026", ko: "2026년 10월 18일" },
   storeStatus: "Coming soon",
 };
 
@@ -103,6 +103,12 @@ export const DOQUARIUM_PRIVACY: Record<PolicyLang, PolicyDoc> = {
             where: "Google Firebase servers (only you can access it)",
           },
           {
+            when: "When you add a photo to a fish in Storage after signing in (optional)",
+            what: "A photo you pick or take (one per fish, resized)",
+            why: "Keeping your memory photos when you change phones",
+            where: "Google Firebase Cloud Storage (USA, only you can see it)",
+          },
+          {
             when: "Sending a question, bug report, or idea from the app (optional)",
             what: "Your message, the reply email address if you enter one, app version, phone model, OS version, language, and an anonymous user ID (your to-dos are not included)",
             why: "Replying to you and fixing bugs",
@@ -119,7 +125,8 @@ export const DOQUARIUM_PRIVACY: Record<PolicyLang, PolicyDoc> = {
           "Your to-dos are not shown to friends. In a shared tank, friends only see your fish and how many to-dos you finished. The one exception is a tank its owner created with \"See each other's to-dos\" turned on: you are told before you join, and friends in that tank can see your to-do titles and whether you finished them (to-dos set to \"Only me\" stay hidden).",
           "Reminders are scheduled on your phone only and are not sent to a server.",
           "If you only use the app on your own, no personal information is sent to a server. The only thing sent is a crash or error report when something goes wrong, which contains no account, name, or to-dos.",
-          "The app has no ads and does not track how you use it. It does not collect advertising IDs, location, contacts, or photos.",
+          "If you are not signed in, memory photos are stored only on your phone and are never sent to a server.",
+          "The app has no ads and does not track how you use it. It does not collect advertising IDs, location, or contacts. Photos are used only when you pick or take one and attach it to a fish in Storage, and they are never shown to friends.",
         ],
       },
       {
@@ -131,13 +138,14 @@ export const DOQUARIUM_PRIVACY: Record<PolicyLang, PolicyDoc> = {
           "Questions and bug reports: deleted once they have been handled, and no later than 1 year after we receive them. You can ask us to delete one sooner by email.",
           "Crash and error reports: kept for 90 days by Firebase Crashlytics, then deleted automatically.",
           "Poke alert data: the notification address is deleted when you sign out or delete your account, and is cleaned up after you uninstall the app (the next time a friend pokes you). The once-a-day record is deleted automatically after 2 days.",
+          "Memory photos: deleted when you change or remove the photo, return that fish to the sea, reset your progress, or delete your account. Signing out removes them from that phone only; the server copy stays so you can see them again when you sign back in.",
         ],
       },
       {
         title: "3. Sharing and service providers",
         items: [
           "We do not sell your personal information or share it with advertisers.",
-          "We use Firebase by Google LLC (authentication, database, Cloud Functions, Cloud Messaging push notifications, and Crashlytics crash reporting) to run shared tanks, backups, poke alerts, in-app questions, and crash reports. Shared tank, backup, and question data are stored on Google servers in Seoul, South Korea (asia-northeast3). Sign-in data, push notifications, and crash reports are processed on Google servers, which may be located outside Korea. Data is transferred over the internet when you use these features or when a crash report is sent, and is kept for the periods in section 2.",
+          "We use Firebase by Google LLC (authentication, database, Cloud Storage for photos, Cloud Functions, Cloud Messaging push notifications, and Crashlytics crash reporting) to run shared tanks, backups, memory photos, poke alerts, in-app questions, and crash reports. Shared tank, backup, and question data are stored on Google servers in Seoul, South Korea (asia-northeast3). Memory photos are stored on Google servers in Oregon, USA (us-west1). Sign-in data, push notifications, and crash reports are processed on Google servers, which may be located outside Korea. Data is transferred over the internet when you use these features or when a crash report is sent, and is kept for the periods in section 2.",
           "If you do not use shared tanks, sign-in, or the in-app question form, no personal information is sent to a server, and every single-player feature still works.",
         ],
       },
@@ -163,7 +171,7 @@ export const DOQUARIUM_PRIVACY: Record<PolicyLang, PolicyDoc> = {
         title: "6. Security",
         items: [
           "Data sent to our servers uses encrypted connections (HTTPS).",
-          "Backups are protected by security rules so that only your own account can read or write them.",
+          "Backups and memory photos are protected by security rules so that only your own account can read or write them.",
         ],
       },
       {
@@ -227,6 +235,12 @@ export const DOQUARIUM_PRIVACY: Record<PolicyLang, PolicyDoc> = {
             where: "Google Firebase 서버 (본인만 볼 수 있음)",
           },
           {
+            when: "로그인한 뒤 보관함 물고기에 사진을 붙일 때 (선택)",
+            what: "직접 고르거나 찍은 사진 (물고기마다 1장, 줄여서 저장)",
+            why: "폰을 바꿔도 추억 사진을 이어 보기",
+            where: "Google Firebase Cloud Storage (미국, 본인만 볼 수 있음)",
+          },
+          {
             when: "앱에서 문의 · 버그 · 제안을 보낼 때 (선택)",
             what: "보낸 글, (적었다면) 답장 받을 이메일 주소, 앱 버전, 폰 기종, OS 버전, 언어, 익명 사용자 ID (할 일 내용은 보내지 않음)",
             why: "문의 답장, 버그 고치기",
@@ -243,7 +257,8 @@ export const DOQUARIUM_PRIVACY: Record<PolicyLang, PolicyDoc> = {
           "할 일 내용은 친구에게 보이지 않습니다. 단체 어항에서 친구에게는 물고기 모습과 끝낸 개수만 보입니다. 단, 방장이 \"할 일 서로 보기\"로 만든 단체 어항에서는 들어가기 전에 알려 드리고, 그 방 친구들이 할 일 제목과 끝냈는지를 볼 수 있습니다 (\"나만 보기\"로 둔 할 일은 보이지 않습니다).",
           "알림은 폰 안에서만 예약되며, 알림 내용을 서버로 보내지 않습니다.",
           "혼자만 쓰면 서버로 보내는 개인정보가 없습니다. 문제가 생겼을 때의 오류 기록만 보내며, 여기에는 계정 · 이름 · 할 일이 들어가지 않습니다.",
-          "앱은 광고가 없고 앱을 어떻게 쓰는지 추적하지 않으며, 광고 식별자 · 위치 · 연락처 · 사진을 모으지 않습니다.",
+          "로그인하지 않았으면 추억 사진은 폰에만 저장되고 서버로 보내지 않습니다.",
+          "앱은 광고가 없고 앱을 어떻게 쓰는지 추적하지 않으며, 광고 식별자 · 위치 · 연락처를 모으지 않습니다. 사진은 직접 고르거나 찍어 보관함 물고기에 붙인 것만 쓰며, 친구에게 보이지 않습니다.",
         ],
       },
       {
@@ -255,13 +270,15 @@ export const DOQUARIUM_PRIVACY: Record<PolicyLang, PolicyDoc> = {
           "문의 · 버그 글: 처리한 뒤 지우고, 늦어도 받은 날부터 1년 안에 지웁니다. 더 일찍 지워 달라고 이메일로 요청할 수 있습니다.",
           "오류 기록: Firebase Crashlytics가 90일 동안 보관한 뒤 저절로 지웁니다.",
           "콕 알림 정보: 알림 주소는 로그아웃하거나 계정을 지우면 지우고, 앱을 지우면 다음에 친구가 콕을 보낼 때 정리합니다. 하루 한 번 기록은 2일 뒤 저절로 지워집니다.",
+          "추억 사진: 사진을 바꾸거나 지울 때, 그 물고기를 바다로 돌려보낼 때, 진행 상황을 초기화할 때, 계정을 삭제할 때 지웁니다. 로그아웃하면 그 폰에서만 지우고, 서버에는 남아 다시 로그인하면 볼 수 있습니다.",
         ],
       },
       {
         title: "3. 다른 곳에 맡기거나 넘기는 정보",
         items: [
           "개발자는 개인정보를 팔거나 광고 회사에 넘기지 않습니다.",
-          "서버 운영을 위해 Google LLC의 Firebase(인증 · 데이터베이스 · Cloud Functions · Cloud Messaging 푸시 알림 · Crashlytics 오류 기록)를 씁니다. 단체 어항 · 백업 · 문의 기록은 대한민국 서울의 Google 서버(asia-northeast3)에, 로그인 정보 · 푸시 알림 · 오류 기록은 Google 서버(국외 포함)에서 처리됩니다. 이 기능을 쓸 때나 오류 기록이 보내질 때 인터넷으로 보내지며, 보관 기간은 위 2번과 같습니다.",
+          "서버 운영을 위해 Google LLC의 Firebase(인증 · 데이터베이스 · Cloud Storage 사진 저장 · Cloud Functions · Cloud Messaging 푸시 알림 · Crashlytics 오류 기록)를 씁니다. 단체 어항 · 백업 · 문의 기록은 대한민국 서울의 Google 서버(asia-northeast3)에, 추억 사진은 미국(오리건)의 Google 서버(us-west1)에, 로그인 정보 · 푸시 알림 · 오류 기록은 Google 서버(국외 포함)에서 처리됩니다. 이 기능을 쓸 때나 오류 기록이 보내질 때 인터넷으로 보내지며, 보관 기간은 위 2번과 같습니다.",
+          "국외 이전 (추억 사진): 이전받는 자 Google LLC · 이전 국가 미국(오리건, us-west1) · 이전 시점과 방법: 로그인한 뒤 보관함 물고기에 사진을 붙일 때 인터넷으로 · 항목: 사진 파일 · 보관 기간: 위 2번과 같음 · 거부 방법: 로그인하지 않거나 사진을 붙이지 않으면 보내지 않습니다 (다른 기능은 그대로 쓸 수 있습니다).",
           "단체 어항 · 로그인 · 앱 안 문의를 쓰지 않으면 서버로 보내는 개인정보가 없고, 혼자 쓰는 기능은 그대로 다 쓸 수 있습니다.",
         ],
       },
@@ -287,7 +304,7 @@ export const DOQUARIUM_PRIVACY: Record<PolicyLang, PolicyDoc> = {
         title: "6. 안전하게 지키는 방법",
         items: [
           "서버와 주고받는 정보는 암호화된 연결(HTTPS)로 보냅니다.",
-          "백업 기록은 보안 규칙으로 본인 계정만 읽고 쓸 수 있게 막습니다.",
+          "백업 기록과 추억 사진은 보안 규칙으로 본인 계정만 읽고 쓸 수 있게 막습니다.",
         ],
       },
       {
@@ -337,6 +354,7 @@ export const DOQUARIUM_DELETE: Record<PolicyLang, PolicyDoc> = {
           "Your full server backup: to-dos, fish, collection, coins, decorations, tanks, and settings.",
           "Your member data in shared tanks (nickname, fish status, and any shared to-do titles) and the reactions you sent and received. If you were the last member, the tank's name and room code are deleted too.",
           "This phone's notification address for poke alerts.",
+          "Memory photos backed up to the server.",
         ],
       },
       {
@@ -385,6 +403,7 @@ export const DOQUARIUM_DELETE: Record<PolicyLang, PolicyDoc> = {
           "서버에 백업된 기록 전체: 할 일 · 물고기 · 도감 · 코인 · 꾸미기 · 어항 · 설정",
           "단체 어항의 내 멤버 정보(닉네임 · 물고기 상태 · 보여 준 할 일 제목)와 주고받은 반응. 내가 마지막 멤버였다면 어항 이름과 방 코드도 지워집니다.",
           "이 폰의 콕 알림 주소",
+          "서버에 백업된 추억 사진",
         ],
       },
       {
