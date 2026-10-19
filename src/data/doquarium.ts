@@ -10,7 +10,7 @@ export const DOQUARIUM = {
   privacyOfficer: "Park Ra One",
   effectiveDate: { en: "October 9, 2026", ko: "2026년 10월 9일" },
   // Bump whenever the policy text changes (the effective date stays the same before launch).
-  lastUpdated: { en: "October 18, 2026", ko: "2026년 10월 18일" },
+  lastUpdated: { en: "October 19, 2026", ko: "2026년 10월 19일" },
   storeStatus: "Coming soon",
 };
 
@@ -110,9 +110,9 @@ export const DOQUARIUM_PRIVACY: Record<PolicyLang, PolicyDoc> = {
           },
           {
             when: "Sending a question, bug report, or idea from the app (optional)",
-            what: "Your message, the reply email address if you enter one, app version, phone model, OS version, language, and an anonymous user ID (your to-dos are not included)",
+            what: "Your message, up to 3 photos if you attach them, the reply email address if you enter one, app version, phone model, OS version, language, and an anonymous user ID (your to-dos are not included, unless they appear in a photo you attach)",
             why: "Replying to you and fixing bugs",
-            where: "Google Firebase servers (only the developer can read it)",
+            where: "Google Firebase servers; attached photos in Firebase Cloud Storage (USA). Only the developer can see them",
           },
           {
             when: "When the app crashes or hits an error (everyone)",
@@ -135,7 +135,7 @@ export const DOQUARIUM_PRIVACY: Record<PolicyLang, PolicyDoc> = {
           "Data on your phone: until you delete it in the app or uninstall the app.",
           "Shared tank data: your member data (including any shared to-do titles) and the reactions you sent or received are removed as soon as you leave the tank. Reactions older than 7 days are deleted when the recipient opens the app, and are removed together with the tank when it is deleted. A tank's name and room code are removed when its last member leaves.",
           "Sign-in and backup data: kept while you have an account so you can sign back in and restore your progress (signing out does not delete the backup). Deleted when you delete your account (in the app or by email). Server copies may take up to 30 days to be fully removed.",
-          "Questions and bug reports: deleted once they have been handled, and no later than 1 year after we receive them. You can ask us to delete one sooner by email.",
+          "Questions and bug reports (including attached photos): deleted once they have been handled, and no later than 1 year after we receive them. You can ask us to delete one sooner by email.",
           "Crash and error reports: kept for 90 days by Firebase Crashlytics, then deleted automatically.",
           "Poke alert data: the notification address is deleted when you sign out or delete your account, and is cleaned up after you uninstall the app (the next time a friend pokes you). The once-a-day record is deleted automatically after 2 days.",
           "Memory photos: deleted when you change or remove the photo, return that fish to the sea, reset your progress, or delete your account. Signing out removes them from that phone only; the server copy stays so you can see them again when you sign back in.",
@@ -145,7 +145,7 @@ export const DOQUARIUM_PRIVACY: Record<PolicyLang, PolicyDoc> = {
         title: "3. Sharing and service providers",
         items: [
           "We do not sell your personal information or share it with advertisers.",
-          "We use Firebase by Google LLC (authentication, database, Cloud Storage for photos, Cloud Functions, Cloud Messaging push notifications, and Crashlytics crash reporting) to run shared tanks, backups, memory photos, poke alerts, in-app questions, and crash reports. Shared tank, backup, and question data are stored on Google servers in Seoul, South Korea (asia-northeast3). Memory photos are stored on Google servers in Oregon, USA (us-west1). Sign-in data, push notifications, and crash reports are processed on Google servers, which may be located outside Korea. Data is transferred over the internet when you use these features or when a crash report is sent, and is kept for the periods in section 2.",
+          "We use Firebase by Google LLC (authentication, database, Cloud Storage for photos, Cloud Functions, Cloud Messaging push notifications, and Crashlytics crash reporting) to run shared tanks, backups, memory photos, poke alerts, in-app questions, and crash reports. Shared tank, backup, and question data are stored on Google servers in Seoul, South Korea (asia-northeast3). Memory photos and photos attached to questions are stored on Google servers in Oregon, USA (us-west1). Sign-in data, push notifications, and crash reports are processed on Google servers, which may be located outside Korea. Data is transferred over the internet when you use these features or when a crash report is sent, and is kept for the periods in section 2.",
           "If you do not use shared tanks, sign-in, or the in-app question form, no personal information is sent to a server, and every single-player feature still works.",
         ],
       },
@@ -242,9 +242,9 @@ export const DOQUARIUM_PRIVACY: Record<PolicyLang, PolicyDoc> = {
           },
           {
             when: "앱에서 문의 · 버그 · 제안을 보낼 때 (선택)",
-            what: "보낸 글, (적었다면) 답장 받을 이메일 주소, 앱 버전, 폰 기종, OS 버전, 언어, 익명 사용자 ID (할 일 내용은 보내지 않음)",
+            what: "보낸 글, (붙였다면) 사진 3장까지, (적었다면) 답장 받을 이메일 주소, 앱 버전, 폰 기종, OS 버전, 언어, 익명 사용자 ID (할 일 내용은 보내지 않음. 단, 붙인 사진에 보이면 함께 전달됨)",
             why: "문의 답장, 버그 고치기",
-            where: "Google Firebase 서버 (개발자만 볼 수 있음)",
+            where: "Google Firebase 서버, 붙인 사진은 Firebase Cloud Storage (미국). 개발자만 볼 수 있음",
           },
           {
             when: "앱이 튕기거나 오류가 났을 때 (누구나)",
@@ -267,7 +267,7 @@ export const DOQUARIUM_PRIVACY: Record<PolicyLang, PolicyDoc> = {
           "폰 안의 기록: 앱에서 지우거나 앱을 지울 때까지",
           "단체 어항 정보: 어항을 나가면 내 멤버 정보(보여 준 할 일 제목 포함)와 주고받은 반응을 바로 지웁니다. 주고받은 반응은 받은 사람이 앱을 열 때 7일이 지난 것부터 지워지고, 어항이 없어지면 함께 지워집니다. 어항 이름과 방 코드는 마지막 멤버가 나가면 지웁니다.",
           "로그인 · 백업 정보: 다시 로그인해 기록을 되찾을 수 있도록 계정이 있는 동안 보관합니다 (로그아웃해도 백업은 남습니다). 계정을 삭제하면(앱 안에서 또는 이메일 요청) 지웁니다. 서버에 남은 복사본이 완전히 지워지기까지 최대 30일이 걸릴 수 있습니다.",
-          "문의 · 버그 글: 처리한 뒤 지우고, 늦어도 받은 날부터 1년 안에 지웁니다. 더 일찍 지워 달라고 이메일로 요청할 수 있습니다.",
+          "문의 · 버그 글 (붙인 사진 포함): 처리한 뒤 지우고, 늦어도 받은 날부터 1년 안에 지웁니다. 더 일찍 지워 달라고 이메일로 요청할 수 있습니다.",
           "오류 기록: Firebase Crashlytics가 90일 동안 보관한 뒤 저절로 지웁니다.",
           "콕 알림 정보: 알림 주소는 로그아웃하거나 계정을 지우면 지우고, 앱을 지우면 다음에 친구가 콕을 보낼 때 정리합니다. 하루 한 번 기록은 2일 뒤 저절로 지워집니다.",
           "추억 사진: 사진을 바꾸거나 지울 때, 그 물고기를 바다로 돌려보낼 때, 진행 상황을 초기화할 때, 계정을 삭제할 때 지웁니다. 로그아웃하면 그 폰에서만 지우고, 서버에는 남아 다시 로그인하면 볼 수 있습니다.",
@@ -277,8 +277,8 @@ export const DOQUARIUM_PRIVACY: Record<PolicyLang, PolicyDoc> = {
         title: "3. 다른 곳에 맡기거나 넘기는 정보",
         items: [
           "개발자는 개인정보를 팔거나 광고 회사에 넘기지 않습니다.",
-          "서버 운영을 위해 Google LLC의 Firebase(인증 · 데이터베이스 · Cloud Storage 사진 저장 · Cloud Functions · Cloud Messaging 푸시 알림 · Crashlytics 오류 기록)를 씁니다. 단체 어항 · 백업 · 문의 기록은 대한민국 서울의 Google 서버(asia-northeast3)에, 추억 사진은 미국(오리건)의 Google 서버(us-west1)에, 로그인 정보 · 푸시 알림 · 오류 기록은 Google 서버(국외 포함)에서 처리됩니다. 이 기능을 쓸 때나 오류 기록이 보내질 때 인터넷으로 보내지며, 보관 기간은 위 2번과 같습니다.",
-          "국외 이전 (추억 사진): 이전받는 자 Google LLC · 이전 국가 미국(오리건, us-west1) · 이전 시점과 방법: 로그인한 뒤 보관함 물고기에 사진을 붙일 때 인터넷으로 · 항목: 사진 파일 · 보관 기간: 위 2번과 같음 · 거부 방법: 로그인하지 않거나 사진을 붙이지 않으면 보내지 않습니다 (다른 기능은 그대로 쓸 수 있습니다).",
+          "서버 운영을 위해 Google LLC의 Firebase(인증 · 데이터베이스 · Cloud Storage 사진 저장 · Cloud Functions · Cloud Messaging 푸시 알림 · Crashlytics 오류 기록)를 씁니다. 단체 어항 · 백업 · 문의 기록은 대한민국 서울의 Google 서버(asia-northeast3)에, 추억 사진과 문의에 붙인 사진은 미국(오리건)의 Google 서버(us-west1)에, 로그인 정보 · 푸시 알림 · 오류 기록은 Google 서버(국외 포함)에서 처리됩니다. 이 기능을 쓸 때나 오류 기록이 보내질 때 인터넷으로 보내지며, 보관 기간은 위 2번과 같습니다.",
+          "국외 이전 (추억 사진 · 문의에 붙인 사진): 이전받는 자 Google LLC · 이전 국가 미국(오리건, us-west1) · 이전 시점과 방법: 로그인한 뒤 보관함 물고기에 사진을 붙일 때, 또는 문의 · 버그 알리기에 사진을 붙여 보낼 때 인터넷으로 · 항목: 사진 파일 · 보관 기간: 위 2번과 같음 · 거부 방법: 로그인하지 않거나 사진을 붙이지 않으면 보내지 않습니다 (다른 기능은 그대로 쓸 수 있습니다).",
           "단체 어항 · 로그인 · 앱 안 문의를 쓰지 않으면 서버로 보내는 개인정보가 없고, 혼자 쓰는 기능은 그대로 다 쓸 수 있습니다.",
         ],
       },
@@ -361,7 +361,7 @@ export const DOQUARIUM_DELETE: Record<PolicyLang, PolicyDoc> = {
         title: "What is kept",
         items: [
           "Nothing linked to your account is kept on our servers. Copies in server backups may take up to 30 days to be fully removed.",
-          "Questions or bug reports you sent from the app are kept until they are handled (at most 1 year), and crash reports for 90 days. They are not linked to your account; email us if you want a question deleted sooner.",
+          "Questions or bug reports you sent from the app, including attached photos, are kept until they are handled (at most 1 year), and crash reports for 90 days. They are not linked to your account; email us if you want a question deleted sooner.",
           "If you choose to keep the data on your phone, it stays only on that phone until you delete it or uninstall the app.",
         ],
       },
@@ -410,7 +410,7 @@ export const DOQUARIUM_DELETE: Record<PolicyLang, PolicyDoc> = {
         title: "남는 것",
         items: [
           "계정과 이어진 정보는 서버에 남기지 않습니다. 서버의 백업 복사본이 완전히 지워지기까지 최대 30일이 걸릴 수 있습니다.",
-          "앱에서 보낸 문의 · 버그 글은 처리할 때까지(최대 1년), 오류 기록은 90일 동안 남습니다. 계정과 이어져 있지 않으며, 문의 글을 더 일찍 지우고 싶으면 이메일로 알려 주세요.",
+          "앱에서 보낸 문의 · 버그 글과 붙인 사진은 처리할 때까지(최대 1년), 오류 기록은 90일 동안 남습니다. 계정과 이어져 있지 않으며, 문의 글을 더 일찍 지우고 싶으면 이메일로 알려 주세요.",
           "이 폰의 기록을 남기기로 고르면, 지우거나 앱을 지울 때까지 그 폰에만 남습니다.",
         ],
       },
