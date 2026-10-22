@@ -133,8 +133,11 @@ export function doneToday(t: WebTodo, now: Date) {
   return !!t.doneAt && dayStart(t.doneAt).getTime() === dayStart(now).getTime();
 }
 
+/** Same order as the app (Todo.byRank): a dragged to-do keeps its `order`, others go by when they were written; bigger is higher, so new ones come first */
+const rank = (t: WebTodo) => t.order ?? t.createdAt.getTime();
+
 export function sortTodos(list: WebTodo[]) {
-  return [...list].sort((a, b) => (a.order ?? 1e9) - (b.order ?? 1e9) || a.createdAt.getTime() - b.createdAt.getTime());
+  return [...list].sort((a, b) => rank(b) - rank(a));
 }
 
 /** A new id like the app makes (microseconds since 1970), so web and phone ids look the same */
