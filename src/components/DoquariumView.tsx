@@ -150,7 +150,10 @@ export default function DoquariumView({ onOpen }: { onOpen: (view: string) => vo
             </a>
           </motion.div>
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }} className="lg:w-1/2 w-full">
-            <DoquariumReel label={t.reelLabel} />
+            {/* key: a fresh player per language, so the Korean page plays the Korean video */}
+            <div key={lang}>
+              <DoquariumReel lang={lang} label={t.reelLabel} />
+            </div>
           </motion.div>
         </div>
       </section>

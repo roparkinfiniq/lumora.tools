@@ -36,7 +36,7 @@
 | 도구 화면 연결 | `src/components/ToolDetailView.tsx` (도구마다 `lazy()`로 따로 불러옴) |
 | 도구 카드 아이콘 | `src/components/ToolCard.tsx`의 `TOOL_ICONS` |
 | 저널 글 | `src/data/posts/*.ts` |
-| 두쿠아리움 홈페이지 | 화면 `src/components/DoquariumView.tsx` (언어 · 제목 · 진짜 주소를 스스로 정함) · 글 **`src/data/doquariumHome.ts`** (한 · 영, 원본은 doquarium 레포 docs/14 "스토어 등록정보 문구") · 앱 화면 `public/media/doquarium/{en,ko}/*.webp` (스토어 스크린샷 6장을 720px WebP로) · 홍보 영상 `DoquariumReel.tsx` |
+| 두쿠아리움 홈페이지 | 화면 `src/components/DoquariumView.tsx` (언어 · 제목 · 진짜 주소를 스스로 정함) · 글 **`src/data/doquariumHome.ts`** (한 · 영, 원본은 doquarium 레포 docs/14 "스토어 등록정보 문구") · 앱 화면 `public/media/doquarium/{en,ko}/*.webp` (스토어 스크린샷 6장을 720px WebP로) · 홍보 영상 `DoquariumReel.tsx` (언어마다 `public/media/doquarium-reel-{en,ko}.mp4`, 원본은 래원의 스토어 미리보기 영상 `doquarium-store-{en,ko}`) |
 | 웹에서 보는 두쿠아리움 (로그인 · 할 일) | `src/doquarium-app/` (`/doquarium/app(/ko)`, App에서 `lazy()`라 그 페이지를 열 때만 Firebase를 받는다): `firebase.ts`(웹 앱 "lumora.tools web" 설정 · 구글 로그인 · 백업 읽기) · `backup.ts`(앱 백업 `backups/{uid}`를 어항 · 할 일로 읽기, 앱의 todo.dart · tank.dart와 같게) · `DoquariumAppView.tsx`(화면 · 한영 글) |
 | 홈 카드의 네온 어항 그림 | `src/components/NeonTank.tsx` (화면 밖에서 멈추기는 `src/lib/usePauseOffscreen.ts`) |
 | 영상 · 큰 파일 | `public/media/` (웹용으로 줄인 것만) |
@@ -120,6 +120,7 @@
 | 2026-10-18 | 방문자 분석 Vercel Web Analytics (쿠키 없음) · Search Console(raonepark@gmail.com) · 페이지마다 제목 · 설명 · 진짜 주소 |
 | 2026-10-18 | 두쿠아리움 홍보 영상(래원 `doquarium-reel-02-deep`, 세로 32초, 영어 자막)을 **두쿠아리움 페이지 맨 위에만** (홈은 가볍게 그대로). 13MB → 웹용 1.45MB |
 | 2026-10-22 | `/doquarium`을 **두쿠아리움 공식 홈페이지**로 다시 만듦 (한 · 영 `/ko`): 스토어 문구 바탕 글 + 진짜 앱 화면 5장 + 홍보 영상 + 그 밖의 기능 6개 + 원칙 + 자주 묻는 질문 + 연락 · 방침 링크. 사이트가 그린 등급 물고기(`RarityFish`)는 앱과 생김새가 달라 뺌 (래원 결정: 주소 그대로 · 한영 · 진짜 화면 위주). 스토어 문구가 바뀌면 `doquariumHome.ts`도 |
+| 2026-10-22 | 홍보 영상을 **언어마다**: 영어 `doquarium-store-en` · 한국어 `doquarium-store-ko` (장면 · 음악이 같고 자막만 다른 짝, 래원 결정). 소리는 웹용으로 -24 LUFS, 소리를 켜면 절반 볼륨 + 볼륨 막대 (아이폰은 켜기 · 끄기만). 예전 `reel-02-deep`은 뺌 |
 | 2026-10-22 | **웹 할 일 1단계: 구글 로그인 + 보기** (`/doquarium/app`). 래원 결정: 범위는 보기 · 추가 · 끝내기 · 고치기 · 지우기, 주소 lumora.tools, 구글 먼저 · 애플 다음, 서버 규칙은 새 앱(+19)과 같이 배포. 2단계(웹 → 우편함 쪽지) · 3단계(앱이 쪽지 반영)는 doquarium 레포. Firebase "승인된 도메인"에 www.lumora.tools · lumora.tools가 있어야 로그인된다 |
 | 2026-10-22 | (그 전) 홈페이지에서 로그인해 할 일 보기 · 추가 · 끝내기: **출시 뒤** (doquarium 레포 docs/10 "PC에서 쓰기" · `later-13`). 웹은 우편함에 쪽지만 넣고 폰 앱이 열릴 때 반영 (물고기는 폰에만), 로그인은 구글 · 애플. 어디에 올릴지(lumora.tools · Firebase Hosting) · 범위는 아직 정할 것. 만들 때 방침(docs/19 → `doquarium.ts`)도 |
 | 2026-10-18 | 두쿠아리움 베타 테스터 모집 페이지 `/doquarium/beta`(한 · 영) + 홈 · 두쿠아리움 페이지 버튼 (12명 · 14일 규칙, 잠시). 가입: 가장 쉬운 길은 Gmail을 doquarium@gmail.com으로 보내기, 직접은 크롬 → 그룹 가입 → 테스터 되기 → 설치 (doquarium docs/14와 같게). 다 모이면 `BETA.recruiting = false` |

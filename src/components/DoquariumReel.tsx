@@ -1,17 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 import { Volume1, Volume2, VolumeX, Play } from "lucide-react";
 
-// Doquarium promo reel (real app footage, English captions, 32s vertical).
-// Web copy of 래원's "doquarium-reel-02-deep" (720x1280, 30fps, ~1.5MB) in
-// public/media. Nothing downloads until the reel scrolls into view; it then
+// Doquarium promo reel (real app footage, 35s vertical), one per language:
+// the store preview videos "doquarium-store-en" / "doquarium-store-ko" (same
+// scenes and music, captions in English / Korean), re-encoded for the web
+// (720x1280, 30fps, ~1.6MB each) in public/media. Nothing downloads until the reel scrolls into view; it then
 // plays muted and loops, and pauses again when scrolled away. Sound is opt-in.
 // With "reduce motion" on, it waits for a tap instead of autoplaying.
 // Sound: the file is mastered quiet for the web (about -24 LUFS). Turning sound
 // on starts at half volume and shows a volume slider (remembered per browser).
 // iPhone Safari ignores page volume, so there only on/off is shown.
 
-const SRC = "/media/doquarium-reel.mp4";
-const POSTER = "/media/doquarium-reel-poster.jpg";
+const SRC = (lang: "en" | "ko") => `/media/doquarium-reel-${lang}.mp4`;
+const POSTER = (lang: "en" | "ko") => `/media/doquarium-reel-${lang}-poster.jpg`;
 const VOLUME_KEY = "doquarium_reel_volume";
 
 function savedVolume() {
@@ -34,7 +35,7 @@ function canSetVolume() {
   }
 }
 
-export default function DoquariumReel({ label }: { label: string }) {
+export default function DoquariumReel({ label, lang }: { label: string; lang: "en" | "ko" }) {
   const ref = useRef<HTMLVideoElement>(null);
   const [muted, setMuted] = useState(true);
   const [paused, setPaused] = useState(true);
@@ -101,8 +102,8 @@ export default function DoquariumReel({ label }: { label: string }) {
       <div className="relative rounded-[40px] border-[6px] border-[#1c2427] bg-black shadow-[0_0_60px_rgba(62,242,255,0.15),0_30px_60px_-20px_rgba(0,0,0,0.9)] overflow-hidden aspect-[9/16]">
         <video
           ref={ref}
-          src={SRC}
-          poster={POSTER}
+          src={SRC(lang)}
+          poster={POSTER(lang)}
           muted
           loop
           playsInline
