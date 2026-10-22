@@ -39,14 +39,9 @@ const PAGES: Record<string, Seo> = {
     description:
       "Code Tiara is a distraction-free to-do app with a built-in Pomodoro timer, floating desktop notes, and themes. Download for Mac and Windows.",
   },
-  doquarium: {
-    title: "Doquarium — Grow Your Aquarium with To-Dos | Lumora",
-    description:
-      "Doquarium is a neon to-do app for Android and iPhone: every task you finish feeds the fish in your tank. Coming soon.",
-  },
 };
-// The Doquarium privacy and account-deletion pages (English / Korean) set their
-// own title from the document heading: see DoquariumDocView.
+// The Doquarium homepage (DoquariumView) and its privacy, account-deletion, and
+// beta pages (DoquariumDocView) set their own title in the chosen language.
 
 export function seoForTool(tool: Tool): Seo {
   return {

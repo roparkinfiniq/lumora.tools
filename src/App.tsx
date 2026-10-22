@@ -5,7 +5,8 @@ import PostModal from "./components/PostModal";
 import StudioView from "./components/StudioView";
 import ToolDetailView from "./components/ToolDetailView";
 import CodeTiaraView from "./components/CodeTiaraView";
-import DoquariumView, { NeonTank } from "./components/DoquariumView";
+import DoquariumView from "./components/DoquariumView";
+import { NeonTank } from "./components/NeonTank";
 import DoquariumDocView from "./components/DoquariumDocView";
 import { BETA, BETA_PATH, DELETE_PATH, DOQUARIUM_BETA, DOQUARIUM_DELETE, DOQUARIUM_PRIVACY, PRIVACY_PATH } from "./data/doquarium";
 import { applySeo, seoForPost, seoForTool, seoForView } from "./seo";
@@ -79,6 +80,7 @@ const URL_TO_VIEW: Record<string, string> = {
   "/about": "studio",
   "/code-tiara": "code-tiara",
   "/doquarium": "doquarium",
+  "/doquarium/ko": "doquarium",
   [PRIVACY_PATH]: "doquarium-privacy",
   [DELETE_PATH]: "doquarium-delete",
   [BETA_PATH]: "doquarium-beta",
@@ -177,6 +179,8 @@ export default function App() {
       }
     } else if (currentView === "insights" && selectedPost) {
       url = `/journal/${selectedPost.id}`;
+    } else if (currentView === "doquarium" && /\/ko\/?$/.test(window.location.pathname)) {
+      url = "/doquarium/ko"; // stay in Korean (also when coming back from a Korean sub-page)
     } else if (LANG_PAGES[currentView] && window.location.pathname.startsWith(LANG_PAGES[currentView])) {
       url = window.location.pathname; // keep /ko; the view manages its own language
     }
@@ -186,7 +190,7 @@ export default function App() {
     // Title, description, and canonical address for search engines (src/seo.ts)
     if (currentView === "utility-detail" && selectedTool) applySeo(seoForTool(selectedTool));
     else if (currentView === "insights" && selectedPost) applySeo(seoForPost(selectedPost));
-    else if (!LANG_PAGES[currentView]) applySeo(seoForView(currentView)); // language pages set their own
+    else if (!LANG_PAGES[currentView] && currentView !== "doquarium") applySeo(seoForView(currentView)); // language pages set their own
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [currentView, selectedTool, selectedPost]);
 
@@ -1104,11 +1108,7 @@ export default function App() {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.5 }}
             >
-              <DoquariumView
-                onOpenPrivacy={() => setCurrentView("doquarium-privacy")}
-                onOpenDelete={() => setCurrentView("doquarium-delete")}
-                onOpenBeta={() => setCurrentView("doquarium-beta")}
-              />
+              <DoquariumView onOpen={(view) => setCurrentView(view)} />
             </motion.div>
           )}
 

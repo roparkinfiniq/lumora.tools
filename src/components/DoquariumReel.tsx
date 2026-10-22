@@ -10,7 +10,7 @@ import { Volume2, VolumeX, Play } from "lucide-react";
 const SRC = "/media/doquarium-reel.mp4";
 const POSTER = "/media/doquarium-reel-poster.jpg";
 
-export default function DoquariumReel() {
+export default function DoquariumReel({ label }: { label: string }) {
   const ref = useRef<HTMLVideoElement>(null);
   const [muted, setMuted] = useState(true);
   const [paused, setPaused] = useState(true);
@@ -65,7 +65,7 @@ export default function DoquariumReel() {
           onPause={() => setPaused(true)}
           onClick={togglePlay}
           className="w-full h-full object-cover cursor-pointer"
-          aria-label="Doquarium app preview: finish to-dos and your neon fish eats and grows"
+          aria-label={label}
         />
         {paused && (
           <button

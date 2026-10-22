@@ -9,7 +9,7 @@
 | 부분 | 내용 | 주소 |
 | --- | --- | --- |
 | **도구 (중심)** | 브라우저에서 바로 도는 무료 도구 15개 (PDF 만들기 · 합치기 · 변환, 이미지 변환 · 압축, HEIC, ICO, JSON, Markdown, 그라디언트, 색 추출, 바코드, 사이즈 변환, 운동 캔버스). 파일을 서버에 올리지 않는다 | `/utilities`, `/utilities/{slug}` |
-| **앱** | **두쿠아리움**(할 일로 키우는 네온 어항, 안드로이드 · 아이폰) → **Code Tiara**(집중용 할 일 앱, Mac · Windows) 순서 | `/doquarium`, `/code-tiara` |
+| **앱** | **두쿠아리움**(할 일로 키우는 네온 어항, 안드로이드 · 아이폰) → **Code Tiara**(집중용 할 일 앱, Mac · Windows) 순서. 두쿠아리움 페이지는 **앱의 공식 홈페이지**(인스타 프로필 링크 · 스토어 웹사이트 칸에 쓰는 곳, 한 · 영) | `/doquarium(/ko)`, `/code-tiara` |
 | **저널** | 쉼 · 고요함 · 종이 노트 · AI에 대한 개인 에세이 | `/journal`, `/journal/{id}` |
 | **소개** | "Less friction, More focus" 만드는 사람 | `/about` |
 | **두쿠아리움 문서** | 개인정보처리방침 · 계정 삭제 안내 (한 · 영) | `/doquarium/privacy(/ko)`, `/doquarium/delete-account(/ko)` |
@@ -22,7 +22,7 @@
 ## 2. 언어
 
 - 화면에 보이는 글(버튼 · 제목 · 설명 · 알림 · `aria-label` · 블로그 글)은 **자연스러운 영어만** (`GEMINI.md`, `TOOL_GUIDELINES.md`)
-- 예외 (한국어판을 따로 둔 곳): 두쿠아리움 방침 · 계정 삭제 안내 · 베타 모집 `/ko` (한국 사용자 · 한국 법 · 한국 친구들), 운동 캔버스 `/utilities/workout-canvas/ko`
+- 예외 (한국어판을 따로 둔 곳): 두쿠아리움 홈페이지 · 방침 · 계정 삭제 안내 · 베타 모집 `/ko` (한국 사용자 · 한국 법 · 한국 친구들), 운동 캔버스 `/utilities/workout-canvas/ko`
 - 코드 주석 · 래원에게 하는 설명은 한국어 가능. 커밋 메시지는 영어 (`feat:` `fix:` `perf:` `chore:` …)
 - 두쿠아리움 용어는 앱과 똑같이: 난이도 **Relaxed · Intense** (예전 Easy · Hard 아님), 등급 **Common · Rare · Mystic · Legendary**, 생물 이름은 앱 번역 파일(doquarium 레포 `lib/l10n/app_en.arb`) 기준
 
@@ -36,7 +36,8 @@
 | 도구 화면 연결 | `src/components/ToolDetailView.tsx` (도구마다 `lazy()`로 따로 불러옴) |
 | 도구 카드 아이콘 | `src/components/ToolCard.tsx`의 `TOOL_ICONS` |
 | 저널 글 | `src/data/posts/*.ts` |
-| 두쿠아리움 소개 · 그림 | `src/components/DoquariumView.tsx` (`NeonTank`는 홈 카드), `RarityFish.tsx` (등급별 생물), `DoquariumReel.tsx` (홍보 영상, 소개 페이지 맨 위) |
+| 두쿠아리움 홈페이지 | 화면 `src/components/DoquariumView.tsx` (언어 · 제목 · 진짜 주소를 스스로 정함) · 글 **`src/data/doquariumHome.ts`** (한 · 영, 원본은 doquarium 레포 docs/14 "스토어 등록정보 문구") · 앱 화면 `public/media/doquarium/{en,ko}/*.webp` (스토어 스크린샷 6장을 720px WebP로) · 홍보 영상 `DoquariumReel.tsx` |
+| 홈 카드의 네온 어항 그림 | `src/components/NeonTank.tsx` (화면 밖에서 멈추기는 `src/lib/usePauseOffscreen.ts`) |
 | 영상 · 큰 파일 | `public/media/` (웹용으로 줄인 것만) |
 | 두쿠아리움 방침 · 삭제 안내 · 베타 모집 글 | `src/data/doquarium.ts` (원본) + 화면 `DoquariumDocView.tsx` (섹션에 `links`로 버튼) |
 | 베타 모집 켜고 끄기 | `src/data/doquarium.ts`의 `BETA.recruiting` (끄면 홈 · 두쿠아리움 · 푸터의 버튼과 "Testers Wanted" 배지가 사라지고 "Coming Soon"으로) |
@@ -70,7 +71,7 @@
 
 - **lucide 아이콘은 이름으로 하나씩** import. `import * as Icons from 'lucide-react'` 금지 (아이콘 1,400개가 전부 실려 첫 파일이 3MB가 됐었다)
 - **무거운 라이브러리(PDF · 이미지 · 바코드 등)는 도구 파일 안에서만** 쓴다. 도구는 `lazy()`라 그 도구를 열 때만 받는다. 홈 · 공통 컴포넌트에서 import하지 않는다
-- **끝없이 도는 애니메이션 X**: 카드 반짝임은 마우스를 올렸을 때만(`.group:hover .shimmer-effect`). 움직이는 SVG는 `usePauseOffscreen`(`RarityFish.tsx`)으로 화면 밖에서 멈춘다
+- **끝없이 도는 애니메이션 X**: 카드 반짝임은 마우스를 올렸을 때만(`.group:hover .shimmer-effect`). 움직이는 SVG는 `usePauseOffscreen`(`src/lib/usePauseOffscreen.ts`)으로 화면 밖에서 멈춘다
 - **SVG 빛 번짐 필터는 그룹에 한 번**. 선마다 `feGaussianBlur`를 걸지 않는다 (매 프레임 수십 번 다시 계산)
 - 마우스 따라가는 효과는 React 상태 대신 `ref` + `requestAnimationFrame` + `transform` (blend mode X)
 - 빌드 후 첫 파일(`dist/assets/index-*.js`)이 크게 늘었으면 이유를 찾는다 (지금 약 560KB)
@@ -117,4 +118,6 @@
 | 2026-10-12 | 콕 알림 하루 1번 기록(pushLog) 2일 뒤 자동 삭제 |
 | 2026-10-18 | 방문자 분석 Vercel Web Analytics (쿠키 없음) · Search Console(raonepark@gmail.com) · 페이지마다 제목 · 설명 · 진짜 주소 |
 | 2026-10-18 | 두쿠아리움 홍보 영상(래원 `doquarium-reel-02-deep`, 세로 32초, 영어 자막)을 **두쿠아리움 페이지 맨 위에만** (홈은 가볍게 그대로). 13MB → 웹용 1.45MB |
+| 2026-10-22 | `/doquarium`을 **두쿠아리움 공식 홈페이지**로 다시 만듦 (한 · 영 `/ko`): 스토어 문구 바탕 글 + 진짜 앱 화면 5장 + 홍보 영상 + 그 밖의 기능 6개 + 원칙 + 자주 묻는 질문 + 연락 · 방침 링크. 사이트가 그린 등급 물고기(`RarityFish`)는 앱과 생김새가 달라 뺌 (래원 결정: 주소 그대로 · 한영 · 진짜 화면 위주). 스토어 문구가 바뀌면 `doquariumHome.ts`도 |
+| 2026-10-22 | 홈페이지에서 로그인해 할 일 추가하기: **기획부터** (앱 · 서버 규칙 · 방침이 같이 바뀌는 일이라, doquarium 레포 docs/10에 정할 것) |
 | 2026-10-18 | 두쿠아리움 베타 테스터 모집 페이지 `/doquarium/beta`(한 · 영) + 홈 · 두쿠아리움 페이지 버튼 (12명 · 14일 규칙, 잠시). 가입: 가장 쉬운 길은 Gmail을 doquarium@gmail.com으로 보내기, 직접은 크롬 → 그룹 가입 → 테스터 되기 → 설치 (doquarium docs/14와 같게). 다 모이면 `BETA.recruiting = false` |
