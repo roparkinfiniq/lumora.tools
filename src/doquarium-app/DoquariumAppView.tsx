@@ -1,4 +1,5 @@
-import { Fragment, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import { AnimatePresence, MotionConfig, motion } from "motion/react";
 import { ArrowLeft, Check, ChevronDown, Clock, CloudFog, Fish, Ghost, Lock, LogOut, Plus, Repeat, Smartphone, Trash2, Users, X } from "lucide-react";
 import { applySeo } from "../seo";
 import {
@@ -37,8 +38,7 @@ const COPY = {
     title: "Doquarium on the web",
     sub: "Your to-dos on any computer. Your fish stays on your phone.",
     signInTitle: "Sign in to see your tanks",
-    signInBody:
-      "Use the same Google or Apple account you signed in with in the app (Settings → Account).",
+    signInBody: "Use the same Google or Apple account you signed in with in the app (Settings → Account).",
     signIn: "Sign in with Google",
     signInApple: "Sign in with Apple",
     signingIn: "Signing in…",
@@ -85,8 +85,7 @@ const COPY = {
     delete: "Delete",
     deleteSure: "Delete?",
     waiting: "Waiting for your phone",
-    waitingNote: (n: number) =>
-      `${n} change${n === 1 ? "" : "s"} will reach your phone the next time Doquarium is open. Your fish eats then.`,
+    waitingNote: (n: number) => `${n} change${n === 1 ? "" : "s"} will reach your phone the next time Doquarium is open. Your fish eats then.`,
     sendFailed: "Couldn't save that change. Check your connection and try again.",
     synced: (t: string) => `Last updated from your phone: ${t}`,
     syncNote: "The list updates when your phone saves a backup (while the app is open).",
@@ -105,8 +104,7 @@ const COPY = {
     signInFailed: "로그인하지 못했어요. 다시 해 주세요.",
     loading: "내 어항을 불러오는 중…",
     noBackupTitle: "아직 백업이 없어요",
-    noBackupBody: (email: string) =>
-      `${email} 계정의 기록을 찾지 못했어요. 앱의 설정 → 계정에서 이 계정으로 로그인한 뒤 다시 열어 주세요.`,
+    noBackupBody: (email: string) => `${email} 계정의 기록을 찾지 못했어요. 앱의 설정 → 계정에서 이 계정으로 로그인한 뒤 다시 열어 주세요.`,
     loadFailed: "어항을 불러오지 못했어요. 인터넷을 확인하고 다시 해 주세요.",
     retry: "다시 불러오기",
     myTank: "내 어항",
@@ -155,8 +153,14 @@ const COPY = {
 } as const;
 
 const SEO: Record<Lang, { title: string; description: string }> = {
-  en: { title: "Doquarium on the Web — Your To-Dos on Any Computer", description: "Sign in with Google to see your Doquarium tanks and to-dos on any computer." },
-  ko: { title: "웹에서 보는 두쿠아리움 — 어느 컴퓨터에서든 내 할 일", description: "Google로 로그인하면 어느 컴퓨터에서든 두쿠아리움 어항과 할 일을 볼 수 있어요." },
+  en: {
+    title: "Doquarium on the Web — Your To-Dos on Any Computer",
+    description: "Sign in with Google to see your Doquarium tanks and to-dos on any computer.",
+  },
+  ko: {
+    title: "웹에서 보는 두쿠아리움 — 어느 컴퓨터에서든 내 할 일",
+    description: "Google로 로그인하면 어느 컴퓨터에서든 두쿠아리움 어항과 할 일을 볼 수 있어요.",
+  },
 };
 
 type State =
@@ -182,6 +186,9 @@ export default function DoquariumAppView({ onBack }: { onBack: () => void }) {
   const [settling, setSettling] = useState<WebNote[]>([]);
   const failed = useRef(new Set<string>());
   const [sendError, setSendError] = useState(false);
+  // Short, soft motions (래원 2026-10-23): finishing fills the circle and folds the row away; deleting slides it out
+  const [finishing, setFinishing] = useState<string[]>([]);
+  const [leaving, setLeaving] = useState<Record<string, Leave>>({});
 
   useEffect(() => {
     const url = lang === "ko" ? `${DOQUARIUM_APP_PATH}/ko` : DOQUARIUM_APP_PATH;
@@ -263,9 +270,7 @@ export default function DoquariumAppView({ onBack }: { onBack: () => void }) {
   const activeFilter = filter !== null && categories.some((c) => c.id === filter) ? filter : null;
   const inFilter = (x: WebTodo) => activeFilter === null || x.category === activeFilter;
   const open = tank ? sortTodos(tank.todos.filter((x) => isVisible(x, now) && inFilter(x))) : [];
-  const done = tank
-    ? tank.todos.filter((x) => doneToday(x, now) && inFilter(x)).sort((a, b) => b.doneAt!.getTime() - a.doneAt!.getTime())
-    : [];
+  const done = tank ? tank.todos.filter((x) => doneToday(x, now) && inFilter(x)).sort((a, b) => b.doneAt!.getTime() - a.doneAt!.getTime()) : [];
   const waitingIds = new Set(inbox.filter((n) => n.tank === tank?.id).map((n) => n.todo));
   const categoryName = (id?: string) => categories.find((c) => c.id === id)?.name;
 
@@ -280,244 +285,289 @@ export default function DoquariumAppView({ onBack }: { onBack: () => void }) {
     return note;
   };
 
+  // The row plays its motion first, then the note goes out (the overlay then removes the row, which folds away)
+  const finish = (id: string) => {
+    if (finishing.includes(id)) return;
+    setFinishing((f) => [...f, id]);
+    setLeaving((l) => ({ ...l, [id]: "done" }));
+    window.setTimeout(() => send("done", { todo: id }), 450);
+  };
+  const remove = (id: string) => {
+    setLeaving((l) => ({ ...l, [id]: "delete" }));
+    window.requestAnimationFrame(() => send("delete", { todo: id }));
+  };
+  const undo = (id: string) => {
+    setFinishing((f) => f.filter((x) => x !== id));
+    setLeaving((l) => ({ ...l, [id]: "undo" }));
+    window.requestAnimationFrame(() => send("undo", { todo: id }));
+  };
+
   const pickTank = (id: string) => {
     setTankId(id);
     setFilter(null);
   };
 
   return (
-    <div className="container max-w-3xl mx-auto px-6 pt-12 pb-32">
-      <div className="flex items-center justify-between gap-4 mb-10">
-        <button onClick={onBack} className="flex items-center gap-2 text-sm font-display font-bold text-white/50 hover:text-white transition-colors">
-          <ArrowLeft className="h-4 w-4" /> {t.back}
-        </button>
-        <div className="inline-flex p-1 rounded-full bg-white/5 border border-white/10" role="group" aria-label="Language">
-          {(["en", "ko"] as const).map((l) => (
-            <button
-              key={l}
-              onClick={() => setLang(l)}
-              aria-pressed={lang === l}
-              className={`px-4 py-1.5 rounded-full text-xs font-display font-bold transition-colors ${lang === l ? "bg-white text-black" : "text-white/50 hover:text-white"}`}
-            >
-              {l === "en" ? "English" : "한국어"}
-            </button>
-          ))}
+    // "Reduce motion" on the computer turns the slides off (fades stay)
+    <MotionConfig reducedMotion="user">
+      <div className="container max-w-3xl mx-auto px-6 pt-12 pb-32">
+        <div className="flex items-center justify-between gap-4 mb-10">
+          <button onClick={onBack} className="flex items-center gap-2 text-sm font-display font-bold text-white/50 hover:text-white transition-colors">
+            <ArrowLeft className="h-4 w-4" /> {t.back}
+          </button>
+          <div className="inline-flex p-1 rounded-full bg-white/5 border border-white/10" role="group" aria-label="Language">
+            {(["en", "ko"] as const).map((l) => (
+              <button
+                key={l}
+                onClick={() => setLang(l)}
+                aria-pressed={lang === l}
+                className={`px-4 py-1.5 rounded-full text-xs font-display font-bold transition-colors ${lang === l ? "bg-white text-black" : "text-white/50 hover:text-white"}`}
+              >
+                {l === "en" ? "English" : "한국어"}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
 
-      <h1 className="text-3xl md:text-5xl font-display font-bold text-white tracking-tight mb-3">{t.title}</h1>
-      <p className="text-base md:text-lg text-lumora-sub font-medium mb-10">{t.sub}</p>
+        <h1 className="text-3xl md:text-5xl font-display font-bold text-white tracking-tight mb-3">{t.title}</h1>
+        <p className="text-base md:text-lg text-lumora-sub font-medium mb-10">{t.sub}</p>
 
-      {(state.kind === "checking" || state.kind === "loading") && (
-        <p className="text-white/50 font-medium animate-pulse">{t.loading}</p>
-      )}
+        {(state.kind === "checking" || state.kind === "loading") && <p className="text-white/50 font-medium animate-pulse">{t.loading}</p>}
 
-      {state.kind === "signedOut" && (
-        <div className="rounded-[28px] border border-[#3ef2ff]/15 bg-[#0c0c0e] p-8 md:p-10">
-          <h2 className="text-xl md:text-2xl font-display font-bold text-white mb-3">{t.signInTitle}</h2>
-          <p className="text-sm md:text-base text-lumora-sub font-medium leading-relaxed mb-8">{t.signInBody}</p>
-          <div className="flex flex-col sm:flex-row gap-3">
+        {state.kind === "signedOut" && (
+          <div className="rounded-[28px] border border-[#3ef2ff]/15 bg-[#0c0c0e] p-8 md:p-10">
+            <h2 className="text-xl md:text-2xl font-display font-bold text-white mb-3">{t.signInTitle}</h2>
+            <p className="text-sm md:text-base text-lumora-sub font-medium leading-relaxed mb-8">{t.signInBody}</p>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <button
+                onClick={() => signIn("google")}
+                disabled={state.busy}
+                className="flex items-center justify-center gap-3 h-12 px-4 sm:px-6 rounded-xl bg-white text-black font-display font-bold text-sm hover:-translate-y-0.5 transition-transform disabled:opacity-60"
+              >
+                <GoogleMark /> {state.busy ? t.signingIn : t.signIn}
+              </button>
+              <button
+                onClick={() => signIn("apple")}
+                disabled={state.busy}
+                className="flex items-center justify-center gap-3 h-12 px-4 sm:px-6 rounded-xl bg-black text-white border border-white/25 font-display font-bold text-sm hover:-translate-y-0.5 transition-transform disabled:opacity-60"
+              >
+                <AppleMark /> {state.busy ? t.signingIn : t.signInApple}
+              </button>
+            </div>
+            {state.error && <p className="mt-4 text-sm text-red-400">{t.signInFailed}</p>}
+          </div>
+        )}
+
+        {state.kind === "empty" && (
+          <div className="rounded-[28px] border border-white/10 bg-[#0c0c0e] p-8">
+            <h2 className="text-xl font-display font-bold text-white mb-3">{t.noBackupTitle}</h2>
+            <p className="text-sm md:text-base text-lumora-sub font-medium leading-relaxed">{t.noBackupBody(state.user.email ?? "")}</p>
+          </div>
+        )}
+
+        {state.kind === "error" && (
+          <div className="rounded-[28px] border border-white/10 bg-[#0c0c0e] p-8">
+            <p className="text-sm md:text-base text-lumora-sub font-medium mb-5">{t.loadFailed}</p>
             <button
-              onClick={() => signIn("google")}
-              disabled={state.busy}
-              className="flex items-center justify-center gap-3 h-12 px-4 sm:px-6 rounded-xl bg-white text-black font-display font-bold text-sm hover:-translate-y-0.5 transition-transform disabled:opacity-60"
+              onClick={() => setRetryKey((k) => k + 1)}
+              className="h-11 px-5 rounded-xl bg-white/10 border border-white/10 text-white font-display font-bold text-sm hover:bg-white/15"
             >
-              <GoogleMark /> {state.busy ? t.signingIn : t.signIn}
-            </button>
-            <button
-              onClick={() => signIn("apple")}
-              disabled={state.busy}
-              className="flex items-center justify-center gap-3 h-12 px-4 sm:px-6 rounded-xl bg-black text-white border border-white/25 font-display font-bold text-sm hover:-translate-y-0.5 transition-transform disabled:opacity-60"
-            >
-              <AppleMark /> {state.busy ? t.signingIn : t.signInApple}
+              {t.retry}
             </button>
           </div>
-          {state.error && <p className="mt-4 text-sm text-red-400">{t.signInFailed}</p>}
-        </div>
-      )}
+        )}
 
-      {state.kind === "empty" && (
-        <div className="rounded-[28px] border border-white/10 bg-[#0c0c0e] p-8">
-          <h2 className="text-xl font-display font-bold text-white mb-3">{t.noBackupTitle}</h2>
-          <p className="text-sm md:text-base text-lumora-sub font-medium leading-relaxed">{t.noBackupBody(state.user.email ?? "")}</p>
-        </div>
-      )}
+        {ready && shown && tank && (
+          <>
+            {shown.tanks.length > 1 && (
+              <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2 mb-6">
+                {shown.tanks.map((x) => (
+                  <button
+                    key={x.id || "first"}
+                    onClick={() => pickTank(x.id)}
+                    className={`shrink-0 flex items-center gap-2 px-4 h-10 rounded-full text-sm font-display font-bold transition-colors ${
+                      x.id === tank.id ? "bg-[#c9fbff] text-[#062226]" : "bg-white/5 border border-white/10 text-white/60 hover:text-white"
+                    }`}
+                  >
+                    {x.shared && <Users className="h-3.5 w-3.5" />}
+                    {x.name || t.myTank}
+                  </button>
+                ))}
+              </div>
+            )}
 
-      {state.kind === "error" && (
-        <div className="rounded-[28px] border border-white/10 bg-[#0c0c0e] p-8">
-          <p className="text-sm md:text-base text-lumora-sub font-medium mb-5">{t.loadFailed}</p>
-          <button onClick={() => setRetryKey((k) => k + 1)} className="h-11 px-5 rounded-xl bg-white/10 border border-white/10 text-white font-display font-bold text-sm hover:bg-white/15">
-            {t.retry}
-          </button>
-        </div>
-      )}
+            <div className="rounded-[28px] border border-white/10 bg-[#0c0c0e] overflow-hidden">
+              <div className="px-4 sm:px-6 pt-6 pb-4 border-b border-white/5">
+                <p className="text-xs font-display font-bold uppercase tracking-widest text-[#3ef2ff]/70 mb-1">
+                  {tank.name || t.myTank}
+                  {tank.shared && <span className="text-white/30"> · {t.shared}</span>}
+                </p>
+                <h2 className="text-2xl font-display font-bold text-white">
+                  {t.today} <span className="text-white/30 font-medium">{open.length}</span>
+                </h2>
+                {tank.fish && <FishLine t={t} fish={tank.fish} />}
+                {(categories.length > 0 || canWrite) && (
+                  <CategoryChips
+                    t={t}
+                    categories={categories}
+                    active={activeFilter}
+                    onPick={setFilter}
+                    onCreate={
+                      canWrite
+                        ? (name) => {
+                            const same = categories.find((c) => c.name === name);
+                            if (same) return setFilter(same.id);
+                            const id = newId("c");
+                            send("category", { category: id, name });
+                            setFilter(id);
+                          }
+                        : undefined
+                    }
+                  />
+                )}
+              </div>
 
-      {ready && shown && tank && (
-        <>
-          {shown.tanks.length > 1 && (
-            <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2 mb-6">
-              {shown.tanks.map((x) => (
-                <button
-                  key={x.id || "first"}
-                  onClick={() => pickTank(x.id)}
-                  className={`shrink-0 flex items-center gap-2 px-4 h-10 rounded-full text-sm font-display font-bold transition-colors ${
-                    x.id === tank.id ? "bg-[#c9fbff] text-[#062226]" : "bg-white/5 border border-white/10 text-white/60 hover:text-white"
-                  }`}
-                >
-                  {x.shared && <Users className="h-3.5 w-3.5" />}
-                  {x.name || t.myTank}
-                </button>
-              ))}
-            </div>
-          )}
-
-          <div className="rounded-[28px] border border-white/10 bg-[#0c0c0e] overflow-hidden">
-            <div className="px-4 sm:px-6 pt-6 pb-4 border-b border-white/5">
-              <p className="text-xs font-display font-bold uppercase tracking-widest text-[#3ef2ff]/70 mb-1">
-                {tank.name || t.myTank}
-                {tank.shared && <span className="text-white/30"> · {t.shared}</span>}
-              </p>
-              <h2 className="text-2xl font-display font-bold text-white">
-                {t.today} <span className="text-white/30 font-medium">{open.length}</span>
-              </h2>
-              {tank.fish && <FishLine t={t} fish={tank.fish} />}
-              {(categories.length > 0 || canWrite) && (
-                <CategoryChips
+              {canWrite && (
+                <AddRow
                   t={t}
-                  categories={categories}
-                  active={activeFilter}
-                  onPick={setFilter}
-                  onCreate={
-                    canWrite
-                      ? (name) => {
-                          const same = categories.find((c) => c.name === name);
-                          if (same) return setFilter(same.id);
-                          const id = newId("c");
-                          send("category", { category: id, name });
-                          setFilter(id);
-                        }
-                      : undefined
-                  }
+                  category={categoryName(activeFilter ?? undefined)}
+                  onAdd={(title) => send("add", { todo: newId(), title, category: activeFilter ?? undefined })}
                 />
+              )}
+
+              {/* Always mounted so the last row can still fold away */}
+              <ul className="divide-y divide-white/5">
+                <AnimatePresence initial={false}>
+                  {open.map((x) => (
+                    <motion.li key={x.id} className="overflow-hidden" initial={ENTER} animate={SHOWN} exit={EXIT[leaving[x.id] ?? "undo"]} transition={EASE}>
+                      <TodoRow
+                        t={t}
+                        todo={x}
+                        categories={categories}
+                        showCategory={activeFilter === null}
+                        waiting={waitingIds.has(x.id)}
+                        due={x.dueDate ? t.due(fmt.day.format(x.dueDate)) : undefined}
+                        rot={rotLabel(t, x, rotLevel(x, now, tank.crew), now)}
+                        finishing={finishing.includes(x.id)}
+                        onFinish={canWrite ? () => finish(x.id) : undefined}
+                        onSave={(title, category) =>
+                          send("edit", {
+                            todo: x.id,
+                            title: title !== x.title ? title : undefined,
+                            category: category !== (x.category ?? "") ? category : undefined,
+                          })
+                        }
+                        onDelete={() => remove(x.id)}
+                      />
+                    </motion.li>
+                  ))}
+                </AnimatePresence>
+              </ul>
+              {open.length === 0 && (
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.3, delay: 0.25 }}
+                  className="px-4 sm:px-6 py-8 text-lumora-sub font-medium"
+                >
+                  {activeFilter === null ? t.nothing : t.nothingHere}
+                </motion.p>
+              )}
+
+              {done.length > 0 && (
+                <div className="border-t border-white/5">
+                  <button
+                    onClick={() => setShowDone((v) => !v)}
+                    className="w-full flex items-center justify-between px-4 sm:px-6 py-4 text-sm font-display font-bold text-white/50 hover:text-white"
+                  >
+                    {t.finishedToday(done.length)}
+                    <ChevronDown className={`h-4 w-4 transition-transform ${showDone ? "rotate-180" : ""}`} />
+                  </button>
+                  {showDone && (
+                    <ul className="pb-3">
+                      <AnimatePresence initial={false}>
+                        {done.map((x) => (
+                          <motion.li key={x.id} className="overflow-hidden" initial={ENTER} animate={SHOWN} exit={EXIT.undo} transition={EASE}>
+                            <div className="flex items-center gap-4 px-4 sm:px-6 py-2.5">
+                              {canWrite ? (
+                                <button
+                                  onClick={() => undo(x.id)}
+                                  aria-label={t.undo(x.title)}
+                                  title={t.undo(x.title)}
+                                  className="h-5 w-5 shrink-0 rounded-full bg-[#3ef2ff]/30 border-2 border-[#3ef2ff]/50 flex items-center justify-center hover:bg-[#3ef2ff]/15 transition-colors"
+                                >
+                                  <Check className="h-3 w-3 text-[#c9fbff]" strokeWidth={3} />
+                                </button>
+                              ) : (
+                                <span className="h-5 w-5 shrink-0 rounded-full bg-[#3ef2ff]/30 border-2 border-[#3ef2ff]/50" aria-hidden="true" />
+                              )}
+                              <span className="flex-1 min-w-0 text-white/40 line-through break-words">{x.title}</span>
+                              {waitingIds.has(x.id) && <Waiting label={t.waiting} />}
+                            </div>
+                          </motion.li>
+                        ))}
+                      </AnimatePresence>
+                    </ul>
+                  )}
+                </div>
               )}
             </div>
 
-            {canWrite && (
-              <AddRow
-                t={t}
-                category={categoryName(activeFilter ?? undefined)}
-                onAdd={(title) => send("add", { todo: newId(), title, category: activeFilter ?? undefined })}
-              />
-            )}
+            <div className="mt-6 flex flex-col gap-2 text-xs md:text-sm text-white/40 font-medium">
+              {sendError && <p className="text-red-400">{t.sendFailed}</p>}
+              {inbox.length > 0 && (
+                <p className="flex items-start gap-2 text-[#8ff7ff]/70">
+                  <Smartphone className="h-4 w-4 shrink-0 mt-0.5" /> {t.waitingNote(inbox.length)}
+                </p>
+              )}
+              {ready.backup.updatedAt && <p>{t.synced(fmt.time.format(ready.backup.updatedAt))}</p>}
+              <p>{t.syncNote}</p>
+              {!canWrite && (
+                <p className="flex items-start gap-2 text-[#8ff7ff]/70">
+                  <Smartphone className="h-4 w-4 shrink-0 mt-0.5" /> {t.comingSoon}
+                </p>
+              )}
+            </div>
+          </>
+        )}
 
-            {open.length === 0 ? (
-              <p className="px-4 sm:px-6 py-8 text-lumora-sub font-medium">{activeFilter === null ? t.nothing : t.nothingHere}</p>
-            ) : (
-              <ul className="divide-y divide-white/5">
-                {open.map((x) => (
-                  <Fragment key={x.id}>
-                    <TodoRow
-                      t={t}
-                      todo={x}
-                      categories={categories}
-                      showCategory={activeFilter === null}
-                      waiting={waitingIds.has(x.id)}
-                      due={x.dueDate ? t.due(fmt.day.format(x.dueDate)) : undefined}
-                      rot={rotLabel(t, x, rotLevel(x, now, tank.crew), now)}
-                      onFinish={canWrite ? () => send("done", { todo: x.id }) : undefined}
-                      onSave={(title, category) =>
-                        send("edit", {
-                          todo: x.id,
-                          title: title !== x.title ? title : undefined,
-                          category: category !== (x.category ?? "") ? category : undefined,
-                        })
-                      }
-                      onDelete={() => send("delete", { todo: x.id })}
-                    />
-                  </Fragment>
-                ))}
-              </ul>
-            )}
-
-            {done.length > 0 && (
-              <div className="border-t border-white/5">
-                <button onClick={() => setShowDone((v) => !v)} className="w-full flex items-center justify-between px-4 sm:px-6 py-4 text-sm font-display font-bold text-white/50 hover:text-white">
-                  {t.finishedToday(done.length)}
-                  <ChevronDown className={`h-4 w-4 transition-transform ${showDone ? "rotate-180" : ""}`} />
-                </button>
-                {showDone && (
-                  <ul className="pb-3">
-                    {done.map((x) => (
-                      <li key={x.id} className="flex items-center gap-4 px-4 sm:px-6 py-2.5">
-                        {canWrite ? (
-                          <button
-                            onClick={() => send("undo", { todo: x.id })}
-                            aria-label={t.undo(x.title)}
-                            title={t.undo(x.title)}
-                            className="h-5 w-5 shrink-0 rounded-full bg-[#3ef2ff]/30 border-2 border-[#3ef2ff]/50 flex items-center justify-center hover:bg-[#3ef2ff]/15 transition-colors"
-                          >
-                            <Check className="h-3 w-3 text-[#c9fbff]" strokeWidth={3} />
-                          </button>
-                        ) : (
-                          <span className="h-5 w-5 shrink-0 rounded-full bg-[#3ef2ff]/30 border-2 border-[#3ef2ff]/50" aria-hidden="true" />
-                        )}
-                        <span className="flex-1 min-w-0 text-white/40 line-through break-words">{x.title}</span>
-                        {waitingIds.has(x.id) && <Waiting label={t.waiting} />}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            )}
+        {user && (
+          <div className="mt-10 flex items-center justify-between gap-4 pt-6 border-t border-white/5 text-sm">
+            <span className="text-white/40 truncate">{user.email}</span>
+            <button onClick={() => signOutWeb()} className="flex items-center gap-2 text-white/50 hover:text-white font-display font-bold">
+              <LogOut className="h-4 w-4" /> {t.signOut}
+            </button>
           </div>
-
-          <div className="mt-6 flex flex-col gap-2 text-xs md:text-sm text-white/40 font-medium">
-            {sendError && <p className="text-red-400">{t.sendFailed}</p>}
-            {inbox.length > 0 && (
-              <p className="flex items-start gap-2 text-[#8ff7ff]/70">
-                <Smartphone className="h-4 w-4 shrink-0 mt-0.5" /> {t.waitingNote(inbox.length)}
-              </p>
-            )}
-            {ready.backup.updatedAt && <p>{t.synced(fmt.time.format(ready.backup.updatedAt))}</p>}
-            <p>{t.syncNote}</p>
-            {!canWrite && (
-              <p className="flex items-start gap-2 text-[#8ff7ff]/70">
-                <Smartphone className="h-4 w-4 shrink-0 mt-0.5" /> {t.comingSoon}
-              </p>
-            )}
-          </div>
-        </>
-      )}
-
-      {user && (
-        <div className="mt-10 flex items-center justify-between gap-4 pt-6 border-t border-white/5 text-sm">
-          <span className="text-white/40 truncate">{user.email}</span>
-          <button onClick={() => signOutWeb()} className="flex items-center gap-2 text-white/50 hover:text-white font-display font-bold">
-            <LogOut className="h-4 w-4" /> {t.signOut}
-          </button>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </MotionConfig>
   );
 }
 
 type Copy = (typeof COPY)[Lang];
 
+// Row motions: short and soft (docs/02: calm, no flashy rewards). Finished rows fold up, deleted rows slide left first
+type Leave = "done" | "delete" | "undo";
+const ENTER = { opacity: 0, height: 0 };
+const SHOWN = { opacity: 1, height: "auto" };
+const EASE = { duration: 0.3, ease: [0.16, 1, 0.3, 1] as const };
+const EXIT: Record<Leave, object> = {
+  done: { opacity: 0, height: 0, transition: { duration: 0.32, ease: [0.4, 0, 0.2, 1] } },
+  delete: { opacity: 0, x: -40, height: 0, transition: { opacity: { duration: 0.22 }, x: { duration: 0.22 }, height: { duration: 0.24, delay: 0.14 } } },
+  undo: { opacity: 0, height: 0, transition: { duration: 0.25 } },
+};
+
 /** The app's rot label (l10n rotAge): days counted on the calendar from the due date, or from the day it was written */
 function rotLabel(t: Copy, todo: WebTodo, level: number, now: Date) {
   if (Math.floor(level) < 1) return undefined;
   const days = daysSince(todo.dueDate ?? todo.createdAt, now);
-  const age = todo.dueDate
-    ? days <= 1 ? t.dueYesterday : t.dueDaysAgo(days)
-    : days <= 1 ? t.addedYesterday : t.addedDaysAgo(days);
+  const age = todo.dueDate ? (days <= 1 ? t.dueYesterday : t.dueDaysAgo(days)) : days <= 1 ? t.addedYesterday : t.addedDaysAgo(days);
   return level >= ROT_MAX - 1e-6 ? `${t.rotSpoiled} · ${age}` : age;
 }
 
 /** One line about the fish, in words like the app (no numbers), from the phone's last backup */
 function FishLine({ t, fish }: { t: Copy; fish: { health: number; dead: boolean } }) {
-  const text = fish.dead
-    ? t.fishGhost
-    : fish.health >= 99.5 ? t.fishOk : fish.health >= 60 ? t.fishWeak : fish.health >= 30 ? t.fishSick : t.fishDanger;
+  const text = fish.dead ? t.fishGhost : fish.health >= 99.5 ? t.fishOk : fish.health >= 60 ? t.fishWeak : fish.health >= 30 ? t.fishSick : t.fishDanger;
   const Icon = fish.dead ? Ghost : Fish;
   const tone = fish.dead || fish.health < 60 ? "text-white/60" : "text-[#8ff7ff]/80";
   return (
@@ -646,6 +696,7 @@ function TodoRow({
   waiting,
   due,
   rot,
+  finishing,
   onFinish,
   onSave,
   onDelete,
@@ -658,6 +709,8 @@ function TodoRow({
   due?: string;
   /** "어제 등록" · "다 썩음 · 마감 2일 지남" while it rots (the app shows this instead of the due date) */
   rot?: string;
+  /** Just finished: the circle fills with a soft glow and the title is crossed out, before the row folds away */
+  finishing?: boolean;
   onFinish?: () => void;
   onSave: (title: string, category: string) => void;
   onDelete: () => void;
@@ -669,7 +722,7 @@ function TodoRow({
   const category0 = categories.find((c) => c.id === todo.category)?.name;
   const hasMeta = (showCategory && !!category0) || todo.repeat || todo.private || !!due || !!rot || waiting;
   // Rotting to-dos turn a murky olive grey, with the age next to them (docs/02: easy to spot, still easy to read)
-  const ink = rot ? "text-[#A9A47F]" : "text-white";
+  const ink = finishing ? "text-white/40 line-through pointer-events-none" : rot ? "text-[#A9A47F]" : "text-white";
 
   const start = () => {
     setTitle(todo.title);
@@ -686,7 +739,7 @@ function TodoRow({
 
   if (editing) {
     return (
-      <li className="px-4 sm:px-6 py-4 bg-white/[0.02]">
+      <div className="px-4 sm:px-6 py-4 bg-white/[0.02]">
         <form onSubmit={save} className="flex flex-col gap-3">
           <input
             autoFocus
@@ -720,21 +773,47 @@ function TodoRow({
             >
               <Trash2 className="h-4 w-4" /> {sure ? t.deleteSure : t.delete}
             </button>
-            <button type="button" onClick={() => setEditing(false)} className="h-10 px-3.5 rounded-xl text-sm font-display font-bold text-white/50 hover:text-white flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={() => setEditing(false)}
+              className="h-10 px-3.5 rounded-xl text-sm font-display font-bold text-white/50 hover:text-white flex items-center gap-1.5"
+            >
               <X className="h-4 w-4" /> {t.cancel}
             </button>
-            <button type="submit" disabled={!title.trim()} className="h-10 px-4 rounded-xl bg-white text-black text-sm font-display font-bold disabled:opacity-40">
+            <button
+              type="submit"
+              disabled={!title.trim()}
+              className="h-10 px-4 rounded-xl bg-white text-black text-sm font-display font-bold disabled:opacity-40"
+            >
               {t.save}
             </button>
           </div>
         </form>
-      </li>
+      </div>
     );
   }
 
   return (
-    <li className="flex items-start gap-4 px-4 sm:px-6 py-4">
-      {onFinish ? (
+    <div className="flex items-start gap-4 px-4 sm:px-6 py-4">
+      {finishing ? (
+        <span className="relative mt-0.5 h-5 w-5 shrink-0" aria-hidden="true">
+          <motion.span
+            className="absolute inset-0 rounded-full bg-[#3ef2ff]/35 border-2 border-[#3ef2ff]/80 flex items-center justify-center"
+            initial={{ scale: 0.6 }}
+            animate={{ scale: [0.6, 1.15, 1] }}
+            transition={{ duration: 0.35, ease: "easeOut" }}
+          >
+            <Check className="h-3 w-3 text-[#c9fbff]" strokeWidth={3} />
+          </motion.span>
+          {/* one soft ring of light, like a ripple in the tank */}
+          <motion.span
+            className="absolute inset-0 rounded-full border-2 border-[#3ef2ff]/60"
+            initial={{ scale: 1, opacity: 0.7 }}
+            animate={{ scale: 2.2, opacity: 0 }}
+            transition={{ duration: 0.55, ease: "easeOut" }}
+          />
+        </span>
+      ) : onFinish ? (
         <button
           onClick={onFinish}
           aria-label={t.finish(todo.title)}
@@ -748,7 +827,11 @@ function TodoRow({
       )}
       <div className="flex-1 min-w-0">
         {onFinish ? (
-          <button onClick={start} aria-label={t.edit(todo.title)} className={`block w-full text-left ${ink} font-medium break-words hover:opacity-80`}>
+          <button
+            onClick={start}
+            aria-label={t.edit(todo.title)}
+            className={`block w-full text-left ${ink} font-medium break-words hover:opacity-80 transition-colors duration-300`}
+          >
             {todo.title}
           </button>
         ) : (
@@ -770,7 +853,7 @@ function TodoRow({
           </span>
         )}
       </div>
-    </li>
+    </div>
   );
 }
 
