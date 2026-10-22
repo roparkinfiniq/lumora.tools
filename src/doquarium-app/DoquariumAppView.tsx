@@ -16,7 +16,7 @@ import {
   type WebNote,
   type WebTodo,
 } from "./backup";
-import { WEB_WRITES, sendNote, signInWithGoogle, signOutWeb, watchBackup, watchInbox, watchUser, type User } from "./firebase";
+import { WEB_WRITES, sendNote, signInWithApple, signInWithGoogle, signOutWeb, watchBackup, watchInbox, watchUser, type User } from "./firebase";
 
 // Doquarium on the web (/doquarium/app, Korean /doquarium/app/ko): sign in with
 // the same Google account as the app and see your tanks' to-dos (doquarium repo
@@ -35,14 +35,15 @@ const COPY = {
     sub: "Your to-dos on any computer. Your fish stays on your phone.",
     signInTitle: "Sign in to see your tanks",
     signInBody:
-      "Use the same Google account you signed in with in the app (Settings → Account). Signing in with Apple on the web is coming soon.",
+      "Use the same Google or Apple account you signed in with in the app (Settings → Account).",
     signIn: "Sign in with Google",
+    signInApple: "Sign in with Apple",
     signingIn: "Signing in…",
     signInFailed: "Couldn't sign in. Please try again.",
     loading: "Loading your tanks…",
     noBackupTitle: "No backup yet",
     noBackupBody: (email: string) =>
-      `We couldn't find any records for ${email}. In the app, open Settings → Account and sign in with this Google account, then come back here.`,
+      `We couldn't find any records for ${email}. In the app, open Settings → Account and sign in with this account, then come back here.`,
     loadFailed: "Couldn't load your tanks. Check your connection and try again.",
     retry: "Try again",
     myTank: "My tank",
@@ -83,14 +84,15 @@ const COPY = {
     title: "웹에서 보는 두쿠아리움",
     sub: "어느 컴퓨터에서든 내 할 일을 챙겨요. 물고기는 폰에서 기다려요.",
     signInTitle: "로그인하고 내 어항 보기",
-    signInBody: "앱에서 로그인한 것과 같은 Google 계정으로 로그인해 주세요 (앱의 설정 → 계정). 웹의 Apple 로그인은 곧 열려요.",
+    signInBody: "앱에서 로그인한 것과 같은 Google 또는 Apple 계정으로 로그인해 주세요 (앱의 설정 → 계정).",
     signIn: "Google로 로그인",
+    signInApple: "Apple로 로그인",
     signingIn: "로그인하는 중…",
     signInFailed: "로그인하지 못했어요. 다시 해 주세요.",
     loading: "내 어항을 불러오는 중…",
     noBackupTitle: "아직 백업이 없어요",
     noBackupBody: (email: string) =>
-      `${email} 계정의 기록을 찾지 못했어요. 앱의 설정 → 계정에서 이 Google 계정으로 로그인한 뒤 다시 열어 주세요.`,
+      `${email} 계정의 기록을 찾지 못했어요. 앱의 설정 → 계정에서 이 계정으로 로그인한 뒤 다시 열어 주세요.`,
     loadFailed: "어항을 불러오지 못했어요. 인터넷을 확인하고 다시 해 주세요.",
     retry: "다시 불러오기",
     myTank: "내 어항",
@@ -205,10 +207,10 @@ export default function DoquariumAppView({ onBack }: { onBack: () => void }) {
     );
   }, [user]);
 
-  const signIn = async () => {
+  const signIn = async (provider: "google" | "apple") => {
     setState({ kind: "signedOut", busy: true });
     try {
-      await signInWithGoogle();
+      await (provider === "apple" ? signInWithApple() : signInWithGoogle());
     } catch {
       setState({ kind: "signedOut", error: true });
     }
@@ -289,13 +291,22 @@ export default function DoquariumAppView({ onBack }: { onBack: () => void }) {
         <div className="rounded-[28px] border border-[#3ef2ff]/15 bg-[#0c0c0e] p-8 md:p-10">
           <h2 className="text-xl md:text-2xl font-display font-bold text-white mb-3">{t.signInTitle}</h2>
           <p className="text-sm md:text-base text-lumora-sub font-medium leading-relaxed mb-8">{t.signInBody}</p>
-          <button
-            onClick={signIn}
-            disabled={state.busy}
-            className="flex items-center justify-center gap-3 h-12 px-4 sm:px-6 rounded-xl bg-white text-black font-display font-bold text-sm hover:-translate-y-0.5 transition-transform disabled:opacity-60"
-          >
-            <GoogleMark /> {state.busy ? t.signingIn : t.signIn}
-          </button>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <button
+              onClick={() => signIn("google")}
+              disabled={state.busy}
+              className="flex items-center justify-center gap-3 h-12 px-4 sm:px-6 rounded-xl bg-white text-black font-display font-bold text-sm hover:-translate-y-0.5 transition-transform disabled:opacity-60"
+            >
+              <GoogleMark /> {state.busy ? t.signingIn : t.signIn}
+            </button>
+            <button
+              onClick={() => signIn("apple")}
+              disabled={state.busy}
+              className="flex items-center justify-center gap-3 h-12 px-4 sm:px-6 rounded-xl bg-black text-white border border-white/25 font-display font-bold text-sm hover:-translate-y-0.5 transition-transform disabled:opacity-60"
+            >
+              <AppleMark /> {state.busy ? t.signingIn : t.signInApple}
+            </button>
+          </div>
           {state.error && <p className="mt-4 text-sm text-red-400">{t.signInFailed}</p>}
         </div>
       )}
@@ -698,6 +709,14 @@ function TodoRow({
         )}
       </div>
     </li>
+  );
+}
+
+function AppleMark() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden="true">
+      <path d="M16.37 12.6c-.02-2.3 1.88-3.4 1.96-3.46-1.07-1.56-2.73-1.78-3.32-1.8-1.41-.14-2.76.83-3.48.83-.72 0-1.83-.81-3-.79-1.55.02-2.97.9-3.77 2.28-1.6 2.78-.41 6.9 1.15 9.16.76 1.1 1.67 2.34 2.86 2.3 1.15-.05 1.58-.74 2.97-.74 1.38 0 1.77.74 2.98.72 1.23-.02 2.01-1.12 2.77-2.23.87-1.28 1.23-2.52 1.25-2.58-.03-.01-2.4-.92-2.42-3.65zM14.1 5.83c.63-.77 1.06-1.83.94-2.89-.91.04-2.01.61-2.66 1.37-.58.67-1.09 1.75-.96 2.79 1.02.08 2.05-.52 2.68-1.27z" />
+    </svg>
   );
 }
 

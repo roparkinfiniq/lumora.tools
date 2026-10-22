@@ -2,6 +2,7 @@
 import { getApps, initializeApp } from "firebase/app";
 import {
   GoogleAuthProvider,
+  OAuthProvider,
   connectAuthEmulator,
   getAuth,
   onAuthStateChanged,
@@ -69,6 +70,18 @@ export async function signInWithGoogle() {
   }
   const provider = new GoogleAuthProvider();
   provider.setCustomParameters({ prompt: "select_account" });
+  await signInWithPopup(auth, provider);
+}
+
+/** Sign in with Apple (web: Services ID com.lumora.doquarium.web in the Firebase Apple provider, set up 2026-10-23) */
+export async function signInWithApple() {
+  if (EMULATOR) {
+    await signInWithCredential(auth, new OAuthProvider("apple.com").credential({ idToken: JSON.stringify({ sub: "web-apple-tester", email: "apple-tester@example.com" }) }));
+    return;
+  }
+  const provider = new OAuthProvider("apple.com");
+  provider.addScope("email");
+  provider.setCustomParameters({ locale: document.documentElement.lang === "ko" ? "ko_KR" : "en_US" });
   await signInWithPopup(auth, provider);
 }
 
