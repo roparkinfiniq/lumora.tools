@@ -1,19 +1,45 @@
 import { useEffect, useRef, useState } from "react";
-import { Volume2, VolumeX, Play } from "lucide-react";
+import { Volume1, Volume2, VolumeX, Play } from "lucide-react";
 
 // Doquarium promo reel (real app footage, English captions, 32s vertical).
 // Web copy of 래원's "doquarium-reel-02-deep" (720x1280, 30fps, ~1.5MB) in
 // public/media. Nothing downloads until the reel scrolls into view; it then
 // plays muted and loops, and pauses again when scrolled away. Sound is opt-in.
 // With "reduce motion" on, it waits for a tap instead of autoplaying.
+// Sound: the file is mastered quiet for the web (about -24 LUFS). Turning sound
+// on starts at half volume and shows a volume slider (remembered per browser).
+// iPhone Safari ignores page volume, so there only on/off is shown.
 
 const SRC = "/media/doquarium-reel.mp4";
 const POSTER = "/media/doquarium-reel-poster.jpg";
+const VOLUME_KEY = "doquarium_reel_volume";
+
+function savedVolume() {
+  try {
+    const v = Number(localStorage.getItem(VOLUME_KEY));
+    return v > 0 && v <= 1 ? v : 0.5;
+  } catch {
+    return 0.5;
+  }
+}
+
+/** iPhone Safari keeps media volume at 1 no matter what the page sets */
+function canSetVolume() {
+  try {
+    const probe = document.createElement("video");
+    probe.volume = 0.5;
+    return probe.volume === 0.5;
+  } catch {
+    return false;
+  }
+}
 
 export default function DoquariumReel({ label }: { label: string }) {
   const ref = useRef<HTMLVideoElement>(null);
   const [muted, setMuted] = useState(true);
   const [paused, setPaused] = useState(true);
+  const [volume, setVolume] = useState(savedVolume);
+  const [volumeAdjustable] = useState(canSetVolume);
   const reduceMotion = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   useEffect(() => {
@@ -44,10 +70,30 @@ export default function DoquariumReel({ label }: { label: string }) {
   const toggleSound = () => {
     const video = ref.current;
     if (!video) return;
+    video.volume = volume;
     video.muted = !video.muted;
     setMuted(video.muted);
     if (!video.muted && video.paused) video.play().catch(() => {});
   };
+
+  const changeVolume = (next: number) => {
+    const video = ref.current;
+    setVolume(next);
+    if (video) {
+      video.volume = next;
+      video.muted = next === 0;
+      setMuted(video.muted);
+    }
+    if (next > 0) {
+      try {
+        localStorage.setItem(VOLUME_KEY, String(next));
+      } catch {
+        // private window: just not remembered
+      }
+    }
+  };
+
+  const SoundIcon = muted ? VolumeX : volume < 0.5 ? Volume1 : Volume2;
 
   return (
     <div className="relative w-full max-w-[300px] mx-auto">
@@ -76,13 +122,27 @@ export default function DoquariumReel({ label }: { label: string }) {
             <Play className="h-7 w-7 ml-1" />
           </button>
         )}
-        <button
-          onClick={toggleSound}
-          className="absolute bottom-3 right-3 h-10 w-10 rounded-full bg-black/55 border border-white/15 backdrop-blur-sm flex items-center justify-center text-white/85 hover:text-white transition-colors"
-          aria-label={muted ? "Turn sound on" : "Turn sound off"}
-        >
-          {muted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
-        </button>
+        <div className="absolute bottom-3 right-3 flex items-center gap-2 rounded-full bg-black/55 border border-white/15 backdrop-blur-sm p-0.5">
+          {!muted && volumeAdjustable && (
+            <input
+              type="range"
+              min={0}
+              max={1}
+              step={0.05}
+              value={volume}
+              onChange={(e) => changeVolume(Number(e.target.value))}
+              aria-label="Volume"
+              className="w-24 ml-3 accent-[#3ef2ff] cursor-pointer"
+            />
+          )}
+          <button
+            onClick={toggleSound}
+            className="h-9 w-9 rounded-full flex items-center justify-center text-white/85 hover:text-white transition-colors"
+            aria-label={muted ? "Turn sound on" : "Turn sound off"}
+          >
+            <SoundIcon className="h-4 w-4" />
+          </button>
+        </div>
       </div>
     </div>
   );
