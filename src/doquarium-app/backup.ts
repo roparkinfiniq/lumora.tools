@@ -61,7 +61,12 @@ export interface WebBackup {
   tanks: WebTank[];
   activeId: string;
   updatedAt?: Date;
+  /** The app build the phone last opened (`whats_new_build`, lib/services/app_update_service.dart) */
+  appBuild?: number;
 }
+
+/** The first app build that reads the mailbox (1.0.0+19). Older phones would never apply web changes */
+export const MIN_APP_BUILD = 19;
 
 const date = (v: unknown) => (typeof v === "string" && v ? new Date(v) : undefined);
 
@@ -113,7 +118,8 @@ export function parseBackup(data: Record<string, unknown>, updatedAt?: Date): We
     };
   });
   const active = typeof shelf?.active === "string" && tanks.some((t) => t.id === shelf.active) ? shelf.active : tanks[0].id;
-  return { tanks, activeId: active, updatedAt };
+  const build = data.whats_new_build;
+  return { tanks, activeId: active, updatedAt, appBuild: typeof build === "number" ? build : undefined };
 }
 
 const dayStart = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate());

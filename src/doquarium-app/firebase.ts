@@ -41,11 +41,11 @@ const firebaseConfig = {
 };
 
 /**
- * Writing from the web (step 2). Off on the live site until the mailbox rules
- * are deployed together with the app update that reads the mailbox (+19,
- * 래원 결정 2026-10-22). Build with VITE_DOQ_WEB_WRITES=1 to turn it on.
+ * Writing from the web (step 2). On since the app update that reads the
+ * mailbox (+19, 래원 결정 2026-10-23); each person also needs their phone on
+ * that build (MIN_APP_BUILD). Build with VITE_DOQ_WEB_WRITES=0 to switch it off.
  */
-export const WEB_WRITES = EMULATOR || import.meta.env.VITE_DOQ_WEB_WRITES === "1";
+export const WEB_WRITES = EMULATOR || import.meta.env.VITE_DOQ_WEB_WRITES !== "0";
 
 const app = getApps()[0] ?? initializeApp(firebaseConfig);
 const auth = getAuth(app);

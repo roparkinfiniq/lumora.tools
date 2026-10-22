@@ -5,6 +5,7 @@ import {
   MAX_CATEGORIES,
   MAX_CATEGORY_NAME,
   MAX_TITLE,
+  MIN_APP_BUILD,
   applyNotes,
   doneToday,
   isVisible,
@@ -22,7 +23,7 @@ import { WEB_WRITES, sendNote, signInWithGoogle, signOutWeb, watchBackup, watchI
 // docs/10 "PC에서 쓰기"). Step 1 shows the phone's sign-in backup. Step 2 adds,
 // finishes, edits and deletes to-dos and makes categories by dropping notes in
 // the server mailbox; the phone applies them the next time the app is open, so
-// the fish still eats on the phone (behind WEB_WRITES until the rules ship).
+// the fish still eats on the phone. Writing needs the phone on MIN_APP_BUILD+.
 
 type Lang = "en" | "ko";
 export const DOQUARIUM_APP_PATH = "/doquarium/app";
@@ -74,7 +75,7 @@ const COPY = {
     sendFailed: "Couldn't save that change. Check your connection and try again.",
     synced: (t: string) => `Last updated from your phone: ${t}`,
     syncNote: "The list updates when your phone saves a backup (while the app is open).",
-    comingSoon: "Adding, finishing, editing, and deleting to-dos from the web arrives with the next app update.",
+    comingSoon: "Update Doquarium on your phone and open it once to add, finish, edit, and delete to-dos here too.",
     signOut: "Sign out",
   },
   ko: {
@@ -121,7 +122,7 @@ const COPY = {
     sendFailed: "바꾼 것을 저장하지 못했어요. 인터넷을 확인하고 다시 해 주세요.",
     synced: (t: string) => `폰에서 마지막으로 가져온 때: ${t}`,
     syncNote: "목록은 폰이 백업할 때(앱을 켜 둔 동안) 새로 바뀌어요.",
-    comingSoon: "웹에서 할 일 추가 · 끝내기 · 고치기 · 지우기는 다음 앱 업데이트와 함께 열려요.",
+    comingSoon: "폰의 두쿠아리움을 업데이트하고 한 번 열면, 여기서도 할 일을 추가 · 끝내기 · 고치기 · 지우기 할 수 있어요.",
     signOut: "로그아웃",
   },
 } as const;
@@ -228,6 +229,8 @@ export default function DoquariumAppView({ onBack }: { onBack: () => void }) {
     const notes = [...settling.filter((n) => !inbox.some((m) => m.id === n.id)), ...inbox];
     return applyNotes(ready.backup, notes);
   }, [ready, inbox, settling]);
+  // Only when the phone runs an app that reads the mailbox (its backup says which build it last opened)
+  const canWrite = WEB_WRITES && (ready?.backup.appBuild ?? 0) >= MIN_APP_BUILD;
   const tank = shown?.tanks.find((x) => x.id === tankId) ?? shown?.tanks[0];
   const categories = tank?.categories ?? [];
   const activeFilter = filter !== null && categories.some((c) => c.id === filter) ? filter : null;
@@ -341,14 +344,14 @@ export default function DoquariumAppView({ onBack }: { onBack: () => void }) {
               <h2 className="text-2xl font-display font-bold text-white">
                 {t.today} <span className="text-white/30 font-medium">{open.length}</span>
               </h2>
-              {(categories.length > 0 || WEB_WRITES) && (
+              {(categories.length > 0 || canWrite) && (
                 <CategoryChips
                   t={t}
                   categories={categories}
                   active={activeFilter}
                   onPick={setFilter}
                   onCreate={
-                    WEB_WRITES
+                    canWrite
                       ? (name) => {
                           const same = categories.find((c) => c.name === name);
                           if (same) return setFilter(same.id);
@@ -362,7 +365,7 @@ export default function DoquariumAppView({ onBack }: { onBack: () => void }) {
               )}
             </div>
 
-            {WEB_WRITES && (
+            {canWrite && (
               <AddRow
                 t={t}
                 category={categoryName(activeFilter ?? undefined)}
@@ -383,7 +386,7 @@ export default function DoquariumAppView({ onBack }: { onBack: () => void }) {
                       showCategory={activeFilter === null}
                       waiting={waitingIds.has(x.id)}
                       due={x.dueDate ? t.due(fmt.day.format(x.dueDate)) : undefined}
-                      onFinish={WEB_WRITES ? () => send("done", { todo: x.id }) : undefined}
+                      onFinish={canWrite ? () => send("done", { todo: x.id }) : undefined}
                       onSave={(title, category) =>
                         send("edit", {
                           todo: x.id,
@@ -408,7 +411,7 @@ export default function DoquariumAppView({ onBack }: { onBack: () => void }) {
                   <ul className="pb-3">
                     {done.map((x) => (
                       <li key={x.id} className="flex items-center gap-4 px-4 sm:px-6 py-2.5">
-                        {WEB_WRITES ? (
+                        {canWrite ? (
                           <button
                             onClick={() => send("undo", { todo: x.id })}
                             aria-label={t.undo(x.title)}
@@ -439,7 +442,7 @@ export default function DoquariumAppView({ onBack }: { onBack: () => void }) {
             )}
             {ready.backup.updatedAt && <p>{t.synced(fmt.time.format(ready.backup.updatedAt))}</p>}
             <p>{t.syncNote}</p>
-            {!WEB_WRITES && (
+            {!canWrite && (
               <p className="flex items-start gap-2 text-[#8ff7ff]/70">
                 <Smartphone className="h-4 w-4 shrink-0 mt-0.5" /> {t.comingSoon}
               </p>
