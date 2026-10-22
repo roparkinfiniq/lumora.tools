@@ -36,6 +36,21 @@ export interface WebTank {
   shared: boolean;
   todos: WebTodo[];
   categories: WebCategory[];
+  /** The fish as the phone last saved it (`fish_health`), not moved forward to now */
+  fish?: WebFish;
+  /** Cleaner creatures that slow rotting (🧹 shrimp · cleaner fish), from `cleaners` */
+  crew: CrewStay[];
+}
+
+export interface WebFish {
+  health: number;
+  dead: boolean;
+}
+
+/** When one 🧹 cleaner was in the tank (lib/models/cleaners.dart Cleaner.boughtAt · endsAt) */
+export interface CrewStay {
+  from: number;
+  to: number;
 }
 
 /** Same limits as the app (lib/models/todo.dart Todo.maxTitle, todo_category.dart) and firestore.rules */
@@ -86,6 +101,27 @@ function parseCategories(raw: unknown): WebCategory[] {
     .map((c) => ({ id: c.id as string, name: c.name as string }));
 }
 
+function parseFish(raw: unknown): WebFish | undefined {
+  const f = parseJson<Record<string, unknown>>(raw);
+  if (!f || typeof f.health !== "number") return undefined;
+  return { health: f.health, dead: f.dead === true };
+}
+
+// Only the 🧹 clean kinds slow rotting; lifetimes for ones saved before `days` was stored (CleanerKind.legacyDays)
+const CLEANER_LEGACY_DAYS: Record<string, number> = { shrimp: 7, cleanerFish: 14 };
+const DAY = 24 * 3600e3;
+
+function parseCrew(raw: unknown): CrewStay[] {
+  const list = parseJson<Record<string, unknown>[]>(raw) ?? [];
+  return list.flatMap((c) => {
+    const legacy = CLEANER_LEGACY_DAYS[c?.kind as string];
+    const from = date(c?.boughtAt)?.getTime();
+    if (!legacy || from === undefined) return [];
+    const days = (typeof c.days === "number" ? c.days : legacy) + (typeof c.extra === "number" ? c.extra : 0);
+    return [{ from, to: from + days * DAY }];
+  });
+}
+
 function parseTodos(raw: unknown): WebTodo[] {
   const list = parseJson<Record<string, unknown>[]>(raw) ?? [];
   return list
@@ -115,6 +151,8 @@ export function parseBackup(data: Record<string, unknown>, updatedAt?: Date): We
       shared: typeof t.roomId === "string",
       todos: parseTodos(data[id ? `todos@${id}` : "todos"]),
       categories: parseCategories(data[id ? `categories@${id}` : "categories"]),
+      fish: parseFish(data[id ? `fish_health@${id}` : "fish_health"]),
+      crew: parseCrew(data[id ? `cleaners@${id}` : "cleaners"]),
     };
   });
   const active = typeof shelf?.active === "string" && tanks.some((t) => t.id === shelf.active) ? shelf.active : tanks[0].id;
@@ -212,4 +250,42 @@ export function applyNotes(backup: WebBackup, notes: WebNote[]): WebBackup {
     return { ...tank, todos, categories };
   });
   return { ...backup, tanks };
+}
+
+// ───────── Rotting (same rules as the app's lib/models/rot.dart, docs/06) ─────────
+
+export const ROT_MAX = 3;
+
+/** When this to-do starts to rot: 24 hours after it was written, or the midnight after its due date */
+function rotStart(t: WebTodo) {
+  if (!t.dueDate) return t.createdAt.getTime() + DAY;
+  return new Date(t.dueDate.getFullYear(), t.dueDate.getMonth(), t.dueDate.getDate() + 1).getTime();
+}
+
+/** Minutes that really rotted between from and to: each 🧹 cleaner in the tank slows it by 10%, up to 30% (CleanerCrew.rotMinutes) */
+function rotMinutes(crew: CrewStay[], from: number, to: number) {
+  if (to <= from) return 0;
+  const edges = new Set([from, to]);
+  for (const c of crew) for (const e of [c.from, c.to]) if (e > from && e < to) edges.add(e);
+  const sorted = [...edges].sort((a, b) => a - b);
+  let total = 0;
+  for (let i = 0; i + 1 < sorted.length; i++) {
+    const a = sorted[i];
+    const alive = crew.filter((c) => a >= c.from && a < c.to).length;
+    total += ((sorted[i + 1] - a) / 60000) * (1 - Math.min(0.3, 0.1 * alive));
+  }
+  return total;
+}
+
+/** 0 = fresh, 1 = day 1, … 3 = fully rotted (Rot.levelOf) */
+export function rotLevel(t: WebTodo, now: Date, crew: CrewStay[] = []) {
+  if (!isVisible(t, now)) return 0;
+  const start = rotStart(t);
+  if (now.getTime() < start) return 0;
+  return Math.min(ROT_MAX, 1 + rotMinutes(crew, start, now.getTime()) / (24 * 60));
+}
+
+/** Calendar days from the to-do's day (due date, or the day it was written) to today (l10n daysSince) */
+export function daysSince(from: Date, now: Date) {
+  return Math.round((Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) - Date.UTC(from.getFullYear(), from.getMonth(), from.getDate())) / DAY);
 }

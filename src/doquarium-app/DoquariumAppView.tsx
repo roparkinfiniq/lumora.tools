@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
-import { ArrowLeft, Check, ChevronDown, Clock, Lock, LogOut, Plus, Repeat, Smartphone, Trash2, Users, X } from "lucide-react";
+import { ArrowLeft, Check, ChevronDown, Clock, CloudFog, Fish, Ghost, Lock, LogOut, Plus, Repeat, Smartphone, Trash2, Users, X } from "lucide-react";
 import { applySeo } from "../seo";
 import {
   MAX_CATEGORIES,
@@ -7,7 +7,10 @@ import {
   MAX_TITLE,
   MIN_APP_BUILD,
   applyNotes,
+  ROT_MAX,
+  daysSince,
   doneToday,
+  rotLevel,
   isVisible,
   newId,
   sortTodos,
@@ -55,6 +58,17 @@ const COPY = {
     due: (d: string) => `Due ${d}`,
     onlyMe: "Only me",
     repeats: "Repeats",
+    rotSpoiled: "Spoiled",
+    addedYesterday: "Added yesterday",
+    addedDaysAgo: (n: number) => (n === 1 ? "Added 1 day ago" : `Added ${n} days ago`),
+    dueYesterday: "Due yesterday",
+    dueDaysAgo: (n: number) => (n === 1 ? "1 day past due" : `${n} days past due`),
+    fishOk: "Your fish is healthy",
+    fishWeak: "Your fish feels a little weak",
+    fishSick: "Your fish is very sick",
+    fishDanger: "Your fish is in danger",
+    fishGhost: "Your fish became a ghost · See it in the app",
+    fishNote: "As your phone last saw it",
     all: "All",
     newCategory: "New category",
     categoryName: "Category name",
@@ -104,6 +118,17 @@ const COPY = {
     due: (d: string) => `${d}까지`,
     onlyMe: "나만 보기",
     repeats: "반복",
+    rotSpoiled: "다 썩음",
+    addedYesterday: "어제 등록",
+    addedDaysAgo: (n: number) => `등록한 지 ${n}일`,
+    dueYesterday: "어제 마감",
+    dueDaysAgo: (n: number) => `마감 ${n}일 지남`,
+    fishOk: "물고기가 건강해요",
+    fishWeak: "물고기가 조금 기운이 없어요",
+    fishSick: "물고기가 많이 아파요",
+    fishDanger: "물고기가 위험해요",
+    fishGhost: "물고기가 유령이 됐어요 · 앱에서 만나 주세요",
+    fishNote: "폰에서 마지막으로 본 모습",
     all: "전체",
     newCategory: "새 카테고리",
     categoryName: "카테고리 이름",
@@ -355,6 +380,7 @@ export default function DoquariumAppView({ onBack }: { onBack: () => void }) {
               <h2 className="text-2xl font-display font-bold text-white">
                 {t.today} <span className="text-white/30 font-medium">{open.length}</span>
               </h2>
+              {tank.fish && <FishLine t={t} fish={tank.fish} />}
               {(categories.length > 0 || canWrite) && (
                 <CategoryChips
                   t={t}
@@ -397,6 +423,7 @@ export default function DoquariumAppView({ onBack }: { onBack: () => void }) {
                       showCategory={activeFilter === null}
                       waiting={waitingIds.has(x.id)}
                       due={x.dueDate ? t.due(fmt.day.format(x.dueDate)) : undefined}
+                      rot={rotLabel(t, x, rotLevel(x, now, tank.crew), now)}
                       onFinish={canWrite ? () => send("done", { todo: x.id }) : undefined}
                       onSave={(title, category) =>
                         send("edit", {
@@ -475,6 +502,30 @@ export default function DoquariumAppView({ onBack }: { onBack: () => void }) {
 }
 
 type Copy = (typeof COPY)[Lang];
+
+/** The app's rot label (l10n rotAge): days counted on the calendar from the due date, or from the day it was written */
+function rotLabel(t: Copy, todo: WebTodo, level: number, now: Date) {
+  if (Math.floor(level) < 1) return undefined;
+  const days = daysSince(todo.dueDate ?? todo.createdAt, now);
+  const age = todo.dueDate
+    ? days <= 1 ? t.dueYesterday : t.dueDaysAgo(days)
+    : days <= 1 ? t.addedYesterday : t.addedDaysAgo(days);
+  return level >= ROT_MAX - 1e-6 ? `${t.rotSpoiled} · ${age}` : age;
+}
+
+/** One line about the fish, in words like the app (no numbers), from the phone's last backup */
+function FishLine({ t, fish }: { t: Copy; fish: { health: number; dead: boolean } }) {
+  const text = fish.dead
+    ? t.fishGhost
+    : fish.health >= 99.5 ? t.fishOk : fish.health >= 60 ? t.fishWeak : fish.health >= 30 ? t.fishSick : t.fishDanger;
+  const Icon = fish.dead ? Ghost : Fish;
+  const tone = fish.dead || fish.health < 60 ? "text-white/60" : "text-[#8ff7ff]/80";
+  return (
+    <p className={`mt-2 flex items-center gap-2 text-sm font-medium ${tone}`} title={t.fishNote}>
+      <Icon className="h-4 w-4 shrink-0" aria-hidden="true" /> {text}
+    </p>
+  );
+}
 
 function Waiting({ label }: { label: string }) {
   return (
@@ -594,6 +645,7 @@ function TodoRow({
   showCategory,
   waiting,
   due,
+  rot,
   onFinish,
   onSave,
   onDelete,
@@ -604,6 +656,8 @@ function TodoRow({
   showCategory: boolean;
   waiting: boolean;
   due?: string;
+  /** "어제 등록" · "다 썩음 · 마감 2일 지남" while it rots (the app shows this instead of the due date) */
+  rot?: string;
   onFinish?: () => void;
   onSave: (title: string, category: string) => void;
   onDelete: () => void;
@@ -613,7 +667,9 @@ function TodoRow({
   const [category, setCategory] = useState(todo.category ?? "");
   const [sure, setSure] = useState(false);
   const category0 = categories.find((c) => c.id === todo.category)?.name;
-  const hasMeta = (showCategory && !!category0) || todo.repeat || todo.private || !!due || waiting;
+  const hasMeta = (showCategory && !!category0) || todo.repeat || todo.private || !!due || !!rot || waiting;
+  // Rotting to-dos turn a murky olive grey, with the age next to them (docs/02: easy to spot, still easy to read)
+  const ink = rot ? "text-[#A9A47F]" : "text-white";
 
   const start = () => {
     setTitle(todo.title);
@@ -692,18 +748,24 @@ function TodoRow({
       )}
       <div className="flex-1 min-w-0">
         {onFinish ? (
-          <button onClick={start} aria-label={t.edit(todo.title)} className="block w-full text-left text-white font-medium break-words hover:text-white/80">
+          <button onClick={start} aria-label={t.edit(todo.title)} className={`block w-full text-left ${ink} font-medium break-words hover:opacity-80`}>
             {todo.title}
           </button>
         ) : (
-          <span className="block text-white font-medium break-words">{todo.title}</span>
+          <span className={`block ${ink} font-medium break-words`}>{todo.title}</span>
         )}
         {hasMeta && (
           <span className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-white/40">
             {showCategory && category0 && <span className="px-2 py-0.5 rounded-full bg-white/5 border border-white/10">{category0}</span>}
             {todo.repeat && <Repeat className="h-3.5 w-3.5" aria-label={t.repeats} />}
             {todo.private && <Lock className="h-3.5 w-3.5" aria-label={t.onlyMe} />}
-            {due && <span>{due}</span>}
+            {rot ? (
+              <span className="flex items-center gap-1 text-[#A9A47F]">
+                <CloudFog className="h-3.5 w-3.5" aria-hidden="true" /> {rot}
+              </span>
+            ) : (
+              due && <span>{due}</span>
+            )}
             {waiting && <Waiting label={t.waiting} />}
           </span>
         )}
