@@ -25,7 +25,11 @@ import {
   Search,
   CheckSquare,
 } from "lucide-react";
-import { useState, useMemo, MouseEvent, useEffect, useRef } from "react";
+import { useState, useMemo, MouseEvent, useEffect, useRef, lazy, Suspense } from "react";
+
+// Doquarium on the web: Firebase sign-in loads only when this page opens
+const DoquariumAppView = lazy(() => import("./doquarium-app/DoquariumAppView"));
+const DOQUARIUM_APP_PATH = "/doquarium/app";
 import { tools } from "./data/tools";
 
 
@@ -84,6 +88,7 @@ const URL_TO_VIEW: Record<string, string> = {
   [PRIVACY_PATH]: "doquarium-privacy",
   [DELETE_PATH]: "doquarium-delete",
   [BETA_PATH]: "doquarium-beta",
+  [DOQUARIUM_APP_PATH]: "doquarium-app",
 };
 
 const VIEW_TO_URL: Record<string, string> = {
@@ -97,6 +102,7 @@ const VIEW_TO_URL: Record<string, string> = {
   "doquarium-privacy": PRIVACY_PATH,
   "doquarium-delete": DELETE_PATH,
   "doquarium-beta": BETA_PATH,
+  "doquarium-app": DOQUARIUM_APP_PATH,
 };
 
 // Pages whose URL can carry a language sub-path (e.g. /doquarium/privacy/ko).
@@ -104,6 +110,7 @@ const LANG_PAGES: Record<string, string> = {
   "doquarium-privacy": PRIVACY_PATH,
   "doquarium-delete": DELETE_PATH,
   "doquarium-beta": BETA_PATH,
+  "doquarium-app": DOQUARIUM_APP_PATH,
 };
 
 // Paths that carry a sub-path (e.g. a language) beyond their view's base URL.
@@ -1133,6 +1140,20 @@ export default function App() {
               transition={{ duration: 0.5 }}
             >
               <DoquariumDocView docs={DOQUARIUM_DELETE} basePath={DELETE_PATH} onBack={() => setCurrentView("doquarium")} />
+            </motion.div>
+          )}
+
+          {currentView === "doquarium-app" && (
+            <motion.div
+              key="doquarium-app"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.5 }}
+            >
+              <Suspense fallback={<div className="container max-w-3xl mx-auto px-6 pt-24 text-white/40 font-medium">Loading…</div>}>
+                <DoquariumAppView onBack={() => setCurrentView("doquarium")} />
+              </Suspense>
             </motion.div>
           )}
 

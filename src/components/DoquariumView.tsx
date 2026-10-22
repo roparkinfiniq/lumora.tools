@@ -141,6 +141,13 @@ export default function DoquariumView({ onOpen }: { onOpen: (view: string) => vo
                 <ArrowRight className="h-5 w-5" />
               </a>
             )}
+            <a
+              href={subHref("/doquarium/app")}
+              onClick={open("doquarium-app", "/doquarium/app")}
+              className="mt-5 inline-flex items-center gap-2 text-sm font-display font-bold text-[#8ff7ff]/70 hover:text-[#8ff7ff] transition-colors"
+            >
+              {t.webCta} <ArrowRight className="h-4 w-4" />
+            </a>
           </motion.div>
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }} className="lg:w-1/2 w-full">
             <DoquariumReel label={t.reelLabel} />

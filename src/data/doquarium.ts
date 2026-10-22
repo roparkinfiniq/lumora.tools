@@ -10,7 +10,7 @@ export const DOQUARIUM = {
   privacyOfficer: "Park Ra One",
   effectiveDate: { en: "October 9, 2026", ko: "2026년 10월 9일" },
   // Bump whenever the policy text changes (the effective date stays the same before launch).
-  lastUpdated: { en: "October 19, 2026", ko: "2026년 10월 19일" },
+  lastUpdated: { en: "October 22, 2026", ko: "2026년 10월 22일" },
   storeStatus: "Coming soon",
 };
 
@@ -126,6 +126,7 @@ export const DOQUARIUM_PRIVACY: Record<PolicyLang, PolicyDoc> = {
           "Reminders are scheduled on your phone only and are not sent to a server.",
           "If you only use the app on your own, no personal information is sent to a server. The only thing sent is a crash or error report when something goes wrong, which contains no account, name, or to-dos.",
           "If you are not signed in, memory photos are stored only on your phone and are never sent to a server.",
+          "You can also sign in with the same Google account at lumora.tools/doquarium/app to see your to-dos on a computer. The web page only reads your backup; it does not store your to-dos anywhere else, and your sign-in stays in that browser until you sign out.",
           "The app has no ads and does not track how you use it. It does not collect advertising IDs, location, or contacts. Photos are used only when you pick or take one and attach it to a fish in Storage, and they are never shown to friends.",
         ],
       },
@@ -258,6 +259,7 @@ export const DOQUARIUM_PRIVACY: Record<PolicyLang, PolicyDoc> = {
           "알림은 폰 안에서만 예약되며, 알림 내용을 서버로 보내지 않습니다.",
           "혼자만 쓰면 서버로 보내는 개인정보가 없습니다. 문제가 생겼을 때의 오류 기록만 보내며, 여기에는 계정 · 이름 · 할 일이 들어가지 않습니다.",
           "로그인하지 않았으면 추억 사진은 폰에만 저장되고 서버로 보내지 않습니다.",
+          "같은 Google 계정으로 lumora.tools/doquarium/app 에 로그인하면 컴퓨터에서도 할 일을 볼 수 있습니다. 웹 페이지는 백업을 읽어 보여 주기만 하고 할 일을 따로 저장하지 않으며, 로그인은 로그아웃할 때까지 그 브라우저에만 남습니다.",
           "앱은 광고가 없고 앱을 어떻게 쓰는지 추적하지 않으며, 광고 식별자 · 위치 · 연락처를 모으지 않습니다. 사진은 직접 고르거나 찍어 보관함 물고기에 붙인 것만 쓰며, 친구에게 보이지 않습니다.",
         ],
       },

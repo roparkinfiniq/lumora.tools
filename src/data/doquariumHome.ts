@@ -23,6 +23,7 @@ export interface HomeCopy {
   storeSoon: string;
   betaCta: string;
   betaSub: string;
+  webCta: string;
   storyTitle: string;
   story: string[];
   features: HomeFeature[];
@@ -50,6 +51,7 @@ export const DOQUARIUM_HOME: Record<PolicyLang, HomeCopy> = {
     storeSoon: "Coming soon",
     betaCta: "Join the Android beta",
     betaSub: "Testers wanted · help Doquarium launch",
+    webCta: "Signed in to the app? See your to-dos on the web",
     storyTitle: "Checking off to-dos gets boring.",
     story: [
       "Let's be honest, checking off to-dos gets boring. In Doquarium, every to-do is fish food.",
@@ -142,6 +144,7 @@ export const DOQUARIUM_HOME: Record<PolicyLang, HomeCopy> = {
     storeSoon: "곧 출시",
     betaCta: "안드로이드 베타 참여하기",
     betaSub: "테스터 모집 중 · 출시를 도와주세요",
+    webCta: "앱에서 로그인했다면, 웹에서 내 할 일 보기",
     storyTitle: "투두 체크, 솔직히 좀 지루하죠?",
     story: [
       "두쿠아리움에선 할 일이 곧 물고기 밥이에요. 오늘 할 일을 해치우면 물고기가 냠냠 먹고 쑥쑥 자라요.",
