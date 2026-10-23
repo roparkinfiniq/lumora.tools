@@ -175,7 +175,7 @@ export default function GlobalSizeConverter() {
 
     return [
       { label: "Circumference", value: `${num} mm` },
-      { label: "Korea Size", value: `${estimatedKr} 호` },
+      { label: "Korea Size", value: `No. ${estimatedKr}` },
       { label: "US Size", value: estimatedUs },
     ];
   };
@@ -207,12 +207,12 @@ export default function GlobalSizeConverter() {
           </div>
         </div>
 
-        <div className="flex items-center gap-1 bg-lumora-bg/60 p-1 rounded-xl border border-white/5">
+        <div className="grid grid-cols-4 w-full sm:w-auto sm:flex sm:items-center gap-1 bg-lumora-bg/60 p-1 rounded-xl border border-white/5">
           {(["shoes", "clothing", "hats", "rings"] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`py-1.5 px-3 text-[10px] font-display font-bold uppercase tracking-wider rounded-lg transition-all ${
+              className={`py-2 px-1 sm:px-3 text-[11px] font-display font-bold uppercase tracking-normal sm:tracking-wider whitespace-nowrap rounded-lg transition-all ${
                 activeTab === tab
                   ? "bg-lumora-highlight text-black shadow"
                   : "text-white/60 hover:text-white"
@@ -453,7 +453,7 @@ export default function GlobalSizeConverter() {
       </div>
 
       {/* Footer Info */}
-      <div className="flex items-center justify-between gap-4 px-4 py-3 bg-white/[0.01] border border-white/5 rounded-xl text-[10px] font-display font-bold text-white/30 uppercase tracking-widest">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-4 px-4 py-3 bg-white/[0.01] border border-white/5 rounded-xl text-[11px] font-display font-bold text-white/45 uppercase tracking-wider">
         <div className="flex items-center gap-2">
           <Ruler className="h-3.5 w-3.5 text-lumora-highlight" />
           <span>Local-first processing. Your data never leaves your browser.</span>

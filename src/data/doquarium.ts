@@ -10,7 +10,7 @@ export const DOQUARIUM = {
   privacyOfficer: "Park Ra One",
   effectiveDate: { en: "October 9, 2026", ko: "2026년 10월 9일" },
   // Bump whenever the policy text changes (the effective date stays the same before launch).
-  lastUpdated: { en: "October 23, 2026", ko: "2026년 10월 23일" },
+  lastUpdated: { en: "October 24, 2026", ko: "2026년 10월 24일" },
   storeStatus: "Coming soon",
 };
 
@@ -91,8 +91,8 @@ export const DOQUARIUM_PRIVACY: Record<PolicyLang, PolicyDoc> = {
             where: "Google Firebase servers (only the server can read it)",
           },
           {
-            when: "Signing in with Google (optional)",
-            what: "Email address, name, and profile photo from your Google account, plus your sign-in ID",
+            when: "Signing in with Google or Apple (optional)",
+            what: "Google: email address, name, and profile photo. Apple: email address (or Apple's private relay address, if you chose Hide My Email) and name. Plus your sign-in ID",
             why: "Identifying your account, backup and restore",
             where: "Google Firebase servers",
           },
@@ -146,6 +146,7 @@ export const DOQUARIUM_PRIVACY: Record<PolicyLang, PolicyDoc> = {
         title: "3. Sharing and service providers",
         items: [
           "We do not sell your personal information or share it with advertisers.",
+          "If you sign in with Apple, Apple Inc. confirms your Apple ID and passes us only the email address and name you allow. When you delete your account, the app also removes Doquarium's access to your Apple ID.",
           "We use Firebase by Google LLC (authentication, database, Cloud Storage for photos, Cloud Functions, Cloud Messaging push notifications, and Crashlytics crash reporting) to run shared tanks, backups, memory photos, poke alerts, in-app questions, and crash reports. Shared tank, backup, and question data are stored on Google servers in Seoul, South Korea (asia-northeast3). Memory photos and photos attached to questions are stored on Google servers in Oregon, USA (us-west1). Sign-in data, push notifications, and crash reports are processed on Google servers, which may be located outside Korea. Data is transferred over the internet when you use these features or when a crash report is sent, and is kept for the periods in section 2.",
           "If you do not use shared tanks, sign-in, or the in-app question form, no personal information is sent to a server, and every single-player feature still works.",
         ],
@@ -224,8 +225,8 @@ export const DOQUARIUM_PRIVACY: Record<PolicyLang, PolicyDoc> = {
             where: "Google Firebase 서버 (서버만 읽을 수 있음)",
           },
           {
-            when: "Google로 로그인할 때 (선택)",
-            what: "Google 계정의 이메일 주소 · 이름 · 프로필 사진, 로그인 ID",
+            when: "Google 또는 Apple로 로그인할 때 (선택)",
+            what: "Google: 이메일 주소 · 이름 · 프로필 사진. Apple: 이메일 주소(\"나의 이메일 가리기\"를 골랐다면 Apple이 만든 대신 받는 주소) · 이름. 그리고 로그인 ID",
             why: "계정 확인, 기록 백업 · 복원",
             where: "Google Firebase 서버",
           },
@@ -279,6 +280,7 @@ export const DOQUARIUM_PRIVACY: Record<PolicyLang, PolicyDoc> = {
         title: "3. 다른 곳에 맡기거나 넘기는 정보",
         items: [
           "개발자는 개인정보를 팔거나 광고 회사에 넘기지 않습니다.",
+          "Apple로 로그인하면 Apple Inc.가 Apple ID를 확인하고, 내가 허락한 이메일 주소와 이름만 넘겨줍니다. 계정을 지우면 앱이 내 Apple ID에 준 두쿠아리움의 접근 권한도 함께 끊습니다.",
           "서버 운영을 위해 Google LLC의 Firebase(인증 · 데이터베이스 · Cloud Storage 사진 저장 · Cloud Functions · Cloud Messaging 푸시 알림 · Crashlytics 오류 기록)를 씁니다. 단체 어항 · 백업 · 문의 기록은 대한민국 서울의 Google 서버(asia-northeast3)에, 추억 사진과 문의에 붙인 사진은 미국(오리건)의 Google 서버(us-west1)에, 로그인 정보 · 푸시 알림 · 오류 기록은 Google 서버(국외 포함)에서 처리됩니다. 이 기능을 쓸 때나 오류 기록이 보내질 때 인터넷으로 보내지며, 보관 기간은 위 2번과 같습니다.",
           "국외 이전 (추억 사진 · 문의에 붙인 사진): 이전받는 자 Google LLC · 이전 국가 미국(오리건, us-west1) · 이전 시점과 방법: 로그인한 뒤 보관함 물고기에 사진을 붙일 때, 또는 문의 · 버그 알리기에 사진을 붙여 보낼 때 인터넷으로 · 항목: 사진 파일 · 보관 기간: 위 2번과 같음 · 거부 방법: 로그인하지 않거나 사진을 붙이지 않으면 보내지 않습니다 (다른 기능은 그대로 쓸 수 있습니다).",
           "단체 어항 · 로그인 · 앱 안 문의를 쓰지 않으면 서버로 보내는 개인정보가 없고, 혼자 쓰는 기능은 그대로 다 쓸 수 있습니다.",
@@ -329,7 +331,7 @@ export const DOQUARIUM_PRIVACY: Record<PolicyLang, PolicyDoc> = {
 export const DOQUARIUM_DELETE: Record<PolicyLang, PolicyDoc> = {
   en: {
     heading: "Delete your Doquarium account and data",
-    intro: `This page explains how to delete your account and data for Doquarium, an app by ${developer}.`,
+    intro: `This page explains how to delete your account and data for the Doquarium app (developer: ${developer}).`,
     sections: [
       {
         title: "In the app (fastest)",
@@ -338,7 +340,7 @@ export const DOQUARIUM_DELETE: Record<PolicyLang, PolicyDoc> = {
           "Open the Doquarium app.",
           "Tap the gear (Settings) at the top → Account → Delete account.",
           "Type \"delete\" in the box to turn on the Delete account button, then tap it. (If the app is in Korean, type \"계정 삭제\".)",
-          "You may be asked to choose your Google account once more to verify it is you.",
+          "You may be asked to sign in with your Google or Apple account once more to verify it is you.",
           "Your account and server data are deleted right away. The app then asks whether to also erase the data stored on this phone.",
         ],
       },
@@ -352,7 +354,7 @@ export const DOQUARIUM_DELETE: Record<PolicyLang, PolicyDoc> = {
       {
         title: "What is deleted",
         items: [
-          "Your sign-in account (Google email, name, and profile photo).",
+          "Your sign-in account (email, name, and profile photo from Google, or email and name from Apple). If you signed in with Apple, Doquarium's access to your Apple ID is removed too.",
           "Your full server backup: to-dos, fish, collection, coins, decorations, tanks, and settings.",
           "Your member data in shared tanks (nickname, fish status, and any shared to-do titles) and the reactions you sent and received. If you were the last member, the tank's name and room code are deleted too.",
           "This phone's notification address for poke alerts.",
@@ -378,7 +380,7 @@ export const DOQUARIUM_DELETE: Record<PolicyLang, PolicyDoc> = {
   },
   ko: {
     heading: "두쿠아리움 계정과 데이터 삭제하기",
-    intro: `이 페이지는 ${developer}가 만든 앱 「두쿠아리움」의 계정과 데이터를 지우는 방법을 안내합니다.`,
+    intro: `이 페이지는 「두쿠아리움」 앱(개발자: ${developer})의 계정과 데이터를 지우는 방법을 안내합니다.`,
     sections: [
       {
         title: "앱에서 지우기 (가장 빠름)",
@@ -387,7 +389,7 @@ export const DOQUARIUM_DELETE: Record<PolicyLang, PolicyDoc> = {
           "두쿠아리움 앱을 엽니다.",
           "맨 위 톱니바퀴(설정) → 계정 → 계정 삭제를 누릅니다.",
           "입력칸에 \"계정 삭제\"를 입력하면 계정 삭제 버튼이 켜집니다. 버튼을 누릅니다. (앱이 영어로 되어 있으면 \"delete\"를 입력합니다.)",
-          "본인 확인을 위해 Google 계정을 한 번 더 고를 수 있습니다.",
+          "본인 확인을 위해 Google 또는 Apple 계정으로 한 번 더 로그인할 수 있습니다.",
           "계정과 서버 기록이 바로 지워집니다. 이어서 이 폰의 기록도 지울지 한 번 더 묻습니다.",
         ],
       },
@@ -401,7 +403,7 @@ export const DOQUARIUM_DELETE: Record<PolicyLang, PolicyDoc> = {
       {
         title: "지워지는 것",
         items: [
-          "로그인 계정 (Google 이메일 · 이름 · 프로필 사진)",
+          "로그인 계정 (Google의 이메일 · 이름 · 프로필 사진, 또는 Apple의 이메일 · 이름). Apple로 로그인했다면 내 Apple ID에 준 두쿠아리움의 접근 권한도 끊습니다.",
           "서버에 백업된 기록 전체: 할 일 · 물고기 · 도감 · 코인 · 꾸미기 · 어항 · 설정",
           "단체 어항의 내 멤버 정보(닉네임 · 물고기 상태 · 보여 준 할 일 제목)와 주고받은 반응. 내가 마지막 멤버였다면 어항 이름과 방 코드도 지워집니다.",
           "이 폰의 콕 알림 주소",

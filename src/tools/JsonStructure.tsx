@@ -72,12 +72,12 @@ export default function JsonStructure() {
     <div className="w-full h-full flex flex-col gap-6">
       <Toast 
         isVisible={showToast} 
-        message="복사되었습니다" 
+        message="Copied" 
         onClose={() => setShowToast(false)} 
       />
       {/* Tool Header/Actions */}
       <div className="flex flex-wrap items-center justify-between gap-4 bg-white/[0.02] border border-white/5 p-4 rounded-2xl">
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center gap-3 sm:gap-4">
           <button
             onClick={() => formatJson(input)}
             className="px-4 py-2 bg-lumora-highlight/10 hover:bg-lumora-highlight/20 text-lumora-highlight text-xs font-display font-bold rounded-xl transition-all border border-lumora-highlight/20"
@@ -90,7 +90,7 @@ export default function JsonStructure() {
           >
             Minify
           </button>
-          <div className="w-px h-4 bg-white/10 mx-1" />
+          <div className="hidden sm:block w-px h-4 bg-white/10 mx-1" />
           <label className="flex items-center gap-2 cursor-pointer group">
             <div 
               onClick={() => setIsAutoFormat(!isAutoFormat)}
@@ -101,7 +101,7 @@ export default function JsonStructure() {
                 style={{ left: isAutoFormat ? '18px' : '2px' }}
               />
             </div>
-            <span className="text-[10px] font-display font-bold text-white/40 group-hover:text-white/60 transition-colors uppercase tracking-widest">Auto</span>
+            <span className="text-[11px] font-display font-bold text-white/50 group-hover:text-white/70 transition-colors uppercase tracking-widest whitespace-nowrap">Auto</span>
           </label>
         </div>
 
@@ -227,7 +227,7 @@ export default function JsonStructure() {
       {/* Footer Info */}
       <div className="flex items-center gap-4 px-4 py-3 bg-white/[0.01] border border-white/5 rounded-xl">
         <Zap className="h-3 w-3 text-lumora-highlight" />
-        <p className="text-[10px] font-display font-bold text-white/30 uppercase tracking-widest">
+        <p className="text-[11px] font-display font-bold text-white/45 uppercase tracking-wider">
           Local-first processing. Your data never leaves your browser.
         </p>
       </div>

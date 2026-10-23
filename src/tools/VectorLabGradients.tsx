@@ -84,7 +84,7 @@ export default function VectorLabGradients() {
     <div className="w-full h-full flex flex-col gap-6">
       <Toast 
         isVisible={showToast} 
-        message="복사되었습니다" 
+        message="Copied" 
         onClose={() => setShowToast(false)} 
       />
 
@@ -129,7 +129,7 @@ export default function VectorLabGradients() {
             <MoveHorizontal className="h-3 w-3" /> Visual Laboratory
           </span>
           <div 
-            className="flex-1 rounded-[40px] border border-white/10 shadow-2xl overflow-hidden relative group"
+            className="flex-1 min-h-[220px] sm:min-h-[300px] rounded-[40px] border border-white/10 shadow-2xl overflow-hidden relative group"
             style={{ background: gradientString }}
           >
             <div className="absolute inset-0 bg-black/10 backdrop-blur-[1px] opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
@@ -150,7 +150,7 @@ export default function VectorLabGradients() {
             {/* Presets Gallery */}
             <div className="space-y-3">
               <label className="text-[11px] font-display font-bold text-white/40 uppercase tracking-widest">Popular Presets</label>
-              <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+              <div className="flex flex-wrap gap-2 pb-1">
                 {PRESETS.map((p) => (
                   <button
                     key={p.name}
@@ -190,9 +190,10 @@ export default function VectorLabGradients() {
                 <button 
                   onClick={handleAddStop}
                   disabled={stops.length >= 5}
-                  className="h-6 w-6 rounded-lg bg-white/5 hover:bg-white/10 text-white/40 hover:text-white flex items-center justify-center transition-all disabled:opacity-20"
+                  aria-label="Add color stop"
+                  className="h-9 w-9 rounded-xl bg-white/5 hover:bg-white/10 text-white/60 hover:text-white flex items-center justify-center transition-all disabled:opacity-20"
                 >
-                  <Plus className="h-3.5 w-3.5" />
+                  <Plus className="h-4 w-4" />
                 </button>
               </div>
               

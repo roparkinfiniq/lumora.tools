@@ -14,21 +14,21 @@ export default function StudioView() {
   const identities = [
     { 
       title: 'QA Engineer', 
-      desc: 'obsessed with perfect operation and smooth user experiences.',
+      desc: 'Obsessed with things that work perfectly and feel smooth to use.',
       icon: Layers,
       color: 'text-lumora-blue',
       bg: 'bg-lumora-blue/10'
     },
     { 
       title: 'Designer', 
-      desc: 'thinking about pretty and intuitive UI/UX all the time.',
+      desc: 'Always thinking about pretty, intuitive UI and UX.',
       icon: PenTool,
       color: 'text-lumora-accent',
       bg: 'bg-lumora-accent/10'
     },
     { 
       title: 'AI Enthusiast', 
-      desc: 'solving repetitive inefficiency with AI and scripts.',
+      desc: 'Clearing away repetitive work with AI and scripts.',
       icon: Bot,
       color: 'text-lumora-highlight',
       bg: 'bg-lumora-highlight/10'
@@ -52,7 +52,6 @@ export default function StudioView() {
             transition={{ type: "spring", stiffness: 300 }}
             className="w-16 h-16 rounded-3xl bg-lumora-accent flex items-center justify-center mb-10 shadow-[0_10px_40px_rgba(251,207,232,0.4)] relative cursor-pointer"
           >
-            <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-white animate-pulse" />
             <Sparkles className="h-8 w-8 text-black" />
           </motion.div>
           
@@ -107,7 +106,7 @@ export default function StudioView() {
         >
           <span className="text-[10px] font-display font-bold uppercase tracking-[0.4em] text-lumora-accent mb-10 block">Mission</span>
           <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-8 tracking-tight">
-            "Less friction, More focus."
+            "Less friction, more focus."
           </h2>
           <p className="text-lg md:text-xl text-lumora-sub font-medium leading-relaxed max-w-2xl mx-auto">
             My goal is to provide the simplest and most powerful workflow so 
@@ -123,7 +122,7 @@ export default function StudioView() {
           <div className="absolute inset-0 bg-lumora-highlight/5 opacity-0 group-hover:opacity-100 transition-opacity" />
           <div className="relative z-10">
             <div className="flex items-center gap-3 mb-6">
-              <Heart className="h-5 w-5 text-lumora-accent animate-pulse" />
+              <Heart className="h-5 w-5 text-lumora-accent" />
               <h2 className="text-3xl font-display font-bold text-white">Reach Out</h2>
             </div>
             <p className="text-lg text-lumora-sub font-medium mb-10">I'm always open to discussing new tools, fun ideas, and design.</p>

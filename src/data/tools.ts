@@ -5,15 +5,15 @@ export const tools: Tool[] = [
     name: "Lumora PDF Studio",
     slug: "pdf-studio",
     description:
-      "High-fidelity HTML to PDF synthesis. Maintain typography and layout precision with our custom rendering engine.",
+      "Make clean A4 PDFs from simple templates (note, resume, or invoice). Type, watch the live preview, and download.",
     icon: "FileCode",
-    category: "Synthesis",
+    category: "PDF",
     link: "#",
     keywords: ["pdf", "피디에프", "문서", "html to pdf", "이력서", "인보이스", "노트", "변환", "synthesis", "document"],
     usageSteps: [
       { step: "Pick a template", detail: "Choose between Note, Resume, or Invoice to match your purpose." },
-      { step: "Fill in your content", detail: "Edit the fields on the left — title, body, items, and more." },
-      { step: "Preview in real time", detail: "Watch the A4 preview on the right update instantly as you type." },
+      { step: "Fill in your content", detail: "Edit the fields: title, body, items, and more." },
+      { step: "Preview in real time", detail: "Watch the A4 preview update instantly as you type." },
       { step: "Export as PDF", detail: "Hit 'Export PDF' and your file downloads immediately." },
     ],
   },
@@ -22,7 +22,7 @@ export const tools: Tool[] = [
     name: "Vector Lab: Gradients",
     slug: "gradients",
     description:
-      "Visual SVG mesh and linear gradient composer. Export production-ready code with artistic precision.",
+      "Compose linear CSS gradients visually: pick a preset, tune the color stops and angle, and copy production-ready CSS.",
     icon: "Paintbrush",
     category: "Design",
     link: "#",
@@ -39,13 +39,13 @@ export const tools: Tool[] = [
     name: "Structure: JSON",
     slug: "json",
     description:
-      "Developer-grade JSON visualization and formalization. Instant syntax correction and nested mapping.",
+      "Format, validate, and minify JSON instantly. Paste messy JSON and get clean, indented output with clear error messages.",
     icon: "Braces",
-    category: "Dev Tools",
+    category: "Developer",
     link: "#",
     keywords: ["json", "제이슨", "포맷터", "formatter", "validator", "검증", "파싱", "parse", "정렬", "뷰어"],
     usageSteps: [
-      { step: "Paste your JSON", detail: "Drop any raw or minified JSON into the left input panel." },
+      { step: "Paste your JSON", detail: "Paste any raw or minified JSON into the input box." },
       { step: "Auto-format", detail: "With Auto mode on, the output is formatted and validated instantly." },
       { step: "Copy the result", detail: "Click the copy icon to grab the clean, indented JSON output." },
     ],
@@ -55,14 +55,14 @@ export const tools: Tool[] = [
     name: "Ether: Markdown",
     slug: "markdown",
     description:
-      "A distraction-free markdown environment. Live fluid preview with elegant Github-flavored syntax.",
+      "A distraction-free Markdown editor with a live preview. Supports GitHub-flavored Markdown and copies as MD or HTML.",
     icon: "Edit3",
-    category: "Content",
+    category: "Developer",
     link: "#",
     keywords: ["markdown", "마크다운", "에디터", "글쓰기", "editor", "preview", "미리보기", "html", "문서"],
     usageSteps: [
-      { step: "Write your Markdown", detail: "Type freely in the left editor. GitHub Flavored Markdown is fully supported." },
-      { step: "See it live", detail: "The right panel renders your content in real time as you write." },
+      { step: "Write your Markdown", detail: "Type freely in the editor. GitHub-flavored Markdown is fully supported." },
+      { step: "See it live", detail: "The preview renders your content in real time as you write." },
       { step: "Copy MD or HTML", detail: "Use the MD or HTML buttons to copy the output in your preferred format." },
     ],
   },
@@ -71,9 +71,9 @@ export const tools: Tool[] = [
     name: "Chromatic Extractor",
     slug: "chromatic-extractor",
     description:
-      "Intelligent color identity extraction. Upload any visual and generate a harmonious 8-bit palette.",
+      "Upload any image and pull out its 8 most dominant colors as a palette. Click a color to copy its HEX code.",
     icon: "Palette",
-    category: "Analysis",
+    category: "Design",
     link: "#",
     keywords: ["color", "palette", "팔레트", "색상 추출", "컬러", "이미지 색상", "hex", "스위치", "chromatic"],
     usageSteps: [
@@ -87,17 +87,27 @@ export const tools: Tool[] = [
     name: "Gems: Workout Canvas",
     slug: "workout-canvas",
     description:
-      "Log your training sessions, adjust weights/reps dynamically, and export structured, publication-ready fitness reports.",
+      "Log your training sessions, adjust weights and reps on the fly, and copy a neatly formatted workout report.",
     icon: "Dumbbell",
-    category: "Synthesis",
+    category: "Everyday",
     link: "#",
     keywords: ["workout", "fitness", "운동", "헬스", "피트니스", "루틴", "training", "기록", "캔버스", "리포트"],
     usageSteps: [
       { step: "Select your active day", detail: "Choose your active training day from the weekly navigation tabs (customizable via Settings)." },
       { step: "Log your weights & reps", detail: "Mark sets as completed, and adjust target values using the plus/minus controls." },
       { step: "Add notes & comments", detail: "Write down any pain points, energy levels, or session feedback in the comment bar." },
-      { step: "Copy blog/coach report", detail: "Click 'Complete & Copy AI Coach Report' to copy a formatted text summary for your blog, coach, or AI." },
+      { step: "Copy your report", detail: "Click 'Finish Workout & Copy Logs' to copy a formatted text summary for your blog, coach, or AI." },
     ],
+    ko: {
+      name: "운동 캔버스",
+      description: "운동을 기록하고, 무게와 횟수를 바로바로 조절하고, 깔끔하게 정리된 운동 리포트로 내보내요.",
+      usageSteps: [
+        { step: "오늘 요일 고르기", detail: "위쪽 요일 탭에서 오늘 운동할 날을 골라요. 요일 구성은 설정에서 바꿀 수 있어요." },
+        { step: "무게 · 횟수 기록", detail: "세트를 눌러 완료로 표시하고, + · − 버튼으로 목표 값을 조절해요." },
+        { step: "메모 남기기", detail: "통증, 컨디션, 오늘 느낀 점을 메모 칸에 적어요." },
+        { step: "리포트 복사", detail: "'오늘 운동 완료하고 기록 복사하기'를 누르면 블로그 · 코치 · AI에 붙여 넣기 좋은 글로 복사돼요." },
+      ],
+    },
   },
   {
     id: "8",
@@ -106,7 +116,7 @@ export const tools: Tool[] = [
     description:
       "Convert PNG to JPG with custom background colors, or JPG to PNG losslessly. All processing is local and secure.",
     icon: "Image",
-    category: "Synthesis",
+    category: "Image",
     link: "#",
     keywords: ["png", "jpg", "jpeg", "이미지 변환", "포맷 변환", "converter", "투명배경", "사진 변환"],
     usageSteps: [
@@ -123,13 +133,13 @@ export const tools: Tool[] = [
     description:
       "Convert images to multi-resolution Windows ICO favicon format. Output contains 16px, 32px, 48px, and 64px layers.",
     icon: "FileImage",
-    category: "Synthesis",
+    category: "Image",
     link: "#",
     keywords: ["ico", "아이콘", "파비콘", "favicon", "icon", "변환", "windows ico", "16px", "32px"],
     usageSteps: [
       { step: "Upload image", detail: "Drag and drop or click to upload a square PNG or JPG image (under 2MB)." },
-      { step: "Process conversion", detail: "Click 'Convert' to trigger client-side binary packaging." },
-      { step: "Download ICO", detail: "Once complete, click 'Download' to save your multi-resolution favicon.ico file." },
+      { step: "Process conversion", detail: "Click 'Convert' to build the ICO file right in your browser." },
+      { step: "Download ICO", detail: "Once it's ready, click 'Save favicon.ico' to download your multi-resolution icon." },
     ],
   },
   {
@@ -137,15 +147,15 @@ export const tools: Tool[] = [
     name: "Image Compressor",
     slug: "image-compressor",
     description:
-      "Reduce image file size locally using HTML5 canvas. Customize dimensions and compression ratios with real-time feedback.",
+      "Shrink image files right in your browser. Adjust quality and size with a live before-and-after preview.",
     icon: "FileDown",
-    category: "Synthesis",
+    category: "Image",
     link: "#",
     keywords: ["compress", "압축", "용량 줄이기", "이미지 압축", "사진 용량", "optimize", "canvas", "webp", "jpeg"],
     usageSteps: [
-      { step: "Add image", detail: "Drag and drop or select a JPG, PNG, or WEBP image." },
+      { step: "Add image", detail: "Drag and drop or select a JPG, PNG, or WebP image." },
       { step: "Tune compression settings", detail: "Adjust the quality slider and resize width to find the perfect balance." },
-      { step: "Inspect preview", detail: "Scroll mouse wheel to zoom, or drag-pan the image to inspect quality." },
+      { step: "Inspect preview", detail: "Scroll or pinch to zoom, and drag to pan around and check the quality." },
       { step: "Download result", detail: "Click 'Download' to save the optimized image file." },
     ],
   },
@@ -154,15 +164,15 @@ export const tools: Tool[] = [
     name: "HEIC to JPG Converter",
     slug: "heic-to-jpg",
     description:
-      "Convert Apple HEIC photos to standard JPEG files. Fast local conversion keeping your privacy safe.",
+      "Convert Apple HEIC photos to standard JPG files. Fast local conversion that keeps your photos private.",
     icon: "Image",
-    category: "Synthesis",
+    category: "Image",
     link: "#",
     keywords: ["heic", "jpg", "jpeg", "아이폰 사진", "애플 사진", "heic 변환", "iphone photo", "converter"],
     usageSteps: [
       { step: "Select HEIC file", detail: "Drop your HEIC photos or click to browse files from your Apple devices." },
       { step: "Start conversion", detail: "Click 'Convert' to decode and render the HEIC content locally." },
-      { step: "Download JPEG", detail: "Click 'Download' to save the decoded high-quality JPG image." },
+      { step: "Download JPG", detail: "Click 'Download' to save the converted high-quality JPG image." },
     ],
   },
   {
@@ -170,9 +180,9 @@ export const tools: Tool[] = [
     name: "Image to PDF Converter",
     slug: "image-to-pdf",
     description:
-      "Combine multiple PNG, JPG, or WEBP images into a single formatted PDF document. Support page size and margins customisation.",
+      "Combine multiple PNG, JPG, or WebP images into a single PDF. Supports custom page sizes, orientation, and margins.",
     icon: "FileUp",
-    category: "Synthesis",
+    category: "PDF",
     link: "#",
     keywords: ["image to pdf", "이미지 pdf", "사진 pdf 변환", "문서 만들기", "pdf 변환", "merge image pdf"],
     usageSteps: [
@@ -188,14 +198,14 @@ export const tools: Tool[] = [
     description:
       "Extract pages from a PDF document as high-resolution PNG or JPG images. Preview page by page and download as a ZIP.",
     icon: "FileImage",
-    category: "Synthesis",
+    category: "PDF",
     link: "#",
     keywords: ["pdf to image", "pdf 이미지 변환", "pdf png", "pdf jpg", "pdf 캡처", "페이지 추출", "pdf export"],
     usageSteps: [
       { step: "Upload PDF", detail: "Drag and drop or select your PDF document to load it in the viewer." },
       { step: "Preview pages", detail: "Navigate using next/prev buttons, or zoom/pan the canvas to inspect detail." },
       { step: "Configure output", detail: "Select output format (PNG/JPG), resolution scale, and quality options." },
-      { step: "Extract ZIP", detail: "Click 'Save all pages' to export all pages as a structured ZIP file." },
+      { step: "Download ZIP", detail: "Click 'Save all pages' to download every page together in one ZIP file." },
     ],
   },
   {
@@ -203,15 +213,15 @@ export const tools: Tool[] = [
     name: "PDF Merger",
     slug: "pdf-merge",
     description:
-      "Merge multiple PDF files into a single consolidated PDF document. Rearrange pages easily and securely inside your browser.",
+      "Merge multiple PDF files into one document. Put the files in any order, all inside your browser.",
     icon: "Files",
-    category: "Synthesis",
+    category: "PDF",
     link: "#",
     keywords: ["pdf merge", "pdf 합치기", "pdf 병합", "pdf 결합", "merge pdf", "두개 합치기"],
     usageSteps: [
       { step: "Select PDFs", detail: "Choose or drop multiple PDF files. The viewer will show a sortable queue." },
       { step: "Reorder queue", detail: "Drag files up/down to set the merging sequence." },
-      { step: "Merge & Save", detail: "Click 'Merge & Download' to combine all files into one document." },
+      { step: "Merge & save", detail: "Click 'Merge Documents' to combine all files into one PDF and download it." },
     ],
   },
   {
@@ -219,14 +229,14 @@ export const tools: Tool[] = [
     name: "Global Size Converter",
     slug: "global-size-converter",
     description:
-      "Translate shoes, clothing, hats, and rings sizes between KR, US, UK, and EU standards instantly.",
+      "Convert shoe, clothing, hat, and ring sizes between KR, US, UK, and EU standards instantly.",
     icon: "Ruler",
-    category: "Dev Tools",
+    category: "Everyday",
     link: "#",
     keywords: ["size", "사이즈", "신발 사이즈", "옷 사이즈", "반지", "모자", "해외직구", "us uk eu kr", "단위 변환"],
     usageSteps: [
-      { step: "Choose tab", detail: "Select footwear, tops/bottoms clothing, headwear, or rings tabs." },
-      { step: "Input size", detail: "Toggle gender options, adjust sliders, or input your measurements." },
+      { step: "Choose a category", detail: "Pick Shoes, Clothing, Hats, or Rings at the top." },
+      { step: "Enter your size", detail: "Choose men's or women's, then pick your size or type in a measurement." },
       { step: "Get conversions", detail: "Instantly read corresponding sizing values across global regions." },
     ],
   },
@@ -235,9 +245,9 @@ export const tools: Tool[] = [
     name: "Barcode & Label Studio",
     slug: "barcode-label-studio",
     description:
-      "Generate high-density 1D and 2D barcodes (Code 128, ITF-14, Data Matrix, QR Code) with batch processing, custom logistics headers, thermal printing presets, and zero ads.",
+      "Generate 1D and 2D barcodes (Code 128, ITF-14, Data Matrix, QR Code) with batch mode, custom logistics headers, and printable label sheets.",
     icon: "ScanBarcode",
-    category: "Synthesis",
+    category: "Everyday",
     link: "#",
     keywords: ["barcode", "바코드", "라벨", "label", "qr code", "qr코드", "큐알", "code 128", "itf 14", "data matrix", "인쇄", "스티커"],
     usageSteps: [

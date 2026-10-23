@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { Tool } from '../types';
 import { ArrowLeft, Activity } from 'lucide-react';
@@ -27,6 +27,22 @@ interface ToolDetailViewProps {
 }
 
 export default function ToolDetailView({ tool, onBack }: ToolDetailViewProps) {
+  // Tools with a Korean version (/ko): the card around the tool follows the tool's language
+  const [lang, setLang] = useState<"ko" | "en">(() => (tool.ko && /\/ko\/?$/.test(window.location.pathname) ? "ko" : "en"));
+  useEffect(() => {
+    if (!tool.ko) return;
+    const on = (e: Event) => setLang((e as CustomEvent).detail === "ko" ? "ko" : "en");
+    window.addEventListener("workout-lang", on);
+    return () => window.removeEventListener("workout-lang", on);
+  }, [tool.ko]);
+  const ko = lang === "ko" && tool.ko ? tool.ko : null;
+  useEffect(() => {
+    document.documentElement.lang = ko ? "ko" : "en";
+    return () => {
+      document.documentElement.lang = "en";
+    };
+  }, [ko]);
+
   // Map tool IDs to their implementation components
   const renderToolLogic = () => {
     switch (tool.id) {
@@ -92,12 +108,12 @@ export default function ToolDetailView({ tool, onBack }: ToolDetailViewProps) {
           className="group flex items-center gap-3 text-xs font-display font-bold uppercase tracking-widest text-white/50 hover:text-white transition-colors py-2 px-4 rounded-full hover:bg-white/5 whitespace-nowrap"
         >
           <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
-          Back to list
+          {ko ? "목록으로" : "Back to list"}
         </button>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-[10px] font-display font-bold text-white/50 uppercase tracking-widest shadow-sm whitespace-nowrap">
             <span className="h-1.5 w-1.5 rounded-full bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.5)]" />
-            Live Execution
+            {ko ? "바로 실행" : "Live Execution"}
           </div>
         </div>
       </div>
@@ -111,19 +127,19 @@ export default function ToolDetailView({ tool, onBack }: ToolDetailViewProps) {
               {tool.category}
             </span>
             <h1 className="text-3xl md:text-4xl font-display font-bold text-white tracking-tight mb-4 leading-tight">
-              {tool.name}
+              {ko?.name ?? tool.name}
             </h1>
             <p className="text-base text-lumora-sub font-medium leading-relaxed">
-              {tool.description}
+              {ko?.description ?? tool.description}
             </p>
           </div>
 
           {/* How to Use Card */}
           {tool.usageSteps && tool.usageSteps.length > 0 && (
             <div className="bento-card p-8 bg-white/[0.02]">
-              <h4 className="text-[10px] font-display font-bold text-white/30 uppercase tracking-widest mb-7">How to Use</h4>
+              <h4 className="text-[11px] font-display font-bold text-white/40 uppercase tracking-widest mb-7">{ko ? "사용법" : "How to Use"}</h4>
               <div className="flex flex-col gap-5">
-                {tool.usageSteps.map((item, idx) => (
+                {(ko?.usageSteps ?? tool.usageSteps).map((item, idx) => (
                   <div key={idx} className="flex gap-4">
                     <div className="shrink-0 h-6 w-6 rounded-full bg-lumora-highlight/10 border border-lumora-highlight/20 flex items-center justify-center text-[10px] font-mono font-bold text-lumora-highlight mt-0.5">
                       {idx + 1}

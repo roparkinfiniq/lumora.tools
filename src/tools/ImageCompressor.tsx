@@ -340,7 +340,7 @@ export default function ImageCompressor() {
           >
             <UploadCloud className="h-12 w-12 text-white/20 mb-4" />
             <h4 className="text-white font-display font-bold text-base mb-2">
-              Select or Drop an image
+              Select or drop an image
             </h4>
             <p className="text-xs text-white/30 max-w-xs">
               Supports JPG, PNG, and WEBP formats (max 20MB). Output calculations run client-side.
@@ -541,7 +541,7 @@ export default function ImageCompressor() {
       </div>
 
       {/* Footer Info */}
-      <div className="flex items-center justify-between gap-4 px-4 py-3 bg-white/[0.01] border border-white/5 rounded-xl text-[10px] font-display font-bold text-white/30 uppercase tracking-widest">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-4 px-4 py-3 bg-white/[0.01] border border-white/5 rounded-xl text-[11px] font-display font-bold text-white/45 uppercase tracking-wider">
         <div className="flex items-center gap-2">
           <FileDown className="h-3.5 w-3.5 text-lumora-highlight" />
           <span>Local-first processing. Your data never leaves your browser.</span>

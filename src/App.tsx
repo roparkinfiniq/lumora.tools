@@ -31,6 +31,8 @@ import { useState, useMemo, MouseEvent, useEffect, useRef, lazy, Suspense } from
 const DoquariumAppView = lazy(() => import("./doquarium-app/DoquariumAppView"));
 const DOQUARIUM_APP_PATH = "/doquarium/app";
 import { tools } from "./data/tools";
+import SiteFooter from "./components/SiteFooter";
+import NotFoundView from "./components/NotFoundView";
 
 
 // Soft light that follows the mouse. Moved with a GPU transform once per frame
@@ -118,7 +120,7 @@ const viewFromPath = (path: string) => {
   for (const [view, base] of Object.entries(LANG_PAGES)) {
     if (path.startsWith(`${base}/`)) return view;
   }
-  return URL_TO_VIEW[path.replace(/\/$/, "") || "/"] ?? "home";
+  return URL_TO_VIEW[path.replace(/\/$/, "") || "/"] ?? "not-found";
 };
 
 const getToolSlug = (name: string) => {
@@ -168,22 +170,23 @@ export default function App() {
     if (currentView === "utility-detail" && selectedTool) {
       const slug = selectedTool.slug || getToolSlug(selectedTool.name);
       if (selectedTool.id === "7") {
+        // The language in the address wins; otherwise the one used last time
         let currentLang = "en";
+        const path = window.location.pathname;
         const savedLang = localStorage.getItem("gems_workout_lang");
-        if (savedLang === "ko" || savedLang === "en") {
+        if (path.includes("/workout-canvas/ko")) {
+          currentLang = "ko";
+        } else if (path.includes("/workout-canvas/en")) {
+          currentLang = "en";
+        } else if (savedLang === "ko" || savedLang === "en") {
           currentLang = savedLang;
-        } else {
-          const path = window.location.pathname;
-          if (path.includes("/workout-canvas/ko")) {
-            currentLang = "ko";
-          } else if (path.includes("/workout-canvas/en")) {
-            currentLang = "en";
-          }
         }
         url = `/utilities/${slug}/${currentLang}`;
       } else {
         url = `/utilities/${slug}`;
       }
+    } else if (currentView === "not-found" || (currentView === "utility-detail" && !selectedTool)) {
+      url = window.location.pathname; // keep the mistyped address so people can see what went wrong
     } else if (currentView === "insights" && selectedPost) {
       url = `/journal/${selectedPost.id}`;
     } else if (currentView === "doquarium" && /\/ko\/?$/.test(window.location.pathname)) {
@@ -197,7 +200,7 @@ export default function App() {
     // Title, description, and canonical address for search engines (src/seo.ts)
     if (currentView === "utility-detail" && selectedTool) applySeo(seoForTool(selectedTool));
     else if (currentView === "insights" && selectedPost) applySeo(seoForPost(selectedPost));
-    else if (!LANG_PAGES[currentView] && currentView !== "doquarium") applySeo(seoForView(currentView)); // language pages set their own
+    else if (!LANG_PAGES[currentView] && currentView !== "doquarium") applySeo(seoForView(currentView === "utility-detail" ? "not-found" : currentView)); // language pages set their own; a tool address that matches no tool is "not found"
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [currentView, selectedTool, selectedPost]);
 
@@ -234,8 +237,10 @@ export default function App() {
   }, []);
 
   const categories = useMemo(() => {
-    const cats = ["All", ...new Set(tools.map((t) => t.category))];
-    return cats;
+    // Fixed order, by what people come for most (any new category goes at the end)
+    const ORDER = ["PDF", "Image", "Design", "Developer", "Everyday"];
+    const used = [...new Set(tools.map((t) => t.category))];
+    return ["All", ...ORDER.filter((c) => used.includes(c)), ...used.filter((c) => !ORDER.includes(c))];
   }, []);
 
   const allTags = useMemo(() => {
@@ -409,7 +414,7 @@ export default function App() {
                   <div className="flex flex-col md:flex-row">
                     <div className="p-8 md:p-16 md:w-1/2 flex flex-col justify-center">
                       <div className="inline-flex px-3 py-1.5 rounded-full bg-[#3ef2ff]/10 border border-[#3ef2ff]/25 w-fit mb-6 items-center gap-2">
-                        <span className="h-2 w-2 rounded-full bg-[#3ef2ff] shadow-[0_0_8px_rgba(62,242,255,0.9)] animate-pulse" />
+                        <span className="h-2 w-2 rounded-full bg-[#3ef2ff] shadow-[0_0_8px_rgba(62,242,255,0.9)]" />
                         <span className="text-[10px] font-display font-bold text-[#8ff7ff] uppercase tracking-widest">
                           {BETA.recruiting ? "Android Beta · Testers Wanted" : "New App · Coming Soon"}
                         </span>
@@ -465,7 +470,7 @@ export default function App() {
                   <div className="flex flex-col md:flex-row">
                     <div className="p-8 md:p-16 md:w-1/2 flex flex-col justify-center">
                       <div className="inline-flex px-3 py-1.5 rounded-full bg-white/10 w-fit mb-6 items-center gap-2">
-                        <span className="h-2 w-2 rounded-full bg-lumora-highlight animate-pulse" />
+                        <span className="h-2 w-2 rounded-full bg-lumora-highlight" />
                         <span className="text-[10px] font-display font-bold text-white uppercase tracking-widest">
                           New App Released
                         </span>
@@ -475,7 +480,7 @@ export default function App() {
                       </h2>
                       <p className="text-xl text-lumora-sub font-medium mb-8 leading-relaxed">
                         A completely noiseless to-do list for creators.
-                        Available now on Play Store and PC.
+                        Available now for Mac and Windows.
                       </p>
                       <div className="flex items-center gap-3 text-sm font-display font-bold text-white/50 group-hover:text-white transition-colors">
                         Learn More{" "}
@@ -645,7 +650,7 @@ export default function App() {
 
                   {/* Category Navigation */}
                   <div className="w-full relative">
-                    <div className="flex lg:flex-col gap-3 lg:gap-2 overflow-x-auto lg:overflow-visible no-scrollbar pb-2 lg:pb-0">
+                    <div className="flex flex-wrap lg:flex-nowrap lg:flex-col gap-2 pb-2 lg:pb-0">
                       {categories.map((cat) => {
                         const count =
                           cat === "All"
@@ -655,7 +660,7 @@ export default function App() {
                           <button
                             key={cat}
                             onClick={() => setActiveCategory(cat)}
-                            className={`shrink-0 flex items-center justify-center lg:justify-between gap-2.5 lg:gap-4 lg:w-full px-5 py-2.5 lg:px-5 lg:py-4 rounded-full lg:rounded-2xl text-[13.5px] lg:text-[14px] font-display font-medium transition-all ${
+                            className={`shrink-0 flex items-center justify-center lg:justify-between gap-2 lg:gap-4 lg:w-full px-4 py-2 lg:px-5 lg:py-4 rounded-full lg:rounded-2xl text-[13.5px] lg:text-[14px] font-display font-medium transition-all ${
                               activeCategory === cat
                                 ? "bg-white text-black shadow-md shadow-white/5"
                                 : "bg-white/[0.04] lg:bg-transparent border border-white/5 lg:border-transparent lg:hover:bg-white/10 text-white/50 hover:text-white"
@@ -668,7 +673,7 @@ export default function App() {
                               {cat}
                             </div>
                             <span
-                              className={`font-mono text-[11px] lg:text-[12px] bg-black/5 lg:bg-transparent px-1.5 py-0.5 rounded-md ${activeCategory === cat ? "text-black/50" : "text-white/20"}`}
+                              className={`font-mono text-[11px] lg:text-[12px] bg-black/5 lg:bg-transparent px-1.5 py-0.5 rounded-md ${activeCategory === cat ? "text-black/50" : "text-white/45"}`}
                             >
                               {count.toString().padStart(2, "0")}
                             </span>
@@ -718,7 +723,7 @@ export default function App() {
                       <div className="flex flex-col lg:flex-row min-h-[300px]">
                         <div className="p-8 md:p-10 lg:w-[45%] flex flex-col justify-center relative z-10">
                           <div className="inline-flex px-3 py-1.5 rounded-full bg-[#3ef2ff]/10 text-[#8ff7ff] border border-[#3ef2ff]/25 w-fit mb-6 items-center gap-2">
-                            <span className="h-1.5 w-1.5 rounded-full bg-[#3ef2ff] animate-pulse" />
+                            <span className="h-1.5 w-1.5 rounded-full bg-[#3ef2ff]" />
                             <span className="text-[10px] font-display font-bold uppercase tracking-widest">
                               {BETA.recruiting ? "Android Beta · Testers Wanted" : "New App · Coming Soon"}
                             </span>
@@ -759,7 +764,7 @@ export default function App() {
                         {/* Text Content */}
                         <div className="p-8 md:p-10 lg:w-[45%] flex flex-col justify-center relative z-10 lg:pr-0">
                           <div className="inline-flex px-3 py-1.5 rounded-full bg-lumora-highlight/10 text-lumora-highlight border border-lumora-highlight/20 w-fit mb-6 items-center gap-2">
-                            <span className="h-1.5 w-1.5 rounded-full bg-lumora-highlight animate-pulse" />
+                            <span className="h-1.5 w-1.5 rounded-full bg-lumora-highlight" />
                             <span className="text-[10px] font-display font-bold uppercase tracking-widest">
                               Flagship Product
                             </span>
@@ -769,7 +774,7 @@ export default function App() {
                           </h3>
                           <p className="text-lumora-sub text-lg font-medium mb-8 leading-relaxed">
                             A completely noiseless to-do list for deep focus.
-                            Available for Android & PC.
+                            Available now for Mac and Windows.
                           </p>
                           <div className="flex items-center gap-3 text-sm font-display font-bold text-white/50 group-hover:text-white transition-colors">
                             Explore Product{" "}
@@ -1169,6 +1174,12 @@ export default function App() {
             </motion.div>
           )}
 
+          {(currentView === "not-found" || (currentView === "utility-detail" && !selectedTool)) && (
+            <motion.div key="not-found" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.4 }}>
+              <NotFoundView onOpen={(view) => setCurrentView(view)} />
+            </motion.div>
+          )}
+
           {currentView === "utility-detail" && selectedTool && (
             <motion.div
               key="utility-detail"
@@ -1187,117 +1198,7 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-lumora-bg/80 border-t border-white/5 py-24 pb-12">
-        <div className="container mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-16 mb-24">
-            <div className="md:col-span-2">
-              <button
-                onClick={() => setCurrentView("home")}
-                className="font-display text-3xl font-bold text-white mb-6 block text-left group"
-              >
-                lumora
-                <span className="text-lumora-accent group-hover:text-lumora-highlight transition-colors">
-                  .tools
-                </span>
-              </button>
-              <p className="max-w-sm text-lumora-sub font-medium leading-relaxed">
-                A playground of curious little web applications. Built with lots
-                of coffee and a little bit of magic.
-              </p>
-            </div>
-            <div>
-              <h4 className="text-xs font-display font-bold text-white/50 mb-6 uppercase tracking-widest">
-                Connect
-              </h4>
-              <nav className="flex flex-col gap-4 text-base font-medium text-lumora-sub">
-                <a
-                  href="https://github.com/roparkinfiniq/lumora.tools"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-white transition-colors flex items-center gap-3"
-                >
-                  <Github className="h-5 w-5 text-white/40" /> Github
-                </a>
-                <a
-                  href="mailto:raonepark@gmail.com"
-                  className="hover:text-white transition-colors flex items-center gap-3"
-                >
-                  <Mail className="h-5 w-5 text-white/40" /> Email
-                </a>
-                <a
-                  href="https://lumora-lab.tistory.com/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-white transition-colors flex items-center gap-3"
-                >
-                  <Type className="h-5 w-5 text-white/40" /> Tistory
-                </a>
-              </nav>
-            </div>
-            <div>
-              <h4 className="text-xs font-display font-bold text-white/50 mb-6 uppercase tracking-widest">
-                Explore
-              </h4>
-              <nav className="flex flex-col gap-4 text-base font-medium text-lumora-sub">
-                <button
-                  onClick={() => setCurrentView("utilities")}
-                  className="hover:text-white transition-colors text-left flex items-center gap-2"
-                >
-                  <ArrowRight className="h-4 w-4 text-lumora-highlight/50" />{" "}
-                  Utilities
-                </button>
-                <button
-                  onClick={() => setCurrentView("insights")}
-                  className="hover:text-white transition-colors text-left flex items-center gap-2"
-                >
-                  <ArrowRight className="h-4 w-4 text-lumora-blue/50" /> Journal
-                </button>
-                <button
-                  onClick={() => setCurrentView("studio")}
-                  className="hover:text-white transition-colors text-left flex items-center gap-2"
-                >
-                  <ArrowRight className="h-4 w-4 text-lumora-accent/50" /> About
-                </button>
-                <button
-                  onClick={() => setCurrentView("doquarium")}
-                  className="hover:text-white transition-colors text-left flex items-center gap-2"
-                >
-                  <ArrowRight className="h-4 w-4 text-[#3ef2ff]/50" /> Doquarium
-                </button>
-                {[
-                  { view: "doquarium-privacy", href: PRIVACY_PATH, label: "Doquarium Privacy Policy" },
-                  { view: "doquarium-delete", href: DELETE_PATH, label: "Delete Doquarium Account" },
-                  ...(BETA.recruiting ? [{ view: "doquarium-beta", href: BETA_PATH, label: "Doquarium Beta Testing" }] : []),
-                ].map((link) => (
-                  <a
-                    key={link.view}
-                    href={link.href}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setCurrentView(link.view);
-                    }}
-                    className="hover:text-white transition-colors text-left flex items-center gap-2 text-sm text-white/40"
-                  >
-                    {link.label}
-                  </a>
-                ))}
-              </nav>
-            </div>
-          </div>
-
-          <div className="flex flex-col md:flex-row items-center justify-between pt-12 border-t border-white/5 gap-6">
-            <span className="text-xs font-display font-bold text-white/30 uppercase tracking-widest whitespace-nowrap">
-              © 2026 Lumora. Made with 🤍.
-            </span>
-            <div className="flex items-center gap-8">
-              <div className="flex items-center gap-3 text-xs font-display font-bold uppercase tracking-widest text-lumora-sub">
-                <span className="h-2 w-2 rounded-full bg-lumora-highlight animate-pulse" />
-                SYSTEM OPTIMAL
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter onOpen={(view) => setCurrentView(view)} />
 
       <AnimatePresence>
         {selectedPost && (

@@ -8,6 +8,8 @@ export interface Tool {
   link: string;
   usageSteps?: { step: string; detail: string }[];
   keywords?: string[];
+  /** Korean card text, for tools with a Korean version (/ko) */
+  ko?: { name: string; description: string; usageSteps: { step: string; detail: string }[] };
 }
 
 export interface BlogPost {

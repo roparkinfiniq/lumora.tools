@@ -28,7 +28,7 @@ export default function PdfStudio() {
   // Note Data
   const [noteData, setNoteData] = useState({
     title: "Untitled Project Note",
-    date: new Date().toLocaleDateString(),
+    date: new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }), // English UI: not the computer's own format
     content: "Write your important notes here. Lumora PDF Studio ensures your typography remains crisp and professional when synthesized into a PDF document."
   });
 
@@ -92,7 +92,7 @@ export default function PdfStudio() {
     <div className="w-full h-full flex flex-col gap-6">
       <Toast 
         isVisible={showToast} 
-        message="PDF가 다운로드되었습니다" 
+        message="PDF downloaded"
         onClose={() => setShowToast(false)} 
       />
 
@@ -103,13 +103,14 @@ export default function PdfStudio() {
             <Printer className="h-4 w-4" />
           </div>
           <div>
-            <h3 className="text-sm font-display font-bold text-white uppercase tracking-wider">Synthesis Studio</h3>
-            <p className="text-[10px] text-white/30 font-display font-bold uppercase tracking-widest">A4 High-Fidelity PDF Engine</p>
+            <h3 className="text-sm font-display font-bold text-white uppercase tracking-wider">PDF Studio</h3>
+            <p className="text-[10px] text-white/40 font-display font-bold uppercase tracking-widest">A4 PDF Maker</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <div className="flex bg-white/5 p-1 rounded-xl border border-white/10 mr-2">
+        {/* phones: templates take the full row with their names, Export below */}
+        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+          <div className="grid grid-cols-3 sm:flex flex-1 sm:flex-none bg-white/5 p-1 rounded-xl border border-white/10 sm:mr-2">
             {[
               { id: "note", icon: Type, label: "Note" },
               { id: "resume", icon: User, label: "Resume" },
@@ -118,12 +119,12 @@ export default function PdfStudio() {
               <button
                 key={t.id}
                 onClick={() => setTemplate(t.id as TemplateType)}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-display font-bold uppercase tracking-wider transition-all ${
-                  template === t.id ? "bg-white text-black shadow-lg" : "text-white/30 hover:text-white"
+                className={`flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-[11px] font-display font-bold uppercase tracking-wider transition-all ${
+                  template === t.id ? "bg-white text-black shadow-lg" : "text-white/50 hover:text-white"
                 }`}
               >
-                <t.icon className="h-3 w-3" />
-                <span className="hidden sm:inline">{t.label}</span>
+                <t.icon className="h-3.5 w-3.5" />
+                <span>{t.label}</span>
               </button>
             ))}
           </div>
@@ -132,14 +133,14 @@ export default function PdfStudio() {
             disabled={isExporting}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className={`px-5 py-2 bg-white text-black text-[11px] font-display font-bold uppercase tracking-wider rounded-xl transition-all shadow-lg flex items-center gap-2 ${isExporting ? "opacity-50 cursor-not-allowed" : ""}`}
+            className={`w-full sm:w-auto justify-center whitespace-nowrap px-5 py-2.5 bg-white text-black text-[11px] font-display font-bold uppercase tracking-wider rounded-xl transition-all shadow-lg flex items-center gap-2 ${isExporting ? "opacity-50 cursor-not-allowed" : ""}`}
           >
             {isExporting ? (
               <div className="h-3.5 w-3.5 border-2 border-black/20 border-t-black rounded-full animate-spin" />
             ) : (
               <Download className="h-3.5 w-3.5" />
             )}
-            {isExporting ? "Synthesizing..." : "Export PDF"}
+            {isExporting ? "Exporting…" : "Export PDF"}
           </motion.button>
         </div>
       </div>
@@ -248,16 +249,13 @@ export default function PdfStudio() {
         {/* Right: Preview (A4 Page) */}
         <div className="lg:col-span-7 flex flex-col gap-3 h-full overflow-hidden">
           <div className="flex items-center justify-between px-2">
-            <span className="text-[10px] font-display font-bold text-white/30 uppercase tracking-widest flex items-center gap-2">
-              <Monitor className="h-3 w-3" /> Live Synthesis Preview
+            <span className="text-[11px] font-display font-bold text-white/40 uppercase tracking-widest flex items-center gap-2 whitespace-nowrap">
+              <Monitor className="h-3 w-3" /> Preview · A4
             </span>
-            <div className="flex items-center gap-4">
-              <span className="text-[10px] font-display font-bold text-white/20 uppercase tracking-widest">Scale: 1:1 A4</span>
-              <div className="h-px w-8 bg-white/10" />
-              <div className="flex items-center gap-2">
-                <div className="h-1.5 w-1.5 rounded-full bg-lumora-blue animate-pulse" />
-                <span className="text-[10px] font-display font-bold text-lumora-blue/50 uppercase tracking-widest">Processing</span>
-              </div>
+            {/* "Exporting" only while it really is (it used to say Processing all the time) */}
+            <div className="flex items-center gap-2 whitespace-nowrap">
+              <div className={`h-1.5 w-1.5 rounded-full ${isExporting ? "bg-lumora-blue animate-pulse" : "bg-green-400/70"}`} />
+              <span className="text-[11px] font-display font-bold text-white/40 uppercase tracking-widest">{isExporting ? "Exporting" : "Ready"}</span>
             </div>
           </div>
 
@@ -284,7 +282,8 @@ export default function PdfStudio() {
                         <div className="h-3 w-3 border-2 border-[#ffffff] rounded-full" />
                       </div>
                     </div>
-                    <div className="flex-1 overflow-hidden">
+                    {/* long text fades out at the bottom of the page instead of stopping mid-line */}
+                    <div className="flex-1 overflow-hidden [mask-image:linear-gradient(to_bottom,black_85%,transparent)]">
                       <p className="text-sm md:text-base leading-relaxed whitespace-pre-wrap">{noteData.content}</p>
                     </div>
                     <div className="pt-6 border-t border-[#f0f0f0]">

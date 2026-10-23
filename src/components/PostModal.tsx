@@ -21,6 +21,8 @@ interface TocItem {
 }
 
 export default function PostModal({ post, onClose }: PostModalProps) {
+  // Reading time from the real length (about 220 words a minute), not a fixed "4 min"
+  const readMinutes = Math.max(1, Math.round((post.content ?? "").replace(/<[^>]+>/g, " ").split(/\s+/).filter(Boolean).length / 220));
   const contentRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const sidebarNavRef = useRef<HTMLElement>(null);
@@ -235,9 +237,9 @@ const morning = () => {
           <div className="relative z-10 w-full max-w-7xl mx-auto px-6 py-12 md:py-24 min-h-screen flex lg:gap-8 xl:gap-16 justify-center">
             
             {/* Left Spacer for symmetry */}
-            <div className="hidden xl:block w-48 shrink-0"></div>
+            <div className="hidden 2xl:block w-48 shrink-0"></div>
 
-            <div className="w-full max-w-3xl shrink-0">
+            <div className="w-full max-w-3xl min-w-0">
               {/* Header Actions */}
           <nav className="flex items-center justify-between mb-16 md:mb-24">
             <button
@@ -265,7 +267,7 @@ const morning = () => {
             <div className="flex items-center gap-6 mb-8 text-xs font-display font-bold uppercase tracking-widest text-white/40">
               <span className="text-lumora-blue">Journal Entry</span>
               <span className="flex items-center gap-1.5">
-                <Clock className="h-3 w-3" /> 4 Min Read
+                <Clock className="h-3 w-3" /> {readMinutes} Min Read
               </span>
             </div>
 

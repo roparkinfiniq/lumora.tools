@@ -217,7 +217,7 @@ export default function CodeTiaraView() {
               {/* Floating Element 1 - Sync Status */}
               <div className="absolute top-[12%] right-2 sm:top-[25%] sm:-right-8 md:-right-16 lg:-right-20 p-2 sm:p-4 bg-[#1a1a20]/90 backdrop-blur-xl rounded-2xl border border-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.5)] transform sm:translate-y-8 group-hover:translate-y-2 group-hover:-translate-x-2 transition-all duration-700 ease-out z-30 flex flex-col gap-2 scale-90 sm:scale-100 origin-right">
                 <div className="flex items-center gap-2 sm:gap-3">
-                  <div className="h-2 w-2 rounded-full bg-[#10b981] shadow-[0_0_10px_#10b981] animate-pulse" />
+                  <div className="h-2 w-2 rounded-full bg-[#10b981] shadow-[0_0_10px_#10b981]" />
                   <span className="text-white/90 text-[10px] sm:text-xs font-bold font-display uppercase tracking-widest">
                     In Sync
                   </span>
@@ -420,8 +420,8 @@ export default function CodeTiaraView() {
               </span>
             </h2>
             <p className="text-lg md:text-xl text-lumora-sub max-w-2xl mx-auto mb-10 leading-relaxed">
-              Join thousands of creators, developers, and thinkers who use Code
-              Tiara to quiet the noise.
+              Download Code Tiara for Mac or Windows and let it quiet the
+              noise while you work.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mb-12">

@@ -566,50 +566,53 @@ export default function BarcodeStudio() {
       {/* Header Bar */}
       <div className="flex flex-wrap items-center justify-between gap-4 bg-white/[0.02] border border-white/5 p-4 rounded-2xl">
         {/* Navigation Tabs */}
-        <div className="flex items-center gap-2 p-1 bg-white/5 rounded-xl border border-white/10">
+        <div className="grid grid-cols-3 w-full sm:w-auto sm:flex sm:items-center gap-1 sm:gap-2 p-1 bg-white/5 rounded-xl border border-white/10">
           <button
             onClick={() => setActiveTab("single")}
-            className={`px-4 py-2 text-xs font-display font-bold rounded-lg transition-all flex items-center gap-2 ${
+            className={`px-2 sm:px-4 py-2 text-xs font-display font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 sm:gap-2 whitespace-nowrap ${
               activeTab === "single"
                 ? "bg-lumora-highlight text-white shadow-md"
                 : "text-white/50 hover:text-white hover:bg-white/5"
             }`}
           >
             <ScanBarcode className="h-3.5 w-3.5" />
-            Single Generator
+            <span className="sm:hidden">Single</span>
+            <span className="hidden sm:inline">Single Generator</span>
           </button>
           <button
             onClick={() => setActiveTab("batch")}
-            className={`px-4 py-2 text-xs font-display font-bold rounded-lg transition-all flex items-center gap-2 ${
+            className={`px-2 sm:px-4 py-2 text-xs font-display font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 sm:gap-2 whitespace-nowrap ${
               activeTab === "batch"
                 ? "bg-lumora-highlight text-white shadow-md"
                 : "text-white/50 hover:text-white hover:bg-white/5"
             }`}
           >
             <FileSpreadsheet className="h-3.5 w-3.5" />
-            Batch Mode
+            <span className="sm:hidden">Batch</span>
+            <span className="hidden sm:inline">Batch Mode</span>
           </button>
           <button
             onClick={() => setActiveTab("labelsheet")}
-            className={`px-4 py-2 text-xs font-display font-bold rounded-lg transition-all flex items-center gap-2 ${
+            className={`px-2 sm:px-4 py-2 text-xs font-display font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 sm:gap-2 whitespace-nowrap ${
               activeTab === "labelsheet"
                 ? "bg-lumora-highlight text-white shadow-md"
                 : "text-white/50 hover:text-white hover:bg-white/5"
             }`}
           >
             <Grid className="h-3.5 w-3.5" />
-            Print Label Sheet
+            <span className="sm:hidden">Sheet</span>
+            <span className="hidden sm:inline">Print Label Sheet</span>
           </button>
         </div>
 
         {/* Primary CTA Buttons */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 w-full sm:w-auto">
           {activeTab === "single" && (
             <>
               <button
                 onClick={handleCopyImage}
                 disabled={!!errorMsg}
-                className="px-4 py-2 bg-white text-black hover:bg-white/90 disabled:opacity-40 text-xs font-display font-bold uppercase tracking-wider rounded-xl transition-all shadow-lg active:scale-95 flex items-center gap-2 cursor-pointer"
+                className="flex-1 sm:flex-none justify-center whitespace-nowrap px-4 py-2.5 bg-white text-black hover:bg-white/90 disabled:opacity-40 text-xs font-display font-bold uppercase tracking-wider rounded-xl transition-all shadow-lg active:scale-95 flex items-center gap-2 cursor-pointer"
               >
                 <Copy className="h-3.5 w-3.5" />
                 Copy PNG
@@ -617,16 +620,18 @@ export default function BarcodeStudio() {
               <button
                 onClick={handleDownloadPNG}
                 disabled={!!errorMsg}
-                className="px-4 py-2 bg-lumora-highlight/20 text-lumora-highlight hover:bg-lumora-highlight/30 disabled:opacity-40 border border-lumora-highlight/30 text-xs font-display font-bold uppercase tracking-wider rounded-xl transition-all flex items-center gap-2 cursor-pointer"
+                className="flex-1 sm:flex-none justify-center whitespace-nowrap px-4 py-2.5 bg-lumora-highlight/20 text-lumora-highlight hover:bg-lumora-highlight/30 disabled:opacity-40 border border-lumora-highlight/30 text-xs font-display font-bold uppercase tracking-wider rounded-xl transition-all flex items-center gap-2 cursor-pointer"
               >
                 <Download className="h-3.5 w-3.5" />
-                Download PNG
+                <span className="sm:hidden">PNG</span>
+                <span className="hidden sm:inline">Download PNG</span>
               </button>
               <button
                 onClick={handleDownloadSVG}
                 disabled={!!errorMsg}
                 className="p-2.5 bg-white/5 hover:bg-white/10 text-white/70 hover:text-white rounded-xl transition-all border border-white/10 cursor-pointer"
                 title="Download Vector SVG"
+                aria-label="Download SVG"
               >
                 <FileCode className="h-4 w-4" />
               </button>
@@ -636,7 +641,7 @@ export default function BarcodeStudio() {
           {(activeTab === "batch" || activeTab === "labelsheet") && (
             <button
               onClick={handleExportPDF}
-              className="px-5 py-2 bg-white text-black hover:bg-white/90 text-xs font-display font-bold uppercase tracking-wider rounded-xl transition-all shadow-lg active:scale-95 flex items-center gap-2 cursor-pointer"
+              className="w-full sm:w-auto justify-center whitespace-nowrap px-5 py-2.5 bg-white text-black hover:bg-white/90 text-xs font-display font-bold uppercase tracking-wider rounded-xl transition-all shadow-lg active:scale-95 flex items-center gap-2 cursor-pointer"
             >
               <Printer className="h-3.5 w-3.5" />
               Export PDF Print Sheet
@@ -667,7 +672,7 @@ export default function BarcodeStudio() {
                   <p className="text-[11px] font-display font-bold text-white group-hover:text-lumora-highlight transition-colors">
                     {p.name}
                   </p>
-                  <p className="text-[9px] text-white/30 truncate">{p.description}</p>
+                  <p className="mt-0.5 text-[11px] leading-snug text-white/45 line-clamp-2">{p.description}</p>
                 </button>
               ))}
             </div>
@@ -757,17 +762,17 @@ export default function BarcodeStudio() {
                   type="checkbox"
                   checked={showHumanReadable}
                   onChange={(e) => setShowHumanReadable(e.target.checked)}
-                  className="rounded border-white/20 bg-[#0a0a0c] text-lumora-highlight focus:ring-0"
+                  className="h-4 w-4 accent-[#c4b5fd] cursor-pointer"
                 />
-                <span className="text-[10px] font-display font-bold text-white/60 uppercase tracking-widest">
+                <span className="text-[11px] font-display font-bold text-white/60 uppercase tracking-widest whitespace-nowrap">
                   Show Text
                 </span>
               </label>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-3">
               <div>
-                <div className="flex justify-between text-[10px] font-display text-white/40 mb-1">
+                <div className="flex justify-between text-[11px] font-display text-white/50 mb-1">
                   <span>Bar Height</span>
                   <span>{height}mm</span>
                 </div>
@@ -782,7 +787,7 @@ export default function BarcodeStudio() {
               </div>
 
               <div>
-                <div className="flex justify-between text-[10px] font-display text-white/40 mb-1">
+                <div className="flex justify-between text-[11px] font-display text-white/50 mb-1">
                   <span>Bar Scale</span>
                   <span>{scale}x</span>
                 </div>
@@ -797,33 +802,36 @@ export default function BarcodeStudio() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 pt-2">
-              <div className="flex items-center gap-2">
+            {/* colors: each on its own line on phones so the swatches never get squeezed */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+              <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="color"
                   value={barColor}
                   onChange={(e) => setBarColor(e.target.value)}
-                  className="h-7 w-7 rounded-lg bg-transparent cursor-pointer border border-white/20"
+                  className="h-8 w-8 shrink-0 rounded-lg bg-transparent cursor-pointer border border-white/20"
                 />
-                <span className="text-[10px] font-mono text-white/50 uppercase">Bar: {barColor}</span>
-              </div>
+                <span className="text-[11px] font-mono text-white/60 uppercase whitespace-nowrap">Bar {barColor}</span>
+              </label>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <input
                   type="color"
                   value={bgColor}
                   disabled={isTransparentBg}
                   onChange={(e) => setBgColor(e.target.value)}
-                  className="h-7 w-7 rounded-lg bg-transparent cursor-pointer border border-white/20 disabled:opacity-20"
+                  aria-label="Background color"
+                  className="h-8 w-8 shrink-0 rounded-lg bg-transparent cursor-pointer border border-white/20 disabled:opacity-20"
                 />
+                <span className="text-[11px] font-mono text-white/60 uppercase whitespace-nowrap">Background {isTransparentBg ? "" : bgColor}</span>
                 <label className="flex items-center gap-1.5 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={isTransparentBg}
                     onChange={(e) => setIsTransparentBg(e.target.checked)}
-                    className="rounded border-white/20 bg-[#0a0a0c] text-lumora-highlight"
+                    className="h-4 w-4 accent-[#c4b5fd] cursor-pointer"
                   />
-                  <span className="text-[10px] font-display text-white/50 uppercase">Transparent</span>
+                  <span className="text-[11px] font-display font-bold text-white/60 uppercase tracking-widest whitespace-nowrap">Transparent</span>
                 </label>
               </div>
             </div>

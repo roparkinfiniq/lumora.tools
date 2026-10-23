@@ -201,7 +201,7 @@ export default function PngJpgConverter() {
           <button
             onClick={handleConvert}
             disabled={!file || isConverting}
-            className="px-5 py-2 bg-white text-black hover:bg-white/90 disabled:opacity-50 text-[11px] font-display font-bold uppercase tracking-wider rounded-xl transition-all shadow-lg active:scale-95 flex items-center gap-2"
+            className="px-5 py-2 bg-white text-black hover:bg-white/90 disabled:bg-white/10 disabled:text-white/35 disabled:shadow-none disabled:cursor-not-allowed text-[11px] font-display font-bold uppercase tracking-wider rounded-xl transition-all shadow-lg active:scale-95 flex items-center gap-2"
           >
             <RefreshCw className={`h-3.5 w-3.5 ${isConverting ? 'animate-spin' : ''}`} />
             Convert
@@ -387,14 +387,15 @@ export default function PngJpgConverter() {
                     )}
                   </div>
                   {outputUrl && outputSize && (
-                    <div className="flex justify-between items-center text-[10px] font-mono text-lumora-sub px-1">
-                      <span>Size: {fmtBytes(outputSize)}</span>
+                    <div className="flex flex-col gap-2 px-1">
+                      <span className="text-[11px] font-mono text-lumora-sub">Size: {fmtBytes(outputSize)}</span>
+                      {/* the result is what people came for: a real button, not a 10px link */}
                       <a
                         href={outputUrl}
                         download={outputName}
-                        className="text-lumora-blue hover:underline flex items-center gap-1 font-display font-bold"
+                        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white text-black hover:bg-white/90 text-xs font-display font-bold uppercase tracking-wider transition-colors"
                       >
-                        <Download className="h-3 w-3" /> Download
+                        <Download className="h-3.5 w-3.5" /> Download
                       </a>
                     </div>
                   )}
@@ -406,7 +407,7 @@ export default function PngJpgConverter() {
       </div>
 
       {/* Footer Info */}
-      <div className="flex items-center justify-between gap-4 px-4 py-3 bg-white/[0.01] border border-white/5 rounded-xl text-[10px] font-display font-bold text-white/30 uppercase tracking-widest">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-4 px-4 py-3 bg-white/[0.01] border border-white/5 rounded-xl text-[11px] font-display font-bold text-white/45 uppercase tracking-wider">
         <div className="flex items-center gap-2">
           <Image className="h-3.5 w-3.5 text-lumora-highlight" />
           <span>Local-first processing. Your data never leaves your browser.</span>

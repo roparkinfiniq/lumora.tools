@@ -4,7 +4,7 @@ export const stillness: BlogPost = {
   id: "1",
   title: "Finding stillness in a hyper-connected world",
   excerpt:
-    "Lately, I’ve been leaving my phone in another room until 10 AM. The silence is deafening, then comforting.",
+    "Lately, I’ve been leaving my phone in the kitchen overnight and not touching it until 9 AM. The silence is deafening at first, then comforting.",
   date: "APR 28, 2026",
   link: "#",
   tags: ["Mindfulness", "Focus"],
@@ -18,7 +18,7 @@ export const stillness: BlogPost = {
       "The world can wait until 9 AM. Your mind needs space to breathe before it's asked to perform."
     </blockquote>
 
-    <h2>The tools of analog</h2>
+    <h2>Analog tools</h2>
     <p>I bought a simple, unlined notebook. Using a pen instead of a keyboard changes how you process thoughts. It's slower. It forces you to construct the sentence in your mind before it becomes permanent on paper. This analog delay acts as a natural filter for the inconsequential.</p>
   `,
 };

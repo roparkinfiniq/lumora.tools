@@ -31,7 +31,7 @@
 | 무엇 | 어디 |
 | --- | --- |
 | 화면 전환 · 주소 | `src/App.tsx`: `URL_TO_VIEW` · `VIEW_TO_URL` · `LANG_PAGES`(언어 하위 주소가 있는 페이지) · `viewFromPath` |
-| 위 메뉴 · 검색 창 · 푸터 | `src/components/GNB.tsx` · `CommandPalette.tsx` · `App.tsx` 아래쪽 footer |
+| 위 메뉴 · 검색 창 · 푸터 | `src/components/GNB.tsx` · `CommandPalette.tsx` · `SiteFooter.tsx` (한국어 페이지에선 한국어) · 없는 주소 `NotFoundView.tsx` |
 | 도구 목록 데이터 | `src/data/tools.ts` (이름 · slug · 설명 · 아이콘 · 사용법) |
 | 도구 화면 연결 | `src/components/ToolDetailView.tsx` (도구마다 `lazy()`로 따로 불러옴) |
 | 도구 카드 아이콘 | `src/components/ToolCard.tsx`의 `TOOL_ICONS` |
@@ -119,6 +119,7 @@
 | 2026-10-12 | 콕 알림 하루 1번 기록(pushLog) 2일 뒤 자동 삭제 |
 | 2026-10-18 | 방문자 분석 Vercel Web Analytics (쿠키 없음) · Search Console(raonepark@gmail.com) · 페이지마다 제목 · 설명 · 진짜 주소 |
 | 2026-10-18 | 두쿠아리움 홍보 영상(래원 `doquarium-reel-02-deep`, 세로 32초, 영어 자막)을 **두쿠아리움 페이지 맨 위에만** (홈은 가볍게 그대로). 13MB → 웹용 1.45MB |
+| 2026-10-24 | **전체 리그레션 (폰 375 · PC 1280, 페이지 38개 + 도구 15개 실제 사용)** 뒤 고침: 한국어는 단어 중간에서 줄을 안 바꿈(`body`에 `word-break: keep-all`, 사이트 전체) · 푸터를 `SiteFooter.tsx`로 빼고 한국어 페이지에선 한국어 + `/ko` 링크(페이지가 `<html lang>`을 바꾸면 따라감) · 없는 주소는 "404" 화면(`NotFoundView`, 검색 제외) · 도구 분류를 **PDF · Image · Design · Developer · Everyday**로(래원 "효율적으로") · 코드 티아라는 "Mac · Windows 지금, 안드로이드는 아직"(래원) · 운동 캔버스 `/ko`는 주소가 저장된 언어보다 우선 + 왼쪽 설명 카드도 한국어(`tools.ts`의 `ko`) · 폰에서 넘치던 곳(바코드 · 사이즈 · JSON · 운동 · 그라디언트 미리보기 높이 0) · 저널 표는 폰에서 줄마다 카드 · 저널 목차(PC 1280 잘림) · 읽는 시간은 글자 수로 · 마크다운 미리보기 스타일(`md-preview`) · 끝없이 깜빡이던 점 7곳 멈춤 · 영어 도구의 한국어 알림(복사됨 · PDF 받음) 영어로 · HEIC 라이브러리 버전 고정(`heic2any@0.0.4`) · 방침 · 삭제 안내에 Apple 로그인 |
 | 2026-10-23 | 웹 할 일에 **썩는 표시**(앱 `lib/models/rot.dart`를 `backup.ts` `rotLevel`로 옮김: 적고 24시간 · 마감 다음 날 자정부터, 🧹 청소 생물 10%씩 최대 30% 덜, 말은 앱의 "어제 등록 · 등록한 지 N일 · 마감 N일 지남 · 다 썩음") + **물고기 상태 한 줄**(백업의 `fish_health` 그대로, 숫자 없이) + 목록 순서를 앱과 같게(`order ?? createdAt` 큰 것 위). **앱의 썩는 규칙 · 말이 바뀌면 여기도 같이** |
 | 2026-10-23 | **웹 애플 로그인** (`/doquarium/app`, 구글 버튼 옆). 애플 Services ID `com.lumora.doquarium.web` (도메인 doquarium-c0f89.firebaseapp.com, 돌아올 주소 `/__/auth/handler`) + Sign in with Apple 키(Key ID 77YKFR5L5V, 파일은 레포 밖 `C:/Users/ASUS/.doquarium-keys/`)를 Firebase Apple 공급자에 넣음 (래원이 직접, 2026-10-23). 같은 Apple ID면 아이폰 앱과 같은 계정 |
 | 2026-10-22 | **웹 할 일 2단계: 웹에서 바꾸기** (래원 요청: 카테고리 고르기 · 새로 만들기도). 추가(지금 고른 카테고리로) · 동그라미로 끝내기 · 끝낸 일 되돌리기 · 글자를 눌러 제목 · 카테고리 고치기 · 지우기(한 번 더 눌러 확인) · 새 카테고리(어항마다 8개 · 이름 12자). 웹은 백업을 고치지 않고 우편함 `inbox/{uid}/notes`에 쪽지만, 아직 폰에 안 간 것은 시계 표시 + "다음에 앱을 열 때 전해져요". **사람마다 폰 앱이 +19 이상일 때만 켜짐** (백업의 `whats_new_build` ≥ `MIN_APP_BUILD`, 래원 결정 2026-10-23: +19 나오는 날 바로). 그 전 폰은 보기만 + "업데이트하고 한 번 열면" 안내. 전체를 끄려면 `VITE_DOQ_WEB_WRITES=0`. 시험은 `VITE_DOQ_EMULATOR=1`(에뮬레이터 · 가짜 구글 계정) |

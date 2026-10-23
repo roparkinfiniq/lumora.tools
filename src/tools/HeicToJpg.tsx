@@ -36,7 +36,8 @@ export default function HeicToJpg() {
     }
 
     const script = document.createElement("script");
-    script.src = "https://unpkg.com/heic2any/dist/heic2any.min.js";
+    // pinned: an unversioned link would follow new releases and could break the tool by itself
+    script.src = "https://unpkg.com/heic2any@0.0.4/dist/heic2any.min.js";
     script.async = true;
     script.onload = () => {
       setIsLibLoaded(true);
@@ -62,7 +63,7 @@ export default function HeicToJpg() {
     const isHeic = ext === "heic" || ext === "heif" || f.type === "image/heic" || f.type === "image/heif";
     
     if (!isHeic) {
-      alert("Only HEIC or HEIF images are supported.");
+      setStatus(`"${f.name}" isn't a HEIC photo. Choose a .heic or .heif file.`);
       return;
     }
 
@@ -154,7 +155,7 @@ export default function HeicToJpg() {
           <button
             onClick={handleConvert}
             disabled={!file || isConverting || !isLibLoaded}
-            className="px-5 py-2 bg-white text-black hover:bg-white/90 disabled:opacity-50 text-[11px] font-display font-bold uppercase tracking-wider rounded-xl transition-all shadow-lg active:scale-95 flex items-center gap-2"
+            className="px-5 py-2 bg-white text-black hover:bg-white/90 disabled:bg-white/10 disabled:text-white/35 disabled:shadow-none disabled:cursor-not-allowed text-[11px] font-display font-bold uppercase tracking-wider rounded-xl transition-all shadow-lg active:scale-95 flex items-center gap-2"
           >
             <RefreshCw className={`h-3.5 w-3.5 ${isConverting ? 'animate-spin' : ''}`} />
             Convert
@@ -195,7 +196,7 @@ export default function HeicToJpg() {
           >
             <UploadCloud className="h-12 w-12 text-white/20 mb-4" />
             <h4 className="text-white font-display font-bold text-base mb-2">
-              Select or Drop Apple HEIC photos
+              Select or drop Apple HEIC photos
             </h4>
             <p className="text-xs text-white/30 max-w-xs">
               Supports .heic or .heif files. Your photos are processed privately inside your browser.
@@ -300,7 +301,7 @@ export default function HeicToJpg() {
       </div>
 
       {/* Footer Info */}
-      <div className="flex items-center justify-between gap-4 px-4 py-3 bg-white/[0.01] border border-white/5 rounded-xl text-[10px] font-display font-bold text-white/30 uppercase tracking-widest">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-4 px-4 py-3 bg-white/[0.01] border border-white/5 rounded-xl text-[11px] font-display font-bold text-white/45 uppercase tracking-wider">
         <div className="flex items-center gap-2">
           <ImageIcon className="h-3.5 w-3.5 text-lumora-highlight" />
           <span>Local-first processing. Your data never leaves your browser.</span>

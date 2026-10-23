@@ -43,7 +43,7 @@ export default function MarkdownEther() {
     <div className="w-full h-full flex flex-col gap-6">
       <Toast 
         isVisible={showToast} 
-        message="복사되었습니다" 
+        message="Copied" 
         onClose={() => setShowToast(false)} 
       />
       {/* Tool Header/Actions */}
@@ -125,7 +125,7 @@ export default function MarkdownEther() {
                 value={markdown}
                 onChange={(e) => setMarkdown(e.target.value)}
                 placeholder="Write your markdown here..."
-                className="w-full h-full bg-black/30 border border-white/10 hover:border-white/20 focus:border-lumora-highlight/40 focus:bg-black/50 rounded-[24px] p-8 text-sm font-mono text-white/80 placeholder:text-white/20 focus:outline-none transition-all resize-none leading-relaxed"
+                className="w-full h-full min-h-[260px] bg-black/30 border border-white/10 hover:border-white/20 focus:border-lumora-highlight/40 focus:bg-black/50 rounded-[24px] p-5 sm:p-8 text-sm font-mono text-white/80 placeholder:text-white/20 focus:outline-none transition-all resize-none leading-relaxed"
                 spellCheck="false"
               />
             </motion.div>
@@ -144,11 +144,11 @@ export default function MarkdownEther() {
                   <Eye className="h-3 w-3" /> Live Preview
                 </span>
                 <div className="flex items-center gap-2">
-                  <div className="h-1.5 w-1.5 rounded-full bg-green-400 animate-pulse" />
+                  <div className="h-1.5 w-1.5 rounded-full bg-green-400" />
                   <span className="text-[10px] font-display font-bold text-green-400/50 uppercase tracking-widest">Active</span>
                 </div>
               </div>
-              <div className="w-full h-full bg-[#0a0a0c]/40 border border-white/5 rounded-[24px] overflow-auto no-scrollbar p-8 prose-custom shadow-inner">
+              <div className="w-full h-full bg-[#0a0a0c]/40 border border-white/5 rounded-[24px] overflow-auto p-5 sm:p-8 prose-custom md-preview shadow-inner min-h-[280px]">
                 <div 
                   dangerouslySetInnerHTML={{ __html: htmlContent }} 
                   className="w-full h-full"

@@ -50,7 +50,18 @@ html {
     /* Soft dark foundations */
     background-color: #1a1921;
     position: relative;
+    /* Korean wraps between words, never inside one ("지/루하죠"); no effect on English.
+       A single very long string (URL, code) may still break so it never pushes the layout wide. */
+    word-break: keep-all;
+    overflow-wrap: break-word;
   }
+}
+
+/* Wide uppercase letter-spacing reads as gaps between Hangul syllables (outside @layer so it beats the utility) */
+:lang(ko) .tracking-widest,
+:lang(ko) .tracking-wider,
+:lang(ko) .tracking-\[0\.3em\] {
+  letter-spacing: 0.04em;
 }
 
 @layer utilities {
@@ -237,3 +248,88 @@ body.modal-open .bento-card:hover {
   transform: none !important;
 }
 
+
+/* Tables in posts on phones: each row becomes a small stacked block (stage → principle → in practice)
+   instead of three squeezed columns that clip */
+@media (max-width: 639px) {
+  .prose-custom table,
+  .prose-custom tbody,
+  .prose-custom tr,
+  .prose-custom td {
+    display: block;
+    width: 100%;
+  }
+  .prose-custom thead {
+    display: none;
+  }
+  .prose-custom tr {
+    padding: 0.75rem 0;
+  }
+  .prose-custom td {
+    padding: 0.2rem 1rem !important;
+    white-space: normal !important;
+  }
+}
+
+/* Markdown tool preview: a compact document look (the journal styles above are made for long essays) */
+.md-preview h1 {
+  @apply font-display text-3xl font-bold text-white tracking-tight;
+  margin: 0 0 1.25rem !important;
+}
+.md-preview h2 {
+  @apply text-2xl;
+  margin-top: 2rem !important;
+  margin-bottom: 1rem !important;
+}
+.md-preview h3 {
+  @apply text-xl;
+  margin-top: 1.5rem !important;
+  margin-bottom: 0.75rem !important;
+}
+.md-preview p,
+.md-preview li {
+  @apply text-base;
+}
+.md-preview p {
+  margin-bottom: 1rem !important;
+}
+.md-preview ul {
+  @apply mb-6 space-y-2;
+}
+.md-preview li::before {
+  top: 0.6rem;
+}
+.md-preview ol {
+  @apply list-decimal pl-6 mb-6 space-y-2 text-lumora-text/80;
+}
+.md-preview ol li {
+  @apply pl-1;
+}
+.md-preview ol li::before {
+  content: none;
+}
+.md-preview pre {
+  @apply bg-[#0a0a0c] border border-white/5 rounded-xl p-4 my-6 overflow-x-auto;
+}
+.md-preview pre code {
+  @apply bg-transparent p-0 text-[13px] text-white/80 whitespace-pre;
+}
+.md-preview blockquote {
+  @apply text-base md:text-lg my-6 pl-4 pr-0 py-1 border-l-2 border-lumora-highlight/40 not-italic font-sans text-white/70;
+}
+.md-preview table {
+  @apply w-full text-sm my-6 border-collapse;
+}
+.md-preview th,
+.md-preview td {
+  @apply border border-white/10 px-3 py-2 text-left text-white/80;
+}
+.md-preview th {
+  @apply bg-white/5 font-semibold text-white;
+}
+.md-preview a {
+  @apply text-lumora-highlight underline underline-offset-2;
+}
+.md-preview hr {
+  @apply my-8 border-white/10;
+}

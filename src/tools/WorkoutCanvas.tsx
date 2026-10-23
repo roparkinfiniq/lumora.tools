@@ -477,7 +477,7 @@ const TRANSLATIONS = {
     logSetText: "Log",
     weightLabel: "Weight",
     repsLabel: "Reps",
-    feedbackPlaceholder: "Enter pain levels or workout feedback notes...",
+    feedbackPlaceholder: "Notes (pain, energy, how it felt)",
     guidePrefix: "Guide",
     editLabel: "Edit",
     deleteLabel: "Delete",
@@ -949,16 +949,17 @@ const EXERCISE_PRESETS: ExercisePreset[] = [
 
 export default function WorkoutCanvas() {
   const [lang, setLang] = useState<"ko" | "en">(() => {
-    const savedLang = localStorage.getItem("gems_workout_lang");
-    if (savedLang === "en" || savedLang === "ko") {
-      return savedLang;
-    }
+    // A link that names the language (/ko, /en) wins over the language used last time
     const path = window.location.pathname;
     if (path.includes("/workout-canvas/ko")) {
       return "ko";
     }
     if (path.includes("/workout-canvas/en")) {
       return "en";
+    }
+    const savedLang = localStorage.getItem("gems_workout_lang");
+    if (savedLang === "en" || savedLang === "ko") {
+      return savedLang;
     }
     return "en";
   });
@@ -1027,6 +1028,8 @@ export default function WorkoutCanvas() {
       const targetUrl = `/utilities/workout-canvas/${lang}`;
       window.history.replaceState(window.history.state, "", targetUrl);
     }
+    // The page around the tool (info card, How to use) follows the tool's language
+    window.dispatchEvent(new CustomEvent("workout-lang", { detail: lang }));
   }, [lang]);
 
   // Prevent hover shifts when modal is open
@@ -1298,7 +1301,10 @@ export default function WorkoutCanvas() {
   const copyRoutineResults = () => {
     const data = db[activeDay];
     const now = new Date();
-    const dateStr = `${now.getFullYear()}. ${String(now.getMonth() + 1).padStart(2, "0")}. ${String(now.getDate()).padStart(2, "0")}`;
+    const dateStr =
+      lang === "ko"
+        ? `${now.getFullYear()}. ${String(now.getMonth() + 1).padStart(2, "0")}. ${String(now.getDate()).padStart(2, "0")}`
+        : now.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
     const t = TRANSLATIONS[lang];
 
     let report = `${t.reportHeader}\n`;
@@ -1939,12 +1945,12 @@ export default function WorkoutCanvas() {
                   ? "bg-lumora-highlight/10 border border-lumora-highlight/20 text-lumora-highlight hover:bg-lumora-highlight/20"
                   : "bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10"
               }`}
-              title={isIframe ? t.wakeLockDEMO : (wakeLockStatusText === "화면 유지 ON" ? (lang === "ko" ? "화면 유지 ON" : "Wake Lock ON") : (lang === "ko" ? "화면 유지 OFF" : "Wake Lock OFF"))}
+              title={isIframe ? t.wakeLockDEMO : (wakeLockStatusText === "화면 유지 ON" ? (lang === "ko" ? "화면 유지 ON" : "Screen On") : (lang === "ko" ? "화면 유지 OFF" : "Screen Off"))}
             >
               <Smartphone className="w-3.5 h-3.5" />
               <span className="inline sm:hidden">{isWakeLockActive ? "ON" : "OFF"}</span>
               <span className="hidden sm:inline">
-                {isIframe ? t.wakeLockDEMO : (wakeLockStatusText === "화면 유지 ON" ? (lang === "ko" ? "화면 유지 ON" : "Wake Lock ON") : (lang === "ko" ? "화면 유지 OFF" : "Wake Lock OFF"))}
+                {isIframe ? t.wakeLockDEMO : (wakeLockStatusText === "화면 유지 ON" ? (lang === "ko" ? "화면 유지 ON" : "Screen On") : (lang === "ko" ? "화면 유지 OFF" : "Screen Off"))}
               </span>
             </button>
 
@@ -2185,18 +2191,18 @@ export default function WorkoutCanvas() {
                   {item.isWarmup ? (
                     <div className="space-y-2">
                       <div className="flex items-center justify-between bg-lumora-card/50 p-3 rounded-2xl border border-white/5 text-xs">
-                        <span className="text-lumora-sub font-extrabold whitespace-nowrap shrink-0">{t.setLogsLabel}</span>
-                        <div className="flex items-center space-x-3 bg-lumora-bg/40 px-3 py-1.5 rounded-xl border border-white/5">
+                        <span className="text-lumora-sub font-extrabold min-w-0 pr-2">{t.setLogsLabel}</span>
+                        <div className="shrink-0 flex items-center gap-1.5 bg-lumora-bg/40 px-1.5 py-1 rounded-xl border border-white/5">
                           <button
                             onClick={() => changeCardio(item.id, -1)}
-                            className="btn-tap p-1 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-lg transition-all duration-200"
+                            className="btn-tap p-2 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-lg transition-all duration-200"
                           >
                             <Minus className="w-3.5 h-3.5" />
                           </button>
-                          <span className="font-black text-white text-sm px-2">{item.duration}{lang === "ko" ? "분" : " min"}</span>
+                          <span className="font-black text-white text-sm px-1 whitespace-nowrap">{item.duration}{lang === "ko" ? "분" : " min"}</span>
                           <button
                             onClick={() => changeCardio(item.id, 1)}
-                            className="btn-tap p-1 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-lg transition-all duration-200"
+                            className="btn-tap p-2 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-lg transition-all duration-200"
                           >
                             <Plus className="w-3.5 h-3.5" />
                           </button>
@@ -2222,18 +2228,18 @@ export default function WorkoutCanvas() {
                   ) : item.isCardio ? (
                     <div className="space-y-2">
                       <div className="flex items-center justify-between bg-lumora-card/50 p-3 rounded-2xl border border-white/5 text-xs">
-                        <span className="text-lumora-sub font-extrabold whitespace-nowrap shrink-0">{t.setLogsLabelCardio}</span>
-                        <div className="flex items-center space-x-3 bg-lumora-bg/40 px-3 py-1.5 rounded-xl border border-white/5">
+                        <span className="text-lumora-sub font-extrabold min-w-0 pr-2">{t.setLogsLabelCardio}</span>
+                        <div className="shrink-0 flex items-center gap-1.5 bg-lumora-bg/40 px-1.5 py-1 rounded-xl border border-white/5">
                           <button
                             onClick={() => changeCardio(item.id, -5)}
-                            className="btn-tap p-1 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-lg transition-all duration-200"
+                            className="btn-tap p-2 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-lg transition-all duration-200"
                           >
                             <Minus className="w-3.5 h-3.5" />
                           </button>
-                          <span className="font-black text-white text-sm px-2">{item.duration}{lang === "ko" ? "분" : " min"}</span>
+                          <span className="font-black text-white text-sm px-1 whitespace-nowrap">{item.duration}{lang === "ko" ? "분" : " min"}</span>
                           <button
                             onClick={() => changeCardio(item.id, 5)}
-                            className="btn-tap p-1 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-lg transition-all duration-200"
+                            className="btn-tap p-2 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-lg transition-all duration-200"
                           >
                             <Plus className="w-3.5 h-3.5" />
                           </button>
@@ -2276,8 +2282,8 @@ export default function WorkoutCanvas() {
                                   : "bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10"
                               }`}
                             >
-                              <span className={`text-[9px] ${completed ? "text-slate-800" : "text-lumora-sub/60"} font-black uppercase`}>
-                                {idx + 1}{t.setIndexText}
+                              <span className={`text-[10px] ${completed ? "text-slate-800" : "text-lumora-sub/70"} font-black uppercase`}>
+                                {lang === "ko" ? `${idx + 1}${t.setIndexText}` : `${t.setIndexText} ${idx + 1}`}
                               </span>
                               <span className="text-xs font-extrabold mt-0.5">{dispText}</span>
                             </button>
@@ -2292,14 +2298,14 @@ export default function WorkoutCanvas() {
                             <span className="text-lumora-sub font-extrabold shrink-0">{t.weightLabel}</span>
                             <button
                               onClick={() => changeVal(item.id, "w", -item.step)}
-                              className="btn-tap p-1 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-lg transition-all duration-200"
+                              className="btn-tap p-2 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-lg transition-all duration-200"
                             >
                               <Minus className="w-3.5 h-3.5" />
                             </button>
                             <span className="font-extrabold text-white min-w-[42px] text-center text-xs">{item.weight}kg</span>
                             <button
                               onClick={() => changeVal(item.id, "w", item.step)}
-                              className="btn-tap p-1 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-lg transition-all duration-200"
+                              className="btn-tap p-2 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-lg transition-all duration-200"
                             >
                               <Plus className="w-3.5 h-3.5" />
                             </button>
@@ -2309,14 +2315,14 @@ export default function WorkoutCanvas() {
                           <span className="text-lumora-sub font-extrabold shrink-0">{t.repsLabel}</span>
                           <button
                             onClick={() => changeVal(item.id, "r", -1)}
-                            className="btn-tap p-1 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-lg transition-all duration-200"
+                            className="btn-tap p-2 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-lg transition-all duration-200"
                           >
                             <Minus className="w-3.5 h-3.5" />
                           </button>
                           <span className="font-extrabold text-white min-w-[28px] text-center text-xs">{item.reps}{lang === "ko" ? "회" : " reps"}</span>
                           <button
                             onClick={() => changeVal(item.id, "r", 1)}
-                            className="btn-tap p-1 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-lg transition-all duration-200"
+                            className="btn-tap p-2 bg-lumora-bg/60 border border-white/5 text-lumora-sub hover:bg-lumora-hover hover:text-white hover:border-white/10 rounded-lg transition-all duration-200"
                           >
                             <Plus className="w-3.5 h-3.5" />
                           </button>

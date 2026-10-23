@@ -113,7 +113,7 @@ export default function ChromaticExtractor() {
     <div className="w-full h-full flex flex-col gap-6">
       <Toast 
         isVisible={showToast} 
-        message="복사되었습니다" 
+        message="Copied" 
         onClose={() => setShowToast(false)} 
       />
       {/* Tool Header/Actions */}
@@ -219,7 +219,7 @@ export default function ChromaticExtractor() {
                         />
                         <div>
                           <p className="text-[13px] font-mono font-bold text-white uppercase">{hex}</p>
-                          <p className="text-[10px] font-display font-bold text-white/30 uppercase tracking-widest">Click to copy</p>
+                          <p className="text-[11px] font-display font-bold text-white/45 uppercase tracking-wider">Click to copy</p>
                         </div>
                       </div>
                       <motion.div 
@@ -245,8 +245,8 @@ export default function ChromaticExtractor() {
       {/* Footer Info */}
       <div className="flex items-center gap-4 px-5 py-3 bg-white/[0.01] border border-white/5 rounded-2xl">
         <Info className="h-3.5 w-3.5 text-lumora-blue" />
-        <p className="text-[10px] font-display font-bold text-white/30 uppercase tracking-widest">
-          Extracting harmonious 8-bit identity from visual input. Local execution.
+        <p className="text-[11px] font-display font-bold text-white/45 uppercase tracking-wider">
+          Finds up to 8 dominant colors. Runs locally in your browser.
         </p>
       </div>
     </div>

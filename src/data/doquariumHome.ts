@@ -52,9 +52,9 @@ export const DOQUARIUM_HOME: Record<PolicyLang, HomeCopy> = {
     betaCta: "Join the Android beta",
     betaSub: "Testers wanted · help Doquarium launch",
     webCta: "Signed in to the app? See your to-dos on the web",
-    storyTitle: "Checking off to-dos gets boring.",
+    storyTitle: "Let's be honest: checking off to-dos gets boring.",
     story: [
-      "Let's be honest, checking off to-dos gets boring. In Doquarium, every to-do is fish food.",
+      "In Doquarium, every to-do is fish food.",
       "Knock out today's tasks and watch your fish munch and grow. Put them off, and they start rotting in the tank. Kind of hard to procrastinate after that.",
     ],
     features: [

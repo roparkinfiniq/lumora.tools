@@ -11,9 +11,16 @@ const SITE_NAME = "Lumora Tools";
 export interface Seo {
   title: string;
   description: string;
+  /** keep this page out of search results (the "not found" page) */
+  noindex?: boolean;
 }
 
 const PAGES: Record<string, Seo> = {
+  "not-found": {
+    title: `Page Not Found | ${SITE_NAME}`,
+    description: "This page doesn't exist. Head back home or browse the free tools.",
+    noindex: true,
+  },
   home: {
     title: "Lumora Tools — Free, Private Web Tools for PDF, Images & More",
     description:
@@ -73,7 +80,7 @@ function setMeta(attr: "name" | "property", key: string, value: string) {
  * The canonical address is always the www address of the current path, so
  * Google treats lumora.tools and www.lumora.tools as one site.
  */
-export function applySeo({ title, description }: Seo, pathname = window.location.pathname) {
+export function applySeo({ title, description, noindex }: Seo, pathname = window.location.pathname) {
   const path = pathname.replace(/\/+$/, "") || "/";
   const url = `${SITE_ORIGIN}${path === "/" ? "/" : path}`;
   document.title = title;
@@ -81,6 +88,7 @@ export function applySeo({ title, description }: Seo, pathname = window.location
   setMeta("property", "og:title", title);
   setMeta("property", "og:description", description);
   setMeta("property", "og:url", url);
+  setMeta("name", "robots", noindex ? "noindex" : "index, follow");
   let link = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
   if (!link) {
     link = document.createElement("link");
