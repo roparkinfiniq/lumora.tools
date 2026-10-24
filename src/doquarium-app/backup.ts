@@ -20,9 +20,21 @@ export interface WebTodo {
   doneAt?: Date;
   showFrom?: Date;
   repeat: boolean;
+  /** The repeat rule (lib/models/repeat.dart), when its kind is one the web knows */
+  repeatRule?: WebRepeat;
+  /** Set on a repeat's "done" record (lib/models/todo.dart seriesId); the series itself has none */
+  seriesId?: string;
   category?: string;
   private: boolean;
   order?: number;
+}
+
+export type RepeatKind = "daily" | "weekdays" | "everyNDays";
+
+/** Repeat.toJson in the app: `days` are 1 = Monday … 7 = Sunday (weekdays only) */
+export interface WebRepeat {
+  kind: RepeatKind;
+  days: number[];
 }
 
 export interface WebCategory {
@@ -40,6 +52,8 @@ export interface WebTank {
   fish?: WebFish;
   /** Cleaner creatures that slow rotting (🧹 shrimp · cleaner fish), from `cleaners` */
   crew: CrewStay[];
+  /** 🌿 Relaxed tank: `fish_health`'s `mode` is not "hard", or there is no fish record yet (FishHealth's default, Difficulty.byName) */
+  easy: boolean;
 }
 
 export interface WebFish {
@@ -107,6 +121,21 @@ function parseFish(raw: unknown): WebFish | undefined {
   return { health: f.health, dead: f.dead === true };
 }
 
+/** Difficulty.byName in the app: anything but "hard" (no record, no or unknown mode) is Relaxed */
+function parseEasy(raw: unknown): boolean {
+  return parseJson<Record<string, unknown>>(raw)?.mode !== "hard";
+}
+
+/** Repeat.fromJson: the old "perWeek" reads as "every N days"; an unknown kind is left out (never refreshed, like every N days) */
+function parseRepeat(raw: unknown): WebRepeat | undefined {
+  if (!raw || typeof raw !== "object") return undefined;
+  const r = raw as Record<string, unknown>;
+  if (r.kind === "daily") return { kind: "daily", days: [] };
+  if (r.kind === "everyNDays" || r.kind === "perWeek") return { kind: "everyNDays", days: [] };
+  if (r.kind === "weekdays") return { kind: "weekdays", days: Array.isArray(r.days) ? r.days.filter((d): d is number => typeof d === "number") : [] };
+  return undefined;
+}
+
 // Only the 🧹 clean kinds slow rotting; lifetimes for ones saved before `days` was stored (CleanerKind.legacyDays)
 const CLEANER_LEGACY_DAYS: Record<string, number> = { shrimp: 7, cleanerFish: 14 };
 const DAY = 24 * 3600e3;
@@ -134,6 +163,8 @@ function parseTodos(raw: unknown): WebTodo[] {
       doneAt: date(t.doneAt),
       showFrom: date(t.showFrom),
       repeat: t.repeat != null,
+      repeatRule: parseRepeat(t.repeat),
+      seriesId: typeof t.seriesId === "string" ? t.seriesId : undefined,
       category: typeof t.category === "string" ? t.category : undefined,
       private: t.private === true,
       order: typeof t.order === "number" ? t.order : undefined,
@@ -153,6 +184,7 @@ export function parseBackup(data: Record<string, unknown>, updatedAt?: Date): We
       categories: parseCategories(data[id ? `categories@${id}` : "categories"]),
       fish: parseFish(data[id ? `fish_health@${id}` : "fish_health"]),
       crew: parseCrew(data[id ? `cleaners@${id}` : "cleaners"]),
+      easy: parseEasy(data[id ? `fish_health@${id}` : "fish_health"]),
     };
   });
   const active = typeof shelf?.active === "string" && tanks.some((t) => t.id === shelf.active) ? shelf.active : tanks[0].id;
@@ -250,6 +282,65 @@ export function applyNotes(backup: WebBackup, notes: WebNote[]): WebBackup {
     return { ...tank, todos, categories };
   });
   return { ...backup, tanks };
+}
+
+// ───────── 🌿 Relaxed repeats refresh (the app's lib/models/repeat_refresh.dart, docs/06 "반복 할 일") ─────────
+//
+// In a Relaxed tank a daily or weekday repeat that was missed closes by itself
+// at midnight of its next repeat day (no reward), and only today's share shows.
+// The phone does this when the app opens (RepeatRefresh.apply) and saves a new
+// backup; until then the web shows the same result, worked out when drawing.
+// Nothing is written: a web "done" note still names the same to-do id, and the
+// phone refreshes before it applies web notes, so rewards stay right. The
+// one-time "residue" pollution the phone keeps (fish_health residueAt) only
+// moves the fish's health, which the web shows as the phone last saved it.
+// 🔥 Intense tanks and every-N-days repeats keep the missed share (it rots).
+
+const addDays = (d: Date, n: number) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
+/** Dart's DateTime.weekday: 1 = Monday … 7 = Sunday */
+const weekday = (d: Date) => d.getDay() || 7;
+
+/** Repeat.nextDay: the first repeat day on or after `from` (daily: `from` itself) */
+function nextRepeatDay(r: WebRepeat, from: Date) {
+  let d = dayStart(from);
+  if (r.kind !== "weekdays" || !r.days.length) return d;
+  for (let i = 0; i < 7; i++) {
+    if (r.days.includes(weekday(d))) return d;
+    d = addDays(d, 1);
+  }
+  return d;
+}
+
+/**
+ * RepeatRefresh.shareDay: the day of the share this to-do shows after a
+ * refresh (the latest repeat day after the missed one, up to today), or
+ * undefined when there is nothing to close. A weekday repeat on a day it does
+ * not repeat (Tuesday for Mon · Wed) has no next repeat day yet, so the missed
+ * share stays and rots.
+ */
+export function repeatShareDay(t: WebTodo, now: Date): Date | undefined {
+  const r = t.repeatRule;
+  if (!r || r.kind === "everyNDays" || t.seriesId !== undefined || !isVisible(t, now)) return undefined;
+  const today = dayStart(now);
+  const due = dayStart(t.dueDate ?? t.showFrom ?? today);
+  if (due >= today) return undefined;
+  for (let d = today; d > due; d = addDays(d, -1)) {
+    if (nextRepeatDay(r, d).getTime() === d.getTime()) return d;
+  }
+  return undefined;
+}
+
+/** The tank as the phone shows it after RepeatRefresh.apply (the same object when nothing closes, and always in an Intense tank) */
+export function refreshRepeats(tank: WebTank, now: Date): WebTank {
+  if (!tank.easy) return tank;
+  let changed = false;
+  const todos = tank.todos.map((t) => {
+    const day = repeatShareDay(t, now);
+    if (!day) return t;
+    changed = true;
+    return { ...t, showFrom: day, dueDate: day };
+  });
+  return changed ? { ...tank, todos } : tank;
 }
 
 // ───────── Rotting (same rules as the app's lib/models/rot.dart, docs/06) ─────────

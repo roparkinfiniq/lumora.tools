@@ -14,6 +14,7 @@ import {
   rotLevel,
   isVisible,
   newId,
+  refreshRepeats,
   sortTodos,
   type NoteKind,
   type WebBackup,
@@ -256,6 +257,15 @@ export default function DoquariumAppView({ onBack }: { onBack: () => void }) {
     };
   }, [lang]);
 
+  // Draw again just after midnight, so on a page left open a missed repeat turns into today's share and rot labels move on
+  const [midnights, setMidnights] = useState(0);
+  useEffect(() => {
+    const n = new Date();
+    const wait = new Date(n.getFullYear(), n.getMonth(), n.getDate() + 1).getTime() - n.getTime() + 1000;
+    const id = window.setTimeout(() => setMidnights((d) => d + 1), wait);
+    return () => window.clearTimeout(id);
+  }, [midnights]);
+
   const now = new Date();
   const ready = state.kind === "ready" ? state : null;
   const shown = useMemo(() => {
@@ -265,7 +275,9 @@ export default function DoquariumAppView({ onBack }: { onBack: () => void }) {
   }, [ready, inbox, settling]);
   // Only when the phone runs an app that reads the mailbox (its backup says which build it last opened)
   const canWrite = WEB_WRITES && (ready?.backup.appBuild ?? 0) >= MIN_APP_BUILD;
-  const tank = shown?.tanks.find((x) => x.id === tankId) ?? shown?.tanks[0];
+  // 🌿 Relaxed tanks: a missed daily · weekday repeat shows as today's share, as the phone will after it opens (RepeatRefresh)
+  const picked = shown?.tanks.find((x) => x.id === tankId) ?? shown?.tanks[0];
+  const tank = picked && refreshRepeats(picked, now);
   const categories = tank?.categories ?? [];
   const activeFilter = filter !== null && categories.some((c) => c.id === filter) ? filter : null;
   const inFilter = (x: WebTodo) => activeFilter === null || x.category === activeFilter;
