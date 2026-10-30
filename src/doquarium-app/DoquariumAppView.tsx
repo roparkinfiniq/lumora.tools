@@ -483,6 +483,7 @@ export default function DoquariumAppView({ onBack }: { onBack: () => void }) {
                     active={activeFilter}
                     onPick={setFilter}
                     onRename={canEditMore ? (id, name) => send("renameCategory", { category: id, name }) : undefined}
+                    lockedNote={canWrite && !canEditMore ? t.needUpdate24 : undefined}
                     onDelete={
                       canEditMore
                         ? (id) => {
@@ -704,6 +705,7 @@ function CategoryChips({
   onCreate,
   onRename,
   onDelete,
+  lockedNote,
 }: {
   t: Copy;
   categories: WebCategory[];
@@ -713,12 +715,15 @@ function CategoryChips({
   /** +24 phones: rename · delete the picked category (its to-dos stay, without a category) */
   onRename?: (id: string, name: string) => void;
   onDelete?: (id: string) => void;
+  /** the phone's app is too old to rename · delete: the pencil still shows and says why */
+  lockedNote?: string;
 }) {
   const [making, setMaking] = useState(false);
   const [name, setName] = useState("");
   const [editing, setEditing] = useState<string | null>(null);
   const [newName, setNewName] = useState("");
   const [sure, setSure] = useState(false);
+  const [showLocked, setShowLocked] = useState(false);
   const editingCat = categories.find((c) => c.id === editing);
 
   if (editingCat && onRename && onDelete) {
@@ -781,6 +786,7 @@ function CategoryChips({
     setMaking(false);
   };
   return (
+    <>
     <div className="flex gap-2 overflow-x-auto no-scrollbar mt-4 -mx-1 px-1 py-0.5">
       <button onClick={() => onPick(null)} aria-pressed={active === null} className={chip(active === null)}>
         {t.all}
@@ -791,9 +797,10 @@ function CategoryChips({
             <span className="h-2 w-2 rounded-full" style={{ background: categoryColor(categories, c.id) }} aria-hidden="true" />
             {c.name}
           </button>
-          {active === c.id && onRename && (
+          {active === c.id && (onRename || lockedNote) && (
             <button
               onClick={() => {
+                if (!onRename) return setShowLocked((v) => !v);
                 setEditing(c.id);
                 setNewName(c.name);
                 setSure(false);
@@ -836,6 +843,12 @@ function CategoryChips({
           </button>
         ))}
     </div>
+    {showLocked && lockedNote && active !== null && (
+      <p className="mt-2 flex items-start gap-2 text-xs text-[#8ff7ff]/80">
+        <Smartphone className="h-3.5 w-3.5 shrink-0 mt-0.5" /> {lockedNote}
+      </p>
+    )}
+    </>
   );
 }
 
