@@ -103,7 +103,7 @@ export function watchBackup(uid: string, cb: (backup: WebBackup | null) => void,
   );
 }
 
-const KINDS: NoteKind[] = ["add", "done", "undo", "edit", "delete", "category"];
+const KINDS: NoteKind[] = ["add", "done", "undo", "edit", "delete", "category", "renameCategory", "deleteCategory"];
 const str = (v: unknown) => (typeof v === "string" ? v : undefined);
 
 /** Notes in my mailbox that the phone hasn't applied yet, live */
@@ -115,7 +115,7 @@ export function watchInbox(uid: string, cb: (notes: WebNote[]) => void) {
         snap.docs.flatMap((d) => {
           const v = d.data();
           if (!KINDS.includes(v.kind) || typeof v.tank !== "string" || typeof v.at !== "number") return [];
-          return [{ id: d.id, kind: v.kind, tank: v.tank, at: v.at, todo: str(v.todo), title: str(v.title), category: str(v.category), name: str(v.name) }];
+          return [{ id: d.id, kind: v.kind, tank: v.tank, at: v.at, todo: str(v.todo), title: str(v.title), category: str(v.category), name: str(v.name), due: str(v.due) }];
         }),
       ),
     () => cb([]),

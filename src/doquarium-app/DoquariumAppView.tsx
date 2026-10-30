@@ -1,13 +1,17 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { AnimatePresence, MotionConfig, motion } from "motion/react";
-import { ArrowLeft, Check, ChevronDown, Clock, CloudFog, Fish, Ghost, Lock, LogOut, Plus, Repeat, Smartphone, Trash2, Users, X } from "lucide-react";
+import { ArrowLeft, CalendarDays, Check, ChevronDown, Clock, CloudFog, Fish, Ghost, List, Lock, LogOut, Pencil, Plus, Repeat, Smartphone, Trash2, Users, X } from "lucide-react";
 import { applySeo } from "../seo";
 import {
   MAX_CATEGORIES,
   MAX_CATEGORY_NAME,
   MAX_TITLE,
   MIN_APP_BUILD,
+  EDIT_MORE_BUILD,
+  MAX_DUE_DAYS,
   applyNotes,
+  categoryColor,
+  dayKey,
   ROT_MAX,
   daysSince,
   doneToday,
@@ -19,8 +23,10 @@ import {
   type NoteKind,
   type WebBackup,
   type WebNote,
+  type WebCategory,
   type WebTodo,
 } from "./backup";
+import MonthView from "./MonthView";
 import { WEB_WRITES, sendNote, signInWithApple, signInWithGoogle, signOutWeb, watchBackup, watchInbox, watchUser, type User } from "./firebase";
 
 // Doquarium on the web (/doquarium/app, Korean /doquarium/app/ko): sign in with
@@ -92,6 +98,14 @@ const COPY = {
     syncNote: "The list updates when your phone saves a backup (while the app is open).",
     comingSoon: "Update Doquarium on your phone and open it once to add, finish, edit, and delete to-dos here too.",
     signOut: "Sign out",
+    tabList: "List",
+    tabMonth: "Month",
+    dueDate: "Due date",
+    noDue: "No due date",
+    editCategory: (name: string) => `Edit category: ${name}`,
+    deleteCategory: "Delete",
+    deleteCategorySure: "Delete? Its to-dos stay",
+    needUpdate24: "Changing due dates and renaming or deleting categories here needs Doquarium 1.0.0+24 on your phone.",
   },
   ko: {
     back: "두쿠아리움",
@@ -150,6 +164,14 @@ const COPY = {
     syncNote: "목록은 폰이 백업할 때(앱을 켜 둔 동안) 새로 바뀌어요.",
     comingSoon: "폰의 두쿠아리움을 업데이트하고 한 번 열면, 여기서도 할 일을 추가 · 끝내기 · 고치기 · 지우기 할 수 있어요.",
     signOut: "로그아웃",
+    tabList: "목록",
+    tabMonth: "월별",
+    dueDate: "마감일",
+    noDue: "마감일 없음",
+    editCategory: (name: string) => `카테고리 고치기: ${name}`,
+    deleteCategory: "지우기",
+    deleteCategorySure: "지울까요? 할 일은 남아요",
+    needUpdate24: "여기서 마감일을 바꾸거나 카테고리 이름을 고치고 지우려면 폰의 두쿠아리움이 1.0.0+24 이상이어야 해요.",
   },
 } as const;
 
@@ -181,6 +203,8 @@ export default function DoquariumAppView({ onBack }: { onBack: () => void }) {
   const [tankId, setTankId] = useState<string | null>(null);
   const [filter, setFilter] = useState<string | null>(null);
   const [showDone, setShowDone] = useState(false);
+  // List or a month calendar (래원 2026-10-30)
+  const [view, setView] = useState<"list" | "month">("list");
   // Mailbox notes the phone hasn't applied yet (live), plus ones it just applied
   // whose new backup hasn't arrived yet (kept so the list doesn't flicker back)
   const [inbox, setInbox] = useState<WebNote[]>([]);
@@ -275,6 +299,8 @@ export default function DoquariumAppView({ onBack }: { onBack: () => void }) {
   }, [ready, inbox, settling]);
   // Only when the phone runs an app that reads the mailbox (its backup says which build it last opened)
   const canWrite = WEB_WRITES && (ready?.backup.appBuild ?? 0) >= MIN_APP_BUILD;
+  // Due dates and category rename · delete need a newer app (older phones would drop those notes)
+  const canEditMore = canWrite && (ready?.backup.appBuild ?? 0) >= EDIT_MORE_BUILD;
   // 🌿 Relaxed tanks: a missed daily · weekday repeat shows as today's share, as the phone will after it opens (RepeatRefresh)
   const picked = shown?.tanks.find((x) => x.id === tankId) ?? shown?.tanks[0];
   const tank = picked && refreshRepeats(picked, now);
@@ -285,6 +311,17 @@ export default function DoquariumAppView({ onBack }: { onBack: () => void }) {
   const done = tank ? tank.todos.filter((x) => doneToday(x, now) && inFilter(x)).sort((a, b) => b.doneAt!.getTime() - a.doneAt!.getTime()) : [];
   const waitingIds = new Set(inbox.filter((n) => n.tank === tank?.id).map((n) => n.todo));
   const categoryName = (id?: string) => categories.find((c) => c.id === id)?.name;
+  // "All": one section per category, in their order, then the ones without (like the app's category view)
+  const grouped = activeFilter === null && categories.length > 0;
+  const rows: ({ kind: "head"; id: string; name: string; color?: string; count: number } | { kind: "todo"; todo: WebTodo })[] = [];
+  if (grouped) {
+    for (const c of [...categories, { id: "", name: t.noCategory }]) {
+      const items = open.filter((x) => (c.id ? x.category === c.id : !categories.some((k) => k.id === x.category)));
+      if (!items.length) continue;
+      rows.push({ kind: "head", id: c.id || "none", name: c.name, color: categoryColor(categories, c.id), count: items.length });
+      for (const x of items) rows.push({ kind: "todo", todo: x });
+    }
+  } else for (const x of open) rows.push({ kind: "todo", todo: x });
 
   const send = (kind: NoteKind, fields: Omit<WebNote, "id" | "kind" | "tank" | "at">) => {
     if (!user || !tank) return;
@@ -414,9 +451,30 @@ export default function DoquariumAppView({ onBack }: { onBack: () => void }) {
                   {tank.name || t.myTank}
                   {tank.shared && <span className="text-white/30"> · {t.shared}</span>}
                 </p>
-                <h2 className="text-2xl font-display font-bold text-white">
-                  {t.today} <span className="text-white/30 font-medium">{open.length}</span>
-                </h2>
+                <div className="flex items-center justify-between gap-3">
+                  <h2 className="text-2xl font-display font-bold text-white">
+                    {t.today} <span className="text-white/30 font-medium">{open.length}</span>
+                  </h2>
+                  <div className="inline-flex p-1 rounded-xl bg-white/5 border border-white/10" role="group">
+                    {(
+                      [
+                        ["list", List, t.tabList],
+                        ["month", CalendarDays, t.tabMonth],
+                      ] as const
+                    ).map(([v, Icon, label]) => (
+                      <button
+                        key={v}
+                        onClick={() => setView(v)}
+                        aria-pressed={view === v}
+                        className={`h-8 px-3 rounded-lg text-xs font-display font-bold flex items-center gap-1.5 transition-colors ${
+                          view === v ? "bg-white text-black" : "text-white/55 hover:text-white"
+                        }`}
+                      >
+                        <Icon className="h-3.5 w-3.5" /> {label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
                 {tank.fish && <FishLine t={t} fish={tank.fish} />}
                 {(categories.length > 0 || canWrite) && (
                   <CategoryChips
@@ -424,6 +482,15 @@ export default function DoquariumAppView({ onBack }: { onBack: () => void }) {
                     categories={categories}
                     active={activeFilter}
                     onPick={setFilter}
+                    onRename={canEditMore ? (id, name) => send("renameCategory", { category: id, name }) : undefined}
+                    onDelete={
+                      canEditMore
+                        ? (id) => {
+                            send("deleteCategory", { category: id });
+                            setFilter(null);
+                          }
+                        : undefined
+                    }
                     onCreate={
                       canWrite
                         ? (name) => {
@@ -439,40 +506,65 @@ export default function DoquariumAppView({ onBack }: { onBack: () => void }) {
                 )}
               </div>
 
-              {canWrite && (
+              {view === "month" && <MonthView lang={lang} tank={tank} categories={categories} filter={activeFilter} now={now} />}
+
+              {view === "list" && canWrite && (
                 <AddRow
                   t={t}
                   category={categoryName(activeFilter ?? undefined)}
-                  onAdd={(title) => send("add", { todo: newId(), title, category: activeFilter ?? undefined })}
+                  canDue={canEditMore}
+                  lang={lang}
+                  now={now}
+                  onAdd={(title, due) => send("add", { todo: newId(), title, category: activeFilter ?? undefined, due })}
                 />
               )}
+
+              {view === "list" && (
+              <>
 
               {/* Always mounted so the last row can still fold away */}
               <ul className="divide-y divide-white/5">
                 <AnimatePresence initial={false}>
-                  {open.map((x) => (
-                    <motion.li key={x.id} className="overflow-hidden" initial={ENTER} animate={SHOWN} exit={EXIT[leaving[x.id] ?? "undo"]} transition={EASE}>
+                  {rows.map((r) =>
+                    r.kind === "head" ? (
+                      <motion.li key={`head:${r.id}`} className="overflow-hidden bg-white/[0.02]" initial={ENTER} animate={SHOWN} exit={EXIT.undo} transition={EASE}>
+                        <div className="flex items-center gap-2 px-4 sm:px-6 py-2.5 text-xs font-display font-bold text-white/60">
+                          <span className="h-2.5 w-2.5 rounded-full" style={{ background: r.color ?? "rgba(255,255,255,0.25)" }} aria-hidden="true" />
+                          {r.name}
+                          <span className="text-white/30">{r.count}</span>
+                        </div>
+                      </motion.li>
+                    ) : (
+                    <motion.li key={r.todo.id} className="overflow-hidden" initial={ENTER} animate={SHOWN} exit={EXIT[leaving[r.todo.id] ?? "undo"]} transition={EASE}>
                       <TodoRow
                         t={t}
-                        todo={x}
+                        todo={r.todo}
                         categories={categories}
-                        showCategory={activeFilter === null}
-                        waiting={waitingIds.has(x.id)}
-                        due={x.dueDate ? t.due(fmt.day.format(x.dueDate)) : undefined}
-                        rot={rotLabel(t, x, rotLevel(x, now, tank.crew), now)}
-                        finishing={finishing.includes(x.id)}
-                        onFinish={canWrite ? () => finish(x.id) : undefined}
-                        onSave={(title, category) =>
+                        color={categoryColor(categories, r.todo.category)}
+                        canDue={canEditMore && !r.todo.repeat}
+                        lang={lang}
+                        now={now}
+                        showCategory={activeFilter === null && !grouped}
+                        waiting={waitingIds.has(r.todo.id)}
+                        due={r.todo.dueDate ? t.due(fmt.day.format(r.todo.dueDate)) : undefined}
+                        rot={rotLabel(t, r.todo, rotLevel(r.todo, now, tank.crew), now)}
+                        finishing={finishing.includes(r.todo.id)}
+                        onFinish={canWrite ? () => finish(r.todo.id) : undefined}
+                        onSave={(title, category, due) => {
+                          const x = r.todo;
+                          const before = x.dueDate ? dayKey(x.dueDate) : "";
                           send("edit", {
                             todo: x.id,
                             title: title !== x.title ? title : undefined,
                             category: category !== (x.category ?? "") ? category : undefined,
-                          })
-                        }
-                        onDelete={() => remove(x.id)}
+                            due: due !== undefined && due !== before ? due : undefined,
+                          });
+                        }}
+                        onDelete={() => remove(r.todo.id)}
                       />
                     </motion.li>
-                  ))}
+                    ),
+                  )}
                 </AnimatePresence>
               </ul>
               {open.length === 0 && (
@@ -523,6 +615,8 @@ export default function DoquariumAppView({ onBack }: { onBack: () => void }) {
                   )}
                 </div>
               )}
+              </>
+              )}
             </div>
 
             <div className="mt-6 flex flex-col gap-2 text-xs md:text-sm text-white/40 font-medium">
@@ -537,6 +631,11 @@ export default function DoquariumAppView({ onBack }: { onBack: () => void }) {
               {!canWrite && (
                 <p className="flex items-start gap-2 text-[#8ff7ff]/70">
                   <Smartphone className="h-4 w-4 shrink-0 mt-0.5" /> {t.comingSoon}
+                </p>
+              )}
+              {canWrite && !canEditMore && (
+                <p className="flex items-start gap-2 text-[#8ff7ff]/70">
+                  <Smartphone className="h-4 w-4 shrink-0 mt-0.5" /> {t.needUpdate24}
                 </p>
               )}
             </div>
@@ -603,15 +702,72 @@ function CategoryChips({
   active,
   onPick,
   onCreate,
+  onRename,
+  onDelete,
 }: {
   t: Copy;
-  categories: { id: string; name: string }[];
+  categories: WebCategory[];
   active: string | null;
   onPick: (id: string | null) => void;
   onCreate?: (name: string) => void;
+  /** +24 phones: rename · delete the picked category (its to-dos stay, without a category) */
+  onRename?: (id: string, name: string) => void;
+  onDelete?: (id: string) => void;
 }) {
   const [making, setMaking] = useState(false);
   const [name, setName] = useState("");
+  const [editing, setEditing] = useState<string | null>(null);
+  const [newName, setNewName] = useState("");
+  const [sure, setSure] = useState(false);
+  const editingCat = categories.find((c) => c.id === editing);
+
+  if (editingCat && onRename && onDelete) {
+    const done = () => {
+      setEditing(null);
+      setSure(false);
+    };
+    return (
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          const n = newName.trim();
+          if (n && n !== editingCat.name) onRename(editingCat.id, n);
+          done();
+        }}
+        className="mt-4 flex flex-wrap items-center gap-2"
+      >
+        <span className="h-2.5 w-2.5 rounded-full shrink-0" style={{ background: categoryColor(categories, editingCat.id) }} aria-hidden="true" />
+        <input
+          autoFocus
+          value={newName}
+          maxLength={MAX_CATEGORY_NAME}
+          onChange={(e) => setNewName(e.target.value)}
+          onKeyDown={(e) => e.key === "Escape" && done()}
+          aria-label={t.categoryName}
+          className="h-9 w-40 px-3 rounded-full bg-white/5 border border-[#3ef2ff]/40 text-sm text-white outline-none"
+        />
+        <button type="submit" disabled={!newName.trim()} className="h-9 px-4 rounded-full bg-white text-black text-xs font-display font-bold disabled:opacity-40">
+          {t.save}
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            if (!sure) return setSure(true);
+            onDelete(editingCat.id);
+            done();
+          }}
+          className={`h-9 px-3.5 rounded-full text-xs font-display font-bold flex items-center gap-1.5 transition-colors ${
+            sure ? "bg-red-500/20 text-red-300 border border-red-400/40" : "text-white/50 hover:text-red-300"
+          }`}
+        >
+          <Trash2 className="h-3.5 w-3.5" /> {sure ? t.deleteCategorySure : t.deleteCategory}
+        </button>
+        <button type="button" onClick={done} aria-label={t.cancel} className="h-9 w-9 rounded-full text-white/50 hover:text-white flex items-center justify-center">
+          <X className="h-4 w-4" />
+        </button>
+      </form>
+    );
+  }
   const full = categories.length >= MAX_CATEGORIES;
   const chip = (on: boolean) =>
     `shrink-0 h-8 px-3.5 rounded-full text-xs font-display font-bold transition-colors ${
@@ -630,9 +786,26 @@ function CategoryChips({
         {t.all}
       </button>
       {categories.map((c) => (
-        <button key={c.id} onClick={() => onPick(c.id)} aria-pressed={active === c.id} className={chip(active === c.id)}>
-          {c.name}
-        </button>
+        <span key={c.id} className="shrink-0 flex items-center gap-1">
+          <button onClick={() => onPick(c.id)} aria-pressed={active === c.id} className={`${chip(active === c.id)} flex items-center gap-1.5`}>
+            <span className="h-2 w-2 rounded-full" style={{ background: categoryColor(categories, c.id) }} aria-hidden="true" />
+            {c.name}
+          </button>
+          {active === c.id && onRename && (
+            <button
+              onClick={() => {
+                setEditing(c.id);
+                setNewName(c.name);
+                setSure(false);
+              }}
+              aria-label={t.editCategory(c.name)}
+              title={t.editCategory(c.name)}
+              className="h-8 w-8 rounded-full bg-white/5 border border-white/10 text-white/60 hover:text-white flex items-center justify-center"
+            >
+              <Pencil className="h-3.5 w-3.5" />
+            </button>
+          )}
+        </span>
       ))}
       {onCreate &&
         (making ? (
@@ -666,14 +839,30 @@ function CategoryChips({
   );
 }
 
-function AddRow({ t, category, onAdd }: { t: Copy; category?: string; onAdd: (title: string) => void }) {
+function AddRow({
+  t,
+  category,
+  canDue,
+  lang,
+  now,
+  onAdd,
+}: {
+  t: Copy;
+  category?: string;
+  canDue: boolean;
+  lang: Lang;
+  now: Date;
+  onAdd: (title: string, due?: string) => void;
+}) {
   const [title, setTitle] = useState("");
+  const [due, setDue] = useState("");
   const submit = (e: FormEvent) => {
     e.preventDefault();
     const v = title.trim();
     if (!v) return;
-    onAdd(v);
+    onAdd(v, canDue && due ? due : undefined);
     setTitle("");
+    setDue("");
   };
   return (
     <form onSubmit={submit} className="px-4 sm:px-6 py-4 border-b border-white/5">
@@ -695,6 +884,11 @@ function AddRow({ t, category, onAdd }: { t: Copy; category?: string; onAdd: (ti
           <Plus className="h-4 w-4" /> <span className="hidden sm:inline">{t.add}</span>
         </button>
       </div>
+      {canDue && (
+        <div className="mt-2">
+          <DueSelect t={t} lang={lang} now={now} value={due} onChange={setDue} />
+        </div>
+      )}
       {category && <p className="mt-2 text-xs text-white/40">{t.addIn(category)}</p>}
     </form>
   );
@@ -704,6 +898,10 @@ function TodoRow({
   t,
   todo,
   categories,
+  color,
+  canDue,
+  lang,
+  now,
   showCategory,
   waiting,
   due,
@@ -716,6 +914,12 @@ function TodoRow({
   t: Copy;
   todo: WebTodo;
   categories: { id: string; name: string }[];
+  /** the category's color (a thin bar at the left edge) */
+  color?: string;
+  /** +24 phones, not a repeat: the edit form can change the due date */
+  canDue: boolean;
+  lang: Lang;
+  now: Date;
   showCategory: boolean;
   waiting: boolean;
   due?: string;
@@ -724,12 +928,15 @@ function TodoRow({
   /** Just finished: the circle fills with a soft glow and the title is crossed out, before the row folds away */
   finishing?: boolean;
   onFinish?: () => void;
-  onSave: (title: string, category: string) => void;
+  /** due: "2026-10-31", "" for none, undefined when it can't change */
+  onSave: (title: string, category: string, due?: string) => void;
   onDelete: () => void;
 }) {
   const [editing, setEditing] = useState(false);
   const [title, setTitle] = useState(todo.title);
   const [category, setCategory] = useState(todo.category ?? "");
+  const dueKey = todo.dueDate ? dayKey(todo.dueDate) : "";
+  const [dueDay, setDueDay] = useState(dueKey);
   const [sure, setSure] = useState(false);
   const category0 = categories.find((c) => c.id === todo.category)?.name;
   const hasMeta = (showCategory && !!category0) || todo.repeat || todo.private || !!due || !!rot || waiting;
@@ -739,13 +946,15 @@ function TodoRow({
   const start = () => {
     setTitle(todo.title);
     setCategory(todo.category ?? "");
+    setDueDay(dueKey);
     setSure(false);
     setEditing(true);
   };
   const save = (e: FormEvent) => {
     e.preventDefault();
     const v = title.trim();
-    if (v && (v !== todo.title || category !== (todo.category ?? ""))) onSave(v, category);
+    const dueChanged = canDue && dueDay !== dueKey;
+    if (v && (v !== todo.title || category !== (todo.category ?? "") || dueChanged)) onSave(v, category, dueChanged ? dueDay : undefined);
     setEditing(false);
   };
 
@@ -775,6 +984,7 @@ function TodoRow({
                 </option>
               ))}
             </select>
+            {canDue && <DueSelect t={t} lang={lang} now={now} value={dueDay} onChange={setDueDay} />}
             <div className="flex-1" />
             <button
               type="button"
@@ -806,7 +1016,8 @@ function TodoRow({
   }
 
   return (
-    <div className="flex items-start gap-4 px-4 sm:px-6 py-4">
+    <div className="relative flex items-start gap-4 px-4 sm:px-6 py-4">
+      {color && <span className="absolute left-0 top-3 bottom-3 w-[3px] rounded-r-full" style={{ background: color }} aria-hidden="true" />}
       {finishing ? (
         <span className="relative mt-0.5 h-5 w-5 shrink-0" aria-hidden="true">
           <motion.span
@@ -866,6 +1077,33 @@ function TodoRow({
         )}
       </div>
     </div>
+  );
+}
+
+/** "No due date", then today … +7 days (the app's picker); a due date outside that range stays as its own choice */
+function DueSelect({ t, lang, now, value, onChange }: { t: Copy; lang: Lang; now: Date; value: string; onChange: (v: string) => void }) {
+  const fmt = new Intl.DateTimeFormat(lang === "ko" ? "ko-KR" : "en-US", { month: "short", day: "numeric", weekday: "short" });
+  const days = Array.from({ length: MAX_DUE_DAYS + 1 }, (_, i) => new Date(now.getFullYear(), now.getMonth(), now.getDate() + i));
+  const keys = days.map(dayKey);
+  return (
+    <label className="flex items-center gap-2 text-xs text-white/50">
+      <CalendarDays className="h-3.5 w-3.5" aria-hidden="true" />
+      <span className="sr-only">{t.dueDate}</span>
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        aria-label={t.dueDate}
+        className="h-10 px-3 rounded-xl bg-[#141417] border border-white/10 text-sm text-white outline-none"
+      >
+        <option value="">{t.noDue}</option>
+        {value && !keys.includes(value) && <option value={value}>{fmt.format(new Date(`${value}T00:00:00`))}</option>}
+        {days.map((d, i) => (
+          <option key={keys[i]} value={keys[i]}>
+            {fmt.format(d)}
+          </option>
+        ))}
+      </select>
+    </label>
   );
 }
 

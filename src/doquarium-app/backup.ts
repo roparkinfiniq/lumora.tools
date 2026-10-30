@@ -54,6 +54,15 @@ export interface WebTank {
   crew: CrewStay[];
   /** 🌿 Relaxed tank: `fish_health`'s `mode` is not "hard", or there is no fish record yet (FishHealth's default, Difficulty.byName) */
   easy: boolean;
+  /** To-dos finished more than 30 days ago, kept lightly for a year (`done_archive`, the app's lib/models/done_archive.dart, +24) */
+  archive: ArchivedDone[];
+}
+
+/** One line of the year record: the day it was finished ("2026-10-30"), its title (≤ 40), its category */
+export interface ArchivedDone {
+  day: string;
+  title: string;
+  category?: string;
 }
 
 export interface WebFish {
@@ -72,7 +81,7 @@ export const MAX_TITLE = 100;
 export const MAX_CATEGORIES = 8;
 export const MAX_CATEGORY_NAME = 12;
 
-export type NoteKind = "add" | "done" | "undo" | "edit" | "delete" | "category";
+export type NoteKind = "add" | "done" | "undo" | "edit" | "delete" | "category" | "renameCategory" | "deleteCategory";
 
 /** One mailbox note. `category`: "" = no category; for kind "category" it is the new category's id */
 export interface WebNote {
@@ -84,6 +93,8 @@ export interface WebNote {
   title?: string;
   category?: string;
   name?: string;
+  /** add · edit: due date "2026-10-31", or "" to clear (+24) */
+  due?: string;
 }
 
 export interface WebBackup {
@@ -97,6 +108,12 @@ export interface WebBackup {
 /** The first app build that reads the mailbox (1.0.0+19). Older phones would never apply web changes */
 export const MIN_APP_BUILD = 19;
 
+/** The first build that reads due dates and category rename · delete notes (1.0.0+24). Older phones drop them silently */
+export const EDIT_MORE_BUILD = 24;
+
+/** How far ahead a due date can be, like the app's date picker (AddTodoBar.maxDueDays) */
+export const MAX_DUE_DAYS = 7;
+
 const date = (v: unknown) => (typeof v === "string" && v ? new Date(v) : undefined);
 
 function parseJson<T>(raw: unknown): T | undefined {
@@ -106,6 +123,15 @@ function parseJson<T>(raw: unknown): T | undefined {
   } catch {
     return undefined;
   }
+}
+
+function parseArchive(raw: unknown): ArchivedDone[] {
+  const list = parseJson<unknown[]>(raw) ?? [];
+  return list.flatMap((e) =>
+    Array.isArray(e) && typeof e[0] === "string" && typeof e[1] === "string"
+      ? [{ day: e[0], title: e[1], category: typeof e[2] === "string" ? e[2] : undefined }]
+      : [],
+  );
 }
 
 function parseCategories(raw: unknown): WebCategory[] {
@@ -185,6 +211,7 @@ export function parseBackup(data: Record<string, unknown>, updatedAt?: Date): We
       fish: parseFish(data[id ? `fish_health@${id}` : "fish_health"]),
       crew: parseCrew(data[id ? `cleaners@${id}` : "cleaners"]),
       easy: parseEasy(data[id ? `fish_health@${id}` : "fish_health"]),
+      archive: parseArchive(data[id ? `done_archive@${id}` : "done_archive"]),
     };
   });
   const active = typeof shelf?.active === "string" && tanks.some((t) => t.id === shelf.active) ? shelf.active : tanks[0].id;
@@ -217,6 +244,54 @@ export function newId(prefix = "") {
 
 const clip = (s: string, n: number) => Array.from(s).slice(0, n).join("");
 
+/** "2026-10-30" for a local date (FishHealth.dayKey in the app) */
+export function dayKey(d: Date) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+/** "2026-10-31" → that day at midnight (how the app stores a due date), or undefined */
+export function parseDay(s: string) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s);
+  return m ? new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])) : undefined;
+}
+
+// ───────── Category colors (web only, 래원 2026-10-30: tell categories apart at a glance) ─────────
+// Soft colors in the order categories were made, so up to 8 (the app's limit) never share one.
+export const CATEGORY_COLORS = ["#7dd3fc", "#f9a8d4", "#86efac", "#fcd34d", "#c4b5fd", "#fdba74", "#5eead4", "#f0abfc"];
+
+export function categoryColor(categories: WebCategory[], id?: string) {
+  const i = categories.findIndex((c) => c.id === id);
+  return i < 0 ? undefined : CATEGORY_COLORS[i % CATEGORY_COLORS.length];
+}
+
+// ───────── Month view (래원 2026-10-30) ─────────
+
+export interface DayItem {
+  title: string;
+  category?: string;
+  /** a to-do that is still on the list (finished ones are only titles) */
+  todo?: WebTodo;
+}
+
+/** What happened on each day of one month: finished (to-dos done in the last 30 days + the year record) and due (open to-dos with that due date) */
+export function monthDays(tank: WebTank, year: number, month: number, inFilter: (category?: string) => boolean) {
+  const days = new Map<string, { done: DayItem[]; due: DayItem[] }>();
+  const prefix = `${year}-${String(month + 1).padStart(2, "0")}-`;
+  const slot = (k: string) => days.get(k) ?? days.set(k, { done: [], due: [] }).get(k)!;
+  for (const a of tank.archive) if (a.day.startsWith(prefix) && inFilter(a.category)) slot(a.day).done.push({ title: a.title, category: a.category });
+  for (const t of tank.todos) {
+    if (!inFilter(t.category)) continue;
+    if (t.doneAt) {
+      const k = dayKey(t.doneAt);
+      if (k.startsWith(prefix)) slot(k).done.push({ title: t.title, category: t.category, todo: t });
+    } else if (t.dueDate && !t.repeat) {
+      const k = dayKey(t.dueDate);
+      if (k.startsWith(prefix)) slot(k).due.push({ title: t.title, category: t.category, todo: t });
+    }
+  }
+  return days;
+}
+
 /**
  * The backup with the mailbox notes that the phone hasn't applied yet laid on
  * top, in the order they were made. Mirrors InboxApply.step in the app: a note
@@ -237,8 +312,23 @@ export function applyNotes(backup: WebBackup, notes: WebNote[]): WebBackup {
       const id = ids.has(webId) ? ids.get(webId) : webId;
       return id && categories.some((c) => c.id === id) ? id : undefined;
     };
+    const realId = (webId?: string) => (webId ? (ids.has(webId) ? ids.get(webId) ?? undefined : webId) : undefined);
     for (const n of mine) {
       switch (n.kind) {
+        case "renameCategory": {
+          const id = realId(n.category);
+          const name = n.name?.trim();
+          if (!id || !name) break;
+          categories = categories.map((c) => (c.id === id ? { ...c, name: clip(name, MAX_CATEGORY_NAME) } : c));
+          break;
+        }
+        case "deleteCategory": {
+          const id = realId(n.category);
+          if (!id || !categories.some((c) => c.id === id)) break;
+          categories = categories.filter((c) => c.id !== id);
+          todos = todos.map((t) => (t.category === id ? { ...t, category: undefined } : t)); // like the app: the to-dos stay, without a category
+          break;
+        }
         case "category": {
           const name = n.name?.trim();
           if (!n.category || !name) break;
@@ -254,7 +344,10 @@ export function applyNotes(backup: WebBackup, notes: WebNote[]): WebBackup {
         case "add": {
           const title = n.title?.trim();
           if (!n.todo || !title || todos.some((t) => t.id === n.todo)) break;
-          todos = [...todos, { id: n.todo, title: clip(title, MAX_TITLE), createdAt: new Date(n.at), repeat: false, private: false, category: categoryOf(n.category) }];
+          todos = [
+            ...todos,
+            { id: n.todo, title: clip(title, MAX_TITLE), createdAt: new Date(n.at), dueDate: n.due ? parseDay(n.due) : undefined, repeat: false, private: false, category: categoryOf(n.category) },
+          ];
           break;
         }
         case "edit":
@@ -265,6 +358,8 @@ export function applyNotes(backup: WebBackup, notes: WebNote[]): WebBackup {
               ...t,
               title: title ? clip(title, MAX_TITLE) : t.title,
               category: n.category === undefined ? t.category : categoryOf(n.category),
+              // a repeat's due date comes from its rule, like in the app
+              dueDate: n.due === undefined || t.repeat ? t.dueDate : n.due === "" ? undefined : (parseDay(n.due) ?? t.dueDate),
             };
           });
           break;
