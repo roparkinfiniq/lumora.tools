@@ -100,6 +100,7 @@ const COPY = {
     signOut: "Sign out",
     tabList: "List",
     tabMonth: "Month",
+    monthTitle: "Your month",
     dueDate: "Due date",
     noDue: "No due date",
     editCategory: (name: string) => `Edit category: ${name}`,
@@ -166,6 +167,7 @@ const COPY = {
     signOut: "로그아웃",
     tabList: "목록",
     tabMonth: "월별",
+    monthTitle: "한 달 기록",
     dueDate: "마감일",
     noDue: "마감일 없음",
     editCategory: (name: string) => `카테고리 고치기: ${name}`,
@@ -452,8 +454,14 @@ export default function DoquariumAppView({ onBack }: { onBack: () => void }) {
                   {tank.shared && <span className="text-white/30"> · {t.shared}</span>}
                 </p>
                 <div className="flex items-center justify-between gap-3">
-                  <h2 className="text-2xl font-display font-bold text-white">
-                    {t.today} <span className="text-white/30 font-medium">{open.length}</span>
+                  <h2 className="text-2xl font-display font-bold text-white whitespace-nowrap">
+                    {view === "month" ? (
+                      t.monthTitle
+                    ) : (
+                      <>
+                        {t.today} <span className="text-white/30 font-medium">{open.length}</span>
+                      </>
+                    )}
                   </h2>
                   <div className="inline-flex p-1 rounded-xl bg-white/5 border border-white/10" role="group">
                     {(
@@ -465,12 +473,14 @@ export default function DoquariumAppView({ onBack }: { onBack: () => void }) {
                       <button
                         key={v}
                         onClick={() => setView(v)}
+                        aria-label={label}
+                        title={label}
                         aria-pressed={view === v}
                         className={`h-8 px-3 rounded-lg text-xs font-display font-bold flex items-center gap-1.5 transition-colors ${
                           view === v ? "bg-white text-black" : "text-white/55 hover:text-white"
                         }`}
                       >
-                        <Icon className="h-3.5 w-3.5" /> {label}
+                        <Icon className="h-3.5 w-3.5" /> <span className="hidden sm:inline">{label}</span>
                       </button>
                     ))}
                   </div>
@@ -507,7 +517,7 @@ export default function DoquariumAppView({ onBack }: { onBack: () => void }) {
                 )}
               </div>
 
-              {view === "month" && <MonthView lang={lang} tank={tank} categories={categories} filter={activeFilter} now={now} />}
+              {view === "month" && <MonthView lang={lang} tank={tank} categories={categories} filter={activeFilter} now={now} keepsYear={(ready.backup.appBuild ?? 0) >= EDIT_MORE_BUILD} />}
 
               {view === "list" && canWrite && (
                 <AddRow
@@ -787,7 +797,7 @@ function CategoryChips({
   };
   return (
     <>
-    <div className="flex gap-2 overflow-x-auto no-scrollbar mt-4 -mx-1 px-1 py-0.5">
+    <div className="flex flex-wrap gap-2 mt-4 py-0.5">
       <button onClick={() => onPick(null)} aria-pressed={active === null} className={chip(active === null)}>
         {t.all}
       </button>
@@ -879,29 +889,25 @@ function AddRow({
   };
   return (
     <form onSubmit={submit} className="px-4 sm:px-6 py-4 border-b border-white/5">
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap sm:flex-nowrap items-center gap-3">
         <input
           value={title}
           maxLength={MAX_TITLE}
           onChange={(e) => setTitle(e.target.value)}
           placeholder={t.addPlaceholder}
           aria-label={t.addPlaceholder}
-          className="flex-1 min-w-0 h-11 px-4 rounded-xl bg-white/5 border border-white/10 focus:border-[#3ef2ff]/40 text-white placeholder:text-white/30 outline-none transition-colors"
+          className="basis-full sm:basis-auto flex-1 min-w-0 h-11 px-4 rounded-xl bg-white/5 border border-white/10 focus:border-[#3ef2ff]/40 text-white placeholder:text-white/30 outline-none transition-colors"
         />
+        {canDue && <DueSelect t={t} lang={lang} now={now} value={due} onChange={setDue} />}
         <button
           type="submit"
           disabled={!title.trim()}
           aria-label={t.add}
-          className="shrink-0 h-11 px-4 sm:px-5 rounded-xl bg-white text-black font-display font-bold text-sm flex items-center gap-1.5 disabled:opacity-40"
+          className="ml-auto sm:ml-0 shrink-0 h-11 px-4 sm:px-5 rounded-xl bg-white text-black font-display font-bold text-sm flex items-center gap-1.5 disabled:opacity-40"
         >
           <Plus className="h-4 w-4" /> <span className="hidden sm:inline">{t.add}</span>
         </button>
       </div>
-      {canDue && (
-        <div className="mt-2">
-          <DueSelect t={t} lang={lang} now={now} value={due} onChange={setDue} />
-        </div>
-      )}
       {category && <p className="mt-2 text-xs text-white/40">{t.addIn(category)}</p>}
     </form>
   );

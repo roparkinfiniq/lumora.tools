@@ -20,6 +20,7 @@ const COPY = {
     legendDone: "finished",
     legendDue: "due",
     note: "Finished to-dos older than 30 days show here once your phone has Doquarium 1.0.0+24 (kept for a year).",
+    noteKept: "Finished to-dos stay here for a year.",
   },
   ko: {
     weekdays: ["일", "월", "화", "수", "목", "금", "토"],
@@ -32,6 +33,7 @@ const COPY = {
     legendDone: "끝낸 일",
     legendDue: "마감",
     note: "30일보다 오래된 끝낸 일은 폰의 두쿠아리움이 1.0.0+24 이상이면 여기에 보여요 (1년 동안).",
+    noteKept: "끝낸 일은 1년 동안 여기에 남아요.",
   },
 } as const;
 
@@ -41,6 +43,7 @@ export default function MonthView({
   categories,
   filter,
   now,
+  keepsYear,
 }: {
   lang: Lang;
   tank: WebTank;
@@ -48,6 +51,8 @@ export default function MonthView({
   /** a category id, or null for all */
   filter: string | null;
   now: Date;
+  /** the phone's app keeps the year record (+24): no "update" note needed */
+  keepsYear: boolean;
 }) {
   const t = COPY[lang];
   const [month, setMonth] = useState(() => new Date(now.getFullYear(), now.getMonth(), 1));
@@ -166,7 +171,7 @@ export default function MonthView({
           <DayList label={t.finished(sel.done.length)} items={sel.done} categories={categories} kind="done" />
         )}
       </div>
-      <p className="mt-4 text-[11px] leading-relaxed text-white/35">{t.note}</p>
+      <p className="mt-4 text-[11px] leading-relaxed text-white/35">{keepsYear ? t.noteKept : t.note}</p>
     </div>
   );
 }
