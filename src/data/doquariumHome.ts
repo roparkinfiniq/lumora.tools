@@ -124,7 +124,7 @@ export const DOQUARIUM_HOME: Record<PolicyLang, HomeCopy> = {
     faq: [
       { q: "Which phones can use it?", a: "Doquarium is in closed beta on Android now, and the iPhone version is on the way. Join the Android beta from the button above." },
       { q: "Do I need an account?", a: "No. You can start right away without signing up. Signing in with Google is optional and only backs up your progress so you can keep it on a new phone." },
-      { q: "Can friends see my to-dos?", a: "No. In a shared tank, friends see your fish and how many to-dos you finished. Only in a tank made with \"See each other's to-dos\" can they see titles, and you can still hide any to-do with \"Only me\"." },
+      { q: "Can friends see my to-dos?", a: "No. In a shared tank, friends see your nickname, your fish, and how many to-dos you finished, but not your to-dos. Only in a tank made with \"See each other's to-dos\" can they see titles, and you can still hide any to-do with \"Only me\"." },
       { q: "What happens if I keep putting things off?", a: "Leftover to-dos slowly spoil, the water gets cloudy, and your fish gets weaker. Nothing happens all at once. If a fish passes on, it becomes a little ghost, and you can bring it back." },
       { q: "Will it send me lots of notifications?", a: "No. You only get the reminders you set for a to-do, and a note when a friend pokes you. Poke alerts can be turned off in Settings." },
       { q: "Found a bug or have an idea?", a: "In the app, go to Settings, then Contact · Report a bug under Help. You can also email us." },
@@ -217,7 +217,7 @@ export const DOQUARIUM_HOME: Record<PolicyLang, HomeCopy> = {
     faq: [
       { q: "어떤 폰에서 쓸 수 있나요?", a: "지금은 안드로이드에서 비공개 베타 중이고, 아이폰 버전도 준비하고 있어요. 위의 버튼으로 안드로이드 베타에 참여할 수 있어요." },
       { q: "가입해야 하나요?", a: "아니요. 가입 없이 바로 시작할 수 있어요. 구글 로그인은 선택이고, 폰을 바꿔도 기록을 이어 쓰도록 백업만 해요." },
-      { q: "친구가 내 할 일을 볼 수 있나요?", a: "아니요. 단체 어항에서 친구에게는 물고기 모습과 끝낸 개수만 보여요. 방장이 \"할 일 서로 보기\"로 만든 어항에서만 제목이 보이고, 그래도 \"나만 보기\"로 숨길 수 있어요." },
+      { q: "친구가 내 할 일을 볼 수 있나요?", a: "아니요. 단체 어항에서 친구에게는 별명과 물고기, 끝낸 개수가 보이고 할 일 내용은 안 보여요. 방장이 \"할 일 서로 보기\"로 만든 어항에서만 제목이 보이고, 그래도 \"나만 보기\"로 숨길 수 있어요." },
       { q: "계속 미루면 어떻게 되나요?", a: "남은 할 일이 천천히 썩고, 물이 탁해지고, 물고기 기운이 떨어져요. 한 번에 확 죽는 일은 없어요. 물고기가 떠나면 유령 물고기가 되고, 부활시킬 수 있어요." },
       { q: "알림이 많이 오나요?", a: "아니요. 할 일에 직접 맞춘 알림과, 친구가 콕 찔렀을 때만 와요. 콕 알림은 설정에서 끌 수 있어요." },
       { q: "버그를 찾았거나 아이디어가 있어요", a: "앱의 설정(톱니바퀴) → 도움말 아래 \"문의 · 버그 알리기\"에서 바로 보낼 수 있어요. 이메일도 좋아요." },
