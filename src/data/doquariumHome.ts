@@ -19,8 +19,6 @@ export interface HomeCopy {
   badge: string;
   tagline: string;
   lead: string;
-  storeGet: string;
-  storeSoon: string;
   webCta: string;
   webTitle: string;
   webSub: string;
@@ -47,11 +45,9 @@ export interface HomeCopy {
 export const DOQUARIUM_HOME: Record<PolicyLang, HomeCopy> = {
   en: {
     langLabel: "English",
-    badge: "Now on Google Play · iPhone coming soon",
+    badge: "Out now · Android & iPhone",
     tagline: "Finish a task, feed your fish.",
     lead: "Doquarium is a to-do app with a neon fish tank. Every to-do is fish food: get things done and your fish eats and grows. Put things off and the water turns murky.",
-    storeGet: "Download",
-    storeSoon: "Coming soon",
     webCta: "On a computer? Open your to-dos on the web",
     webTitle: "Your tank on your computer, too",
     webSub: "Signed in to the app? Sign in on lumora.tools with the same account and keep your list going from your desk.",
@@ -122,7 +118,7 @@ export const DOQUARIUM_HOME: Record<PolicyLang, HomeCopy> = {
       { title: "Relaxed or Intense", body: "Go Relaxed to take it slow, or Intense if you want real stakes. Each tank picks its own." },
       { title: "A ghost, not a gravestone", body: "If a fish passes on, it turns into a cute little ghost that floats around. Don't worry, you can bring it back." },
       { title: "Home screen widget", body: "See today's to-dos on your home screen and tap the food dot to check one off. Your fish still eats." },
-      { title: "No sign-up needed", body: "Start right away. If you like, back up your progress with your Google account to keep it on a new phone." },
+      { title: "No sign-up needed", body: "Start right away. If you like, back up your progress with your Google account (or Apple on iPhone) to keep it on a new phone." },
     ],
     principlesTitle: "Made to send you back to real life.",
     principlesSub: "Skip the endless scroll. Grow your fish with what you get done today.",
@@ -133,9 +129,9 @@ export const DOQUARIUM_HOME: Record<PolicyLang, HomeCopy> = {
     ],
     faqTitle: "Questions",
     faq: [
-      { q: "Which phones can use it?", a: "Doquarium is out on Android. Get it on Google Play from the button above. The iPhone version is on the way." },
+      { q: "Which phones can use it?", a: "Both Android and iPhone. Get it on Google Play or the App Store from the buttons above." },
       { q: "Can I use it on my computer?", a: "Yes, for your to-dos. Sign in to the app, then sign in at lumora.tools/doquarium/app with the same account. You can add, finish, and edit to-dos, manage categories and due dates, and see your month on a calendar. The fish live in the app." },
-      { q: "Do I need an account?", a: "No. You can start right away without signing up. Signing in with Google is optional and only backs up your progress so you can keep it on a new phone." },
+      { q: "Do I need an account?", a: "No. You can start right away without signing up. Signing in with Google (or Apple on iPhone) is optional and only backs up your progress so you can keep it on a new phone." },
       { q: "Can friends see my to-dos?", a: "No. In a shared tank, friends see your nickname, your fish, and how many to-dos you finished, but not your to-dos. Only in a tank made with \"See each other's to-dos\" can they see titles, and you can still hide any to-do with \"Only me\"." },
       { q: "What happens if I keep putting things off?", a: "Leftover to-dos slowly spoil, the water gets cloudy, and your fish gets weaker. Nothing happens all at once. If a fish passes on, it becomes a little ghost, and you can bring it back." },
       { q: "Will it send me lots of notifications?", a: "No. You only get the reminders you set for a to-do, and a note when a friend pokes you. Poke alerts can be turned off in Settings." },
@@ -149,11 +145,9 @@ export const DOQUARIUM_HOME: Record<PolicyLang, HomeCopy> = {
   },
   ko: {
     langLabel: "한국어",
-    badge: "Google Play 출시 · 아이폰은 준비 중",
+    badge: "출시 · 안드로이드 · 아이폰",
     tagline: "할 일 끝내면 물고기가 냠!",
     lead: "두쿠아리움은 네온 어항이 있는 할 일 앱이에요. 할 일이 곧 물고기 밥이라, 해치우면 물고기가 먹고 쑥쑥 자라요. 미루면 어항이 탁해지고요.",
-    storeGet: "다운로드",
-    storeSoon: "준비 중",
     webCta: "컴퓨터라면? 웹에서 내 할 일 열기",
     webTitle: "컴퓨터에서도 내 어항",
     webSub: "앱에서 로그인했다면, lumora.tools에 같은 계정으로 들어와 책상에서도 할 일을 이어서 관리해요.",
@@ -224,7 +218,7 @@ export const DOQUARIUM_HOME: Record<PolicyLang, HomeCopy> = {
       { title: "느긋 or 열정", body: "천천히 키우고 싶으면 느긋 모드, 진짜 긴장감을 원하면 열정 모드. 어항마다 따로 골라요." },
       { title: "비석 대신 유령 물고기", body: "혹시 물고기가 떠나도 귀여운 유령 물고기가 되어 둥둥 떠다녀요. 부활도 있으니까 안심!" },
       { title: "홈 화면 위젯", body: "오늘 할 일이 홈 화면에 바로 떠요. 사료 자리를 톡 누르면 끝! 물고기는 그대로 냠." },
-      { title: "가입 없이 바로 시작", body: "바로 쓸 수 있어요. 원하면 구글 계정으로 기록을 백업해서 폰을 바꿔도 이어 쓸 수 있어요." },
+      { title: "가입 없이 바로 시작", body: "바로 쓸 수 있어요. 원하면 구글 계정(아이폰은 애플도)으로 기록을 백업해서 폰을 바꿔도 이어 쓸 수 있어요." },
     ],
     principlesTitle: "현실로 돌아가게 하는 앱",
     principlesSub: "쇼츠 무한 스크롤 대신, 오늘 해낸 일로 자라는 내 어항.",
@@ -235,9 +229,9 @@ export const DOQUARIUM_HOME: Record<PolicyLang, HomeCopy> = {
     ],
     faqTitle: "자주 묻는 질문",
     faq: [
-      { q: "어떤 폰에서 쓸 수 있나요?", a: "안드로이드에 출시됐어요. 위의 버튼으로 Google Play에서 받을 수 있어요. 아이폰 버전은 준비하고 있어요." },
+      { q: "어떤 폰에서 쓸 수 있나요?", a: "안드로이드와 아이폰 모두 돼요. 위의 버튼으로 Google Play나 App Store에서 받을 수 있어요." },
       { q: "컴퓨터에서도 쓸 수 있나요?", a: "할 일은 컴퓨터에서도 돼요. 앱에서 로그인한 뒤, lumora.tools/doquarium/app 에 같은 계정으로 로그인하세요. 할 일 적기 · 끝내기 · 고치기, 카테고리 · 마감일 관리, 한 달 기록 달력까지 쓸 수 있어요. 물고기는 앱에서 만나요." },
-      { q: "가입해야 하나요?", a: "아니요. 가입 없이 바로 시작할 수 있어요. 구글 로그인은 선택이고, 폰을 바꿔도 기록을 이어 쓰도록 백업만 해요." },
+      { q: "가입해야 하나요?", a: "아니요. 가입 없이 바로 시작할 수 있어요. 구글 로그인(아이폰은 애플도)은 선택이고, 폰을 바꿔도 기록을 이어 쓰도록 백업만 해요." },
       { q: "친구가 내 할 일을 볼 수 있나요?", a: "아니요. 단체 어항에서 친구에게는 별명과 물고기, 끝낸 개수가 보이고 할 일 내용은 안 보여요. 방장이 \"할 일 서로 보기\"로 만든 어항에서만 제목이 보이고, 그래도 \"나만 보기\"로 숨길 수 있어요." },
       { q: "계속 미루면 어떻게 되나요?", a: "남은 할 일이 천천히 썩고, 물이 탁해지고, 물고기 기운이 떨어져요. 한 번에 확 죽는 일은 없어요. 물고기가 떠나면 유령 물고기가 되고, 부활시킬 수 있어요." },
       { q: "알림이 많이 오나요?", a: "아니요. 할 일에 직접 맞춘 알림과, 친구가 콕 찔렀을 때만 와요. 콕 알림은 설정에서 끌 수 있어요." },

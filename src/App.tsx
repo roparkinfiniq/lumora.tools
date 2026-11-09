@@ -8,7 +8,8 @@ import CodeTiaraView from "./components/CodeTiaraView";
 import DoquariumView from "./components/DoquariumView";
 import { NeonTank } from "./components/NeonTank";
 import DoquariumDocView from "./components/DoquariumDocView";
-import { DELETE_PATH, DOQUARIUM_DELETE, DOQUARIUM_PRIVACY, PLAY_URL, PRIVACY_PATH } from "./data/doquarium";
+import { DELETE_PATH, DOQUARIUM_DELETE, DOQUARIUM_PRIVACY, PRIVACY_PATH } from "./data/doquarium";
+import StoreBadges from "./components/StoreBadges";
 import { applySeo, seoForPost, seoForTool, seoForView } from "./seo";
 import { Tool, BlogPost } from "./types";
 import { blogPosts } from "./data/posts";
@@ -413,7 +414,7 @@ export default function App() {
                       <div className="inline-flex px-3 py-1.5 rounded-full bg-[#3ef2ff]/10 border border-[#3ef2ff]/25 w-fit mb-6 items-center gap-2">
                         <span className="h-2 w-2 rounded-full bg-[#3ef2ff] shadow-[0_0_8px_rgba(62,242,255,0.9)]" />
                         <span className="text-[10px] font-display font-bold text-[#8ff7ff] uppercase tracking-widest">
-                          Now on Google Play
+                          Out now · Android & iPhone
                         </span>
                       </div>
                       <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-4 tracking-tight">
@@ -424,18 +425,10 @@ export default function App() {
                       </p>
                       <p className="text-lg text-lumora-sub font-medium mb-8 leading-relaxed">
                         Every task you finish feeds the neon fish in your tank.
-                        Out now on Android, iPhone coming soon.
+                        Out now on Android and iPhone.
                       </p>
                       <div className="flex flex-wrap items-center gap-4">
-                        <a
-                          href={PLAY_URL}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          className="px-5 h-11 rounded-xl bg-[#3ef2ff] text-[#062226] font-display font-bold text-sm flex items-center hover:-translate-y-0.5 hover:shadow-[0_0_24px_rgba(62,242,255,0.45)] transition-all"
-                        >
-                          Get it on Google Play
-                        </a>
+                        <StoreBadges lang="en" size="sm" onClick={(e) => e.stopPropagation()} />
                         <div className="flex items-center gap-3 text-sm font-display font-bold text-[#8ff7ff]/60 group-hover:text-[#8ff7ff] transition-colors">
                           Meet Doquarium{" "}
                           <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
@@ -720,7 +713,7 @@ export default function App() {
                           <div className="inline-flex px-3 py-1.5 rounded-full bg-[#3ef2ff]/10 text-[#8ff7ff] border border-[#3ef2ff]/25 w-fit mb-6 items-center gap-2">
                             <span className="h-1.5 w-1.5 rounded-full bg-[#3ef2ff]" />
                             <span className="text-[10px] font-display font-bold uppercase tracking-widest">
-                              Now on Google Play
+                              Out now · Android & iPhone
                             </span>
                           </div>
                           <h3 className="text-3xl md:text-4xl font-display font-bold text-white mb-4 tracking-tight">

@@ -1,10 +1,11 @@
 import { useEffect, useState, type MouseEvent } from "react";
 import { motion } from "motion/react";
-import { ArrowRight, CalendarDays, ChevronDown, ExternalLink, Layers, ListChecks, Mail, Monitor, Tags } from "lucide-react";
-import { DELETE_PATH, DOQUARIUM, PLAY_URL, PRIVACY_PATH, type PolicyLang } from "../data/doquarium";
+import { ArrowRight, CalendarDays, ChevronDown, Layers, ListChecks, Mail, Monitor, Tags } from "lucide-react";
+import { DELETE_PATH, DOQUARIUM, PRIVACY_PATH, type PolicyLang } from "../data/doquarium";
 import { DOQUARIUM_HOME } from "../data/doquariumHome";
 import { applySeo } from "../seo";
 import DoquariumReel from "./DoquariumReel";
+import StoreBadges from "./StoreBadges";
 
 // Doquarium official homepage: /doquarium (English) and /doquarium/ko (Korean).
 // Copy lives in src/data/doquariumHome.ts; screenshots are the store images in
@@ -22,41 +23,14 @@ const SEO: Record<PolicyLang, { title: string; description: string }> = {
   en: {
     title: "Doquarium — Finish a Task, Feed Your Fish | A Neon To-Do App",
     description:
-      "Doquarium is a to-do app with a neon fish tank. Finish tasks to feed and grow your fish, hatch rare eggs, and share a tank with friends. Out now on Google Play, iPhone coming soon. Manage your to-dos on the web, too.",
+      "Doquarium is a to-do app with a neon fish tank. Finish tasks to feed and grow your fish, hatch rare eggs, and share a tank with friends. Out now on Google Play and the App Store. Manage your to-dos on the web, too.",
   },
   ko: {
     title: "두쿠아리움 — 할 일 끝내면 물고기가 냠! 네온 어항 할 일 앱",
     description:
-      "두쿠아리움은 네온 어항이 있는 할 일 앱이에요. 할 일을 끝내면 물고기가 먹고 자라고, 알을 깨고, 친구랑 같은 어항을 키워요. Google Play에서 받을 수 있고, 아이폰도 곧. 컴퓨터에서는 웹으로 할 일을 관리해요.",
+      "두쿠아리움은 네온 어항이 있는 할 일 앱이에요. 할 일을 끝내면 물고기가 먹고 자라고, 알을 깨고, 친구랑 같은 어항을 키워요. Google Play와 App Store에서 받을 수 있고, 컴퓨터에서는 웹으로 할 일을 관리해요.",
   },
 };
-
-function StoreBadge({ store, label, href }: { store: string; label: string; href?: string }) {
-  // With a link: the store is live, so it is the bright main button
-  if (href) {
-    return (
-      <a
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex items-center justify-between h-14 px-5 rounded-xl bg-[#3ef2ff] text-[#062226] hover:-translate-y-0.5 hover:shadow-[0_0_28px_rgba(62,242,255,0.45)] transition-all"
-      >
-        <span className="font-display font-bold text-sm">{store}</span>
-        <span className="flex items-center gap-1.5 text-[11px] font-display font-bold uppercase tracking-widest">
-          {label} <ExternalLink className="h-3.5 w-3.5" />
-        </span>
-      </a>
-    );
-  }
-  return (
-    <div className="flex items-center justify-between h-14 px-5 rounded-xl bg-white/[0.03] border border-white/10 text-white/70">
-      <span className="font-display font-bold text-sm">{store}</span>
-      <span className="text-[9px] font-display font-bold uppercase tracking-widest text-[#3ef2ff] bg-[#3ef2ff]/10 border border-[#3ef2ff]/25 px-2.5 py-1 rounded-full">
-        {label}
-      </span>
-    </div>
-  );
-}
 
 const WEB_ICONS = [ListChecks, Tags, CalendarDays, Layers];
 
@@ -142,14 +116,11 @@ export default function DoquariumView({ onOpen }: { onOpen: (view: string) => vo
               {t.tagline}
             </p>
             <p className="text-base sm:text-lg text-white/60 font-medium mb-10 leading-relaxed max-w-xl">{t.lead}</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-lg">
-              <StoreBadge store="Google Play" label={t.storeGet} href={PLAY_URL} />
-              <StoreBadge store="App Store" label={t.storeSoon} />
-            </div>
+            <StoreBadges lang={lang} />
             <a
               href={subHref("/doquarium/app")}
               onClick={open("doquarium-app", "/doquarium/app")}
-              className="mt-3 w-full max-w-lg flex items-center justify-between gap-3 h-14 px-5 rounded-xl bg-white/[0.03] border border-[#3ef2ff]/25 text-[#8ff7ff] font-display font-bold text-sm hover:bg-[#3ef2ff]/[0.06] hover:border-[#3ef2ff]/40 transition-colors"
+              className="mt-4 w-full max-w-lg flex items-center justify-between gap-3 h-14 px-5 rounded-xl bg-white/[0.03] border border-[#3ef2ff]/25 text-[#8ff7ff] font-display font-bold text-sm hover:bg-[#3ef2ff]/[0.06] hover:border-[#3ef2ff]/40 transition-colors"
             >
               <span className="flex items-center gap-3 min-w-0">
                 <Monitor className="h-4 w-4 shrink-0" />
@@ -291,14 +262,6 @@ export default function DoquariumView({ onOpen }: { onOpen: (view: string) => vo
           <h2 className="relative text-3xl md:text-4xl font-display font-bold text-white tracking-tight mb-4">{t.contactTitle}</h2>
           <p className="relative text-lumora-sub mb-10 max-w-xl mx-auto">{t.contactBody}</p>
           <div className="relative flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a
-              href={PLAY_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 px-6 h-12 rounded-xl bg-[#3ef2ff] text-[#062226] font-display font-bold text-sm hover:-translate-y-0.5 transition-transform"
-            >
-              Google Play <ExternalLink className="h-4 w-4" />
-            </a>
             <a
               href={`mailto:${DOQUARIUM.contactEmail}`}
               className="flex items-center gap-2 px-6 h-12 rounded-xl bg-white text-black font-display font-bold text-sm hover:-translate-y-0.5 transition-transform"

@@ -11,7 +11,6 @@ export const DOQUARIUM = {
   effectiveDate: { en: "October 9, 2026", ko: "2026년 10월 9일" },
   // Bump whenever the policy text changes (the effective date stays the same before launch).
   lastUpdated: { en: "November 6, 2026", ko: "2026년 11월 6일" },
-  storeStatus: "Coming soon",
 };
 
 export type PolicyLang = "en" | "ko";
@@ -43,9 +42,10 @@ const { contactEmail, privacyOfficer, developer, effectiveDate, lastUpdated } = 
 
 export const PRIVACY_PATH = "/doquarium/privacy";
 export const DELETE_PATH = "/doquarium/delete-account";
-// Out on Google Play (래원 2026-11-09). The beta recruiting page is gone:
+// Out on Google Play and the App Store (래원 2026-11-09). The beta recruiting page is gone:
 // old /doquarium/beta links redirect to /doquarium in vercel.json.
 export const PLAY_URL = "https://play.google.com/store/apps/details?id=com.lumora.doquarium";
+export const APP_STORE_URL = "https://apps.apple.com/app/id6821589383";
 const DELETE_URL = `lumora.tools${DELETE_PATH}`;
 
 export const DOQUARIUM_PRIVACY: Record<PolicyLang, PolicyDoc> = {
