@@ -16,14 +16,17 @@ export interface HomeFeature {
 
 export interface HomeCopy {
   langLabel: string;
-  badgeBeta: string;
-  badgeSoon: string;
+  badge: string;
   tagline: string;
   lead: string;
+  storeGet: string;
   storeSoon: string;
-  betaCta: string;
-  betaSub: string;
   webCta: string;
+  webTitle: string;
+  webSub: string;
+  web: { title: string; body: string }[];
+  webOpen: string;
+  webNote: string;
   storyTitle: string;
   story: string[];
   features: HomeFeature[];
@@ -44,14 +47,22 @@ export interface HomeCopy {
 export const DOQUARIUM_HOME: Record<PolicyLang, HomeCopy> = {
   en: {
     langLabel: "English",
-    badgeBeta: "Android Beta · Testers Wanted",
-    badgeSoon: "Coming soon · Android & iPhone",
+    badge: "Now on Google Play · iPhone coming soon",
     tagline: "Finish a task, feed your fish.",
     lead: "Doquarium is a to-do app with a neon fish tank. Every to-do is fish food: get things done and your fish eats and grows. Put things off and the water turns murky.",
+    storeGet: "Download",
     storeSoon: "Coming soon",
-    betaCta: "Join the Android beta",
-    betaSub: "Testers wanted · help Doquarium launch",
-    webCta: "Signed in to the app? See your to-dos on the web",
+    webCta: "On a computer? Open your to-dos on the web",
+    webTitle: "Your tank on your computer, too",
+    webSub: "Signed in to the app? Sign in on lumora.tools with the same account and keep your list going from your desk.",
+    web: [
+      { title: "Add and finish to-dos", body: "Type them out on a real keyboard, check them off or undo, and fix a title in place." },
+      { title: "Categories and due dates", body: "See your list split into color-coded categories. Rename or delete them, and set a due date up to a week ahead." },
+      { title: "Your month on a calendar", body: "What you finished and what's due, day by day. Finished to-dos stay there for a year." },
+      { title: "Every tank, shared ones too", body: "Switch between your tanks, including the ones you share with friends, and see how your fish is doing." },
+    ],
+    webOpen: "Open Doquarium on the web",
+    webNote: "Changes show up on your phone the next time you open the app.",
     storyTitle: "Let's be honest: checking off to-dos gets boring.",
     story: [
       "In Doquarium, every to-do is fish food.",
@@ -122,7 +133,8 @@ export const DOQUARIUM_HOME: Record<PolicyLang, HomeCopy> = {
     ],
     faqTitle: "Questions",
     faq: [
-      { q: "Which phones can use it?", a: "Doquarium is in closed beta on Android now, and the iPhone version is on the way. Join the Android beta from the button above." },
+      { q: "Which phones can use it?", a: "Doquarium is out on Android. Get it on Google Play from the button above. The iPhone version is on the way." },
+      { q: "Can I use it on my computer?", a: "Yes, for your to-dos. Sign in to the app, then sign in at lumora.tools/doquarium/app with the same account. You can add, finish, and edit to-dos, manage categories and due dates, and see your month on a calendar. The fish live in the app." },
       { q: "Do I need an account?", a: "No. You can start right away without signing up. Signing in with Google is optional and only backs up your progress so you can keep it on a new phone." },
       { q: "Can friends see my to-dos?", a: "No. In a shared tank, friends see your nickname, your fish, and how many to-dos you finished, but not your to-dos. Only in a tank made with \"See each other's to-dos\" can they see titles, and you can still hide any to-do with \"Only me\"." },
       { q: "What happens if I keep putting things off?", a: "Leftover to-dos slowly spoil, the water gets cloudy, and your fish gets weaker. Nothing happens all at once. If a fish passes on, it becomes a little ghost, and you can bring it back." },
@@ -137,14 +149,22 @@ export const DOQUARIUM_HOME: Record<PolicyLang, HomeCopy> = {
   },
   ko: {
     langLabel: "한국어",
-    badgeBeta: "안드로이드 베타 · 테스터 모집 중",
-    badgeSoon: "곧 출시 · 안드로이드 · 아이폰",
+    badge: "Google Play 출시 · 아이폰은 준비 중",
     tagline: "할 일 끝내면 물고기가 냠!",
     lead: "두쿠아리움은 네온 어항이 있는 할 일 앱이에요. 할 일이 곧 물고기 밥이라, 해치우면 물고기가 먹고 쑥쑥 자라요. 미루면 어항이 탁해지고요.",
-    storeSoon: "곧 출시",
-    betaCta: "안드로이드 베타 참여하기",
-    betaSub: "테스터 모집 중 · 출시를 도와주세요",
-    webCta: "앱에서 로그인했다면, 웹에서 내 할 일 보기",
+    storeGet: "다운로드",
+    storeSoon: "준비 중",
+    webCta: "컴퓨터라면? 웹에서 내 할 일 열기",
+    webTitle: "컴퓨터에서도 내 어항",
+    webSub: "앱에서 로그인했다면, lumora.tools에 같은 계정으로 들어와 책상에서도 할 일을 이어서 관리해요.",
+    web: [
+      { title: "할 일 적고 끝내기", body: "키보드로 빠르게 적고, 끝내거나 되돌리고, 제목도 그 자리에서 고쳐요." },
+      { title: "카테고리 · 마감일", body: "카테고리마다 색깔 칸으로 나눠 보여요. 이름을 바꾸거나 지우고, 마감일은 일주일 안에서 정해요." },
+      { title: "한 달 기록 달력", body: "끝낸 일과 마감일을 날짜별로 한눈에. 끝낸 일은 1년 동안 남아요." },
+      { title: "모든 어항, 단체 어항도", body: "친구와 함께 쓰는 어항까지 오가며 보고, 물고기 상태도 확인해요." },
+    ],
+    webOpen: "웹에서 두쿠아리움 열기",
+    webNote: "바꾼 내용은 폰에서 앱을 열면 그대로 반영돼요.",
     storyTitle: "투두 체크, 솔직히 좀 지루하죠?",
     story: [
       "두쿠아리움에선 할 일이 곧 물고기 밥이에요. 오늘 할 일을 해치우면 물고기가 냠냠 먹고 쑥쑥 자라요.",
@@ -215,7 +235,8 @@ export const DOQUARIUM_HOME: Record<PolicyLang, HomeCopy> = {
     ],
     faqTitle: "자주 묻는 질문",
     faq: [
-      { q: "어떤 폰에서 쓸 수 있나요?", a: "지금은 안드로이드에서 비공개 베타 중이고, 아이폰 버전도 준비하고 있어요. 위의 버튼으로 안드로이드 베타에 참여할 수 있어요." },
+      { q: "어떤 폰에서 쓸 수 있나요?", a: "안드로이드에 출시됐어요. 위의 버튼으로 Google Play에서 받을 수 있어요. 아이폰 버전은 준비하고 있어요." },
+      { q: "컴퓨터에서도 쓸 수 있나요?", a: "할 일은 컴퓨터에서도 돼요. 앱에서 로그인한 뒤, lumora.tools/doquarium/app 에 같은 계정으로 로그인하세요. 할 일 적기 · 끝내기 · 고치기, 카테고리 · 마감일 관리, 한 달 기록 달력까지 쓸 수 있어요. 물고기는 앱에서 만나요." },
       { q: "가입해야 하나요?", a: "아니요. 가입 없이 바로 시작할 수 있어요. 구글 로그인은 선택이고, 폰을 바꿔도 기록을 이어 쓰도록 백업만 해요." },
       { q: "친구가 내 할 일을 볼 수 있나요?", a: "아니요. 단체 어항에서 친구에게는 별명과 물고기, 끝낸 개수가 보이고 할 일 내용은 안 보여요. 방장이 \"할 일 서로 보기\"로 만든 어항에서만 제목이 보이고, 그래도 \"나만 보기\"로 숨길 수 있어요." },
       { q: "계속 미루면 어떻게 되나요?", a: "남은 할 일이 천천히 썩고, 물이 탁해지고, 물고기 기운이 떨어져요. 한 번에 확 죽는 일은 없어요. 물고기가 떠나면 유령 물고기가 되고, 부활시킬 수 있어요." },

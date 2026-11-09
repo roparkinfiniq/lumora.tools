@@ -1,6 +1,6 @@
 import { useEffect, useState, type MouseEvent } from "react";
 import { ArrowRight, Github, Mail, Type } from "lucide-react";
-import { BETA, BETA_PATH, DELETE_PATH, PRIVACY_PATH } from "../data/doquarium";
+import { DELETE_PATH, PRIVACY_PATH } from "../data/doquarium";
 
 // Site footer. On the Korean Doquarium pages (they set <html lang="ko">) it speaks Korean and its
 // Doquarium links stay in Korean (/ko), like the pages' own links do.
@@ -30,7 +30,7 @@ const COPY = {
     doquarium: "Doquarium",
     privacy: "Privacy Policy",
     delete: "Delete Account",
-    beta: "Beta Testing",
+    web: "On the Web",
     note: "No cookies · Files stay in your browser",
   },
   ko: {
@@ -44,7 +44,7 @@ const COPY = {
     doquarium: "두쿠아리움",
     privacy: "개인정보처리방침",
     delete: "계정 삭제",
-    beta: "베타 테스트",
+    web: "웹에서 할 일",
     note: "쿠키 없음 · 파일은 브라우저 안에서만",
   },
 };
@@ -104,9 +104,9 @@ export default function SiteFooter({ onOpen }: { onOpen: (view: string) => void 
               {/* sub-links line up under "Doquarium" (past its arrow) */}
               <div className="flex flex-col gap-3 pl-6 -mt-1">
                 {[
+                  { view: "doquarium-app", href: "/doquarium/app", label: t.web },
                   { view: "doquarium-privacy", href: PRIVACY_PATH, label: t.privacy },
                   { view: "doquarium-delete", href: DELETE_PATH, label: t.delete },
-                  ...(BETA.recruiting ? [{ view: "doquarium-beta", href: BETA_PATH, label: t.beta }] : []),
                 ].map((l) => (
                   <a
                     key={l.view}

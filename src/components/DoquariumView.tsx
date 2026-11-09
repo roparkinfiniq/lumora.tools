@@ -1,7 +1,7 @@
 import { useEffect, useState, type MouseEvent } from "react";
 import { motion } from "motion/react";
-import { ArrowRight, ChevronDown, Mail } from "lucide-react";
-import { BETA, BETA_PATH, DELETE_PATH, DOQUARIUM, PRIVACY_PATH, type PolicyLang } from "../data/doquarium";
+import { ArrowRight, CalendarDays, ChevronDown, ExternalLink, Layers, ListChecks, Mail, Monitor, Tags } from "lucide-react";
+import { DELETE_PATH, DOQUARIUM, PLAY_URL, PRIVACY_PATH, type PolicyLang } from "../data/doquarium";
 import { DOQUARIUM_HOME } from "../data/doquariumHome";
 import { applySeo } from "../seo";
 import DoquariumReel from "./DoquariumReel";
@@ -22,16 +22,32 @@ const SEO: Record<PolicyLang, { title: string; description: string }> = {
   en: {
     title: "Doquarium — Finish a Task, Feed Your Fish | A Neon To-Do App",
     description:
-      "Doquarium is a to-do app with a neon fish tank. Finish tasks to feed and grow your fish, hatch rare eggs, and share a tank with friends. Android beta now, iPhone coming soon.",
+      "Doquarium is a to-do app with a neon fish tank. Finish tasks to feed and grow your fish, hatch rare eggs, and share a tank with friends. Out now on Google Play, iPhone coming soon. Manage your to-dos on the web, too.",
   },
   ko: {
     title: "두쿠아리움 — 할 일 끝내면 물고기가 냠! 네온 어항 할 일 앱",
     description:
-      "두쿠아리움은 네온 어항이 있는 할 일 앱이에요. 할 일을 끝내면 물고기가 먹고 자라고, 알을 깨고, 친구랑 같은 어항을 키워요. 지금 안드로이드 베타 중, 아이폰도 곧.",
+      "두쿠아리움은 네온 어항이 있는 할 일 앱이에요. 할 일을 끝내면 물고기가 먹고 자라고, 알을 깨고, 친구랑 같은 어항을 키워요. Google Play에서 받을 수 있고, 아이폰도 곧. 컴퓨터에서는 웹으로 할 일을 관리해요.",
   },
 };
 
-function StoreBadge({ store, label }: { store: string; label: string }) {
+function StoreBadge({ store, label, href }: { store: string; label: string; href?: string }) {
+  // With a link: the store is live, so it is the bright main button
+  if (href) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center justify-between h-14 px-5 rounded-xl bg-[#3ef2ff] text-[#062226] hover:-translate-y-0.5 hover:shadow-[0_0_28px_rgba(62,242,255,0.45)] transition-all"
+      >
+        <span className="font-display font-bold text-sm">{store}</span>
+        <span className="flex items-center gap-1.5 text-[11px] font-display font-bold uppercase tracking-widest">
+          {label} <ExternalLink className="h-3.5 w-3.5" />
+        </span>
+      </a>
+    );
+  }
   return (
     <div className="flex items-center justify-between h-14 px-5 rounded-xl bg-white/[0.03] border border-white/10 text-white/70">
       <span className="font-display font-bold text-sm">{store}</span>
@@ -41,6 +57,8 @@ function StoreBadge({ store, label }: { store: string; label: string }) {
     </div>
   );
 }
+
+const WEB_ICONS = [ListChecks, Tags, CalendarDays, Layers];
 
 function Screenshot({ lang, shot, alt }: { lang: PolicyLang; shot: string; alt: string }) {
   return (
@@ -76,7 +94,7 @@ export default function DoquariumView({ onOpen }: { onOpen: (view: string) => vo
     };
   }, [lang]);
 
-  // Open a sub-page (privacy, account deletion, beta) in the same language.
+  // Open a sub-page (privacy, account deletion, web to-dos) in the same language.
   const open = (view: string, base: string) => (e: MouseEvent) => {
     e.preventDefault();
     window.history.pushState({ view }, "", lang === "ko" ? `${base}/ko` : base);
@@ -111,7 +129,7 @@ export default function DoquariumView({ onOpen }: { onOpen: (view: string) => vo
             <div className="inline-flex px-3 py-1.5 rounded-[12px] bg-white/[0.03] border border-white/10 mb-8 items-center gap-2">
               <span className="h-1.5 w-1.5 rounded-full bg-[#3ef2ff] shadow-[0_0_8px_rgba(62,242,255,0.9)]" />
               <span className="text-[11px] font-display font-bold uppercase tracking-widest text-white/80">
-                {BETA.recruiting ? t.badgeBeta : t.badgeSoon}
+                {t.badge}
               </span>
             </div>
             {lang === "ko" && (
@@ -125,28 +143,19 @@ export default function DoquariumView({ onOpen }: { onOpen: (view: string) => vo
             </p>
             <p className="text-base sm:text-lg text-white/60 font-medium mb-10 leading-relaxed max-w-xl">{t.lead}</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-lg">
-              <StoreBadge store="Google Play" label={t.storeSoon} />
+              <StoreBadge store="Google Play" label={t.storeGet} href={PLAY_URL} />
               <StoreBadge store="App Store" label={t.storeSoon} />
             </div>
-            {BETA.recruiting && (
-              <a
-                href={subHref(BETA_PATH)}
-                onClick={open("doquarium-beta", BETA_PATH)}
-                className="mt-4 w-full max-w-lg flex items-center justify-between h-14 px-5 rounded-xl bg-[#3ef2ff] text-[#062226] font-display font-bold hover:-translate-y-0.5 hover:shadow-[0_0_28px_rgba(62,242,255,0.45)] transition-all"
-              >
-                <span className="flex flex-col items-start leading-tight">
-                  <span className="text-sm">{t.betaCta}</span>
-                  <span className="text-[11px] font-medium text-[#062226]/60">{t.betaSub}</span>
-                </span>
-                <ArrowRight className="h-5 w-5" />
-              </a>
-            )}
             <a
               href={subHref("/doquarium/app")}
               onClick={open("doquarium-app", "/doquarium/app")}
-              className="mt-5 inline-flex items-center gap-2 text-sm font-display font-bold text-[#8ff7ff]/70 hover:text-[#8ff7ff] transition-colors"
+              className="mt-3 w-full max-w-lg flex items-center justify-between gap-3 h-14 px-5 rounded-xl bg-white/[0.03] border border-[#3ef2ff]/25 text-[#8ff7ff] font-display font-bold text-sm hover:bg-[#3ef2ff]/[0.06] hover:border-[#3ef2ff]/40 transition-colors"
             >
-              {t.webCta} <ArrowRight className="h-4 w-4" />
+              <span className="flex items-center gap-3 min-w-0">
+                <Monitor className="h-4 w-4 shrink-0" />
+                <span className="truncate">{t.webCta}</span>
+              </span>
+              <ArrowRight className="h-4 w-4 shrink-0" />
             </a>
           </motion.div>
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }} className="lg:w-1/2 w-full">
@@ -203,6 +212,46 @@ export default function DoquariumView({ onOpen }: { onOpen: (view: string) => vo
         </div>
       </section>
 
+      {/* On the web: what you can do from a computer */}
+      <section className="container max-w-6xl mx-auto px-6 mb-28">
+        <div className="relative rounded-[40px] border border-[#3ef2ff]/15 bg-gradient-to-br from-[#0b1a1d] to-[#060a0c] px-6 py-12 md:px-14 md:py-14 overflow-hidden">
+          <div className="absolute -top-10 right-0 w-2/3 h-40 bg-[#3ef2ff]/10 blur-[100px] pointer-events-none" />
+          <div className="relative max-w-3xl mb-10">
+            <span className="inline-flex items-center gap-2 text-[11px] font-display font-bold tracking-widest text-[#3ef2ff]/80 mb-4">
+              <Monitor className="h-4 w-4" /> lumora.tools/doquarium/app
+            </span>
+            <h2 className="text-3xl md:text-5xl font-display font-bold text-white tracking-tight mb-4">{t.webTitle}</h2>
+            <p className="text-lg text-lumora-sub font-medium leading-relaxed">{t.webSub}</p>
+          </div>
+          <div className="relative grid grid-cols-1 sm:grid-cols-2 gap-5 mb-10">
+            {t.web.map((w, i) => {
+              const Icon = WEB_ICONS[i % WEB_ICONS.length];
+              return (
+                <div key={w.title} className="rounded-[24px] bg-black/30 border border-white/5 p-6 flex gap-4">
+                  <span className="h-10 w-10 shrink-0 rounded-xl bg-[#3ef2ff]/10 border border-[#3ef2ff]/20 flex items-center justify-center text-[#3ef2ff]">
+                    <Icon className="h-5 w-5" />
+                  </span>
+                  <div className="min-w-0">
+                    <h3 className="text-lg font-display font-bold text-white mb-1.5">{w.title}</h3>
+                    <p className="text-sm text-lumora-sub font-medium leading-relaxed">{w.body}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <div className="relative flex flex-col sm:flex-row sm:items-center gap-4">
+            <a
+              href={subHref("/doquarium/app")}
+              onClick={open("doquarium-app", "/doquarium/app")}
+              className="inline-flex items-center justify-center gap-2 px-6 h-12 rounded-xl bg-[#3ef2ff] text-[#062226] font-display font-bold text-sm hover:-translate-y-0.5 hover:shadow-[0_0_24px_rgba(62,242,255,0.45)] transition-all"
+            >
+              {t.webOpen} <ArrowRight className="h-4 w-4" />
+            </a>
+            <p className="text-sm text-white/45 font-medium">{t.webNote}</p>
+          </div>
+        </div>
+      </section>
+
       {/* Principles */}
       <section className="container max-w-6xl mx-auto px-6 mb-28">
         <div className="max-w-3xl mb-12">
@@ -242,15 +291,14 @@ export default function DoquariumView({ onOpen }: { onOpen: (view: string) => vo
           <h2 className="relative text-3xl md:text-4xl font-display font-bold text-white tracking-tight mb-4">{t.contactTitle}</h2>
           <p className="relative text-lumora-sub mb-10 max-w-xl mx-auto">{t.contactBody}</p>
           <div className="relative flex flex-col sm:flex-row items-center justify-center gap-4">
-            {BETA.recruiting && (
-              <a
-                href={subHref(BETA_PATH)}
-                onClick={open("doquarium-beta", BETA_PATH)}
-                className="flex items-center gap-2 px-6 h-12 rounded-xl bg-[#3ef2ff] text-[#062226] font-display font-bold text-sm hover:-translate-y-0.5 transition-transform"
-              >
-                {t.betaCta} <ArrowRight className="h-4 w-4" />
-              </a>
-            )}
+            <a
+              href={PLAY_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-6 h-12 rounded-xl bg-[#3ef2ff] text-[#062226] font-display font-bold text-sm hover:-translate-y-0.5 transition-transform"
+            >
+              Google Play <ExternalLink className="h-4 w-4" />
+            </a>
             <a
               href={`mailto:${DOQUARIUM.contactEmail}`}
               className="flex items-center gap-2 px-6 h-12 rounded-xl bg-white text-black font-display font-bold text-sm hover:-translate-y-0.5 transition-transform"

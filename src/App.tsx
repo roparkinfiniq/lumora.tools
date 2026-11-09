@@ -8,7 +8,7 @@ import CodeTiaraView from "./components/CodeTiaraView";
 import DoquariumView from "./components/DoquariumView";
 import { NeonTank } from "./components/NeonTank";
 import DoquariumDocView from "./components/DoquariumDocView";
-import { BETA, BETA_PATH, DELETE_PATH, DOQUARIUM_BETA, DOQUARIUM_DELETE, DOQUARIUM_PRIVACY, PRIVACY_PATH } from "./data/doquarium";
+import { DELETE_PATH, DOQUARIUM_DELETE, DOQUARIUM_PRIVACY, PLAY_URL, PRIVACY_PATH } from "./data/doquarium";
 import { applySeo, seoForPost, seoForTool, seoForView } from "./seo";
 import { Tool, BlogPost } from "./types";
 import { blogPosts } from "./data/posts";
@@ -89,7 +89,6 @@ const URL_TO_VIEW: Record<string, string> = {
   "/doquarium/ko": "doquarium",
   [PRIVACY_PATH]: "doquarium-privacy",
   [DELETE_PATH]: "doquarium-delete",
-  [BETA_PATH]: "doquarium-beta",
   [DOQUARIUM_APP_PATH]: "doquarium-app",
 };
 
@@ -103,7 +102,6 @@ const VIEW_TO_URL: Record<string, string> = {
   doquarium: "/doquarium",
   "doquarium-privacy": PRIVACY_PATH,
   "doquarium-delete": DELETE_PATH,
-  "doquarium-beta": BETA_PATH,
   "doquarium-app": DOQUARIUM_APP_PATH,
 };
 
@@ -111,7 +109,6 @@ const VIEW_TO_URL: Record<string, string> = {
 const LANG_PAGES: Record<string, string> = {
   "doquarium-privacy": PRIVACY_PATH,
   "doquarium-delete": DELETE_PATH,
-  "doquarium-beta": BETA_PATH,
   "doquarium-app": DOQUARIUM_APP_PATH,
 };
 
@@ -416,7 +413,7 @@ export default function App() {
                       <div className="inline-flex px-3 py-1.5 rounded-full bg-[#3ef2ff]/10 border border-[#3ef2ff]/25 w-fit mb-6 items-center gap-2">
                         <span className="h-2 w-2 rounded-full bg-[#3ef2ff] shadow-[0_0_8px_rgba(62,242,255,0.9)]" />
                         <span className="text-[10px] font-display font-bold text-[#8ff7ff] uppercase tracking-widest">
-                          {BETA.recruiting ? "Android Beta · Testers Wanted" : "New App · Coming Soon"}
+                          Now on Google Play
                         </span>
                       </div>
                       <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-4 tracking-tight">
@@ -427,20 +424,18 @@ export default function App() {
                       </p>
                       <p className="text-lg text-lumora-sub font-medium mb-8 leading-relaxed">
                         Every task you finish feeds the neon fish in your tank.
-                        Coming soon to Android and iPhone.
+                        Out now on Android, iPhone coming soon.
                       </p>
                       <div className="flex flex-wrap items-center gap-4">
-                        {BETA.recruiting && (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setCurrentView("doquarium-beta");
-                            }}
-                            className="px-5 h-11 rounded-xl bg-[#3ef2ff] text-[#062226] font-display font-bold text-sm hover:-translate-y-0.5 hover:shadow-[0_0_24px_rgba(62,242,255,0.45)] transition-all"
-                          >
-                            Join the beta
-                          </button>
-                        )}
+                        <a
+                          href={PLAY_URL}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className="px-5 h-11 rounded-xl bg-[#3ef2ff] text-[#062226] font-display font-bold text-sm flex items-center hover:-translate-y-0.5 hover:shadow-[0_0_24px_rgba(62,242,255,0.45)] transition-all"
+                        >
+                          Get it on Google Play
+                        </a>
                         <div className="flex items-center gap-3 text-sm font-display font-bold text-[#8ff7ff]/60 group-hover:text-[#8ff7ff] transition-colors">
                           Meet Doquarium{" "}
                           <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
@@ -725,7 +720,7 @@ export default function App() {
                           <div className="inline-flex px-3 py-1.5 rounded-full bg-[#3ef2ff]/10 text-[#8ff7ff] border border-[#3ef2ff]/25 w-fit mb-6 items-center gap-2">
                             <span className="h-1.5 w-1.5 rounded-full bg-[#3ef2ff]" />
                             <span className="text-[10px] font-display font-bold uppercase tracking-widest">
-                              {BETA.recruiting ? "Android Beta · Testers Wanted" : "New App · Coming Soon"}
+                              Now on Google Play
                             </span>
                           </div>
                           <h3 className="text-3xl md:text-4xl font-display font-bold text-white mb-4 tracking-tight">
@@ -1159,18 +1154,6 @@ export default function App() {
               <Suspense fallback={<div className="container max-w-3xl mx-auto px-6 pt-24 text-white/40 font-medium">Loading…</div>}>
                 <DoquariumAppView onBack={() => setCurrentView("doquarium")} />
               </Suspense>
-            </motion.div>
-          )}
-
-          {currentView === "doquarium-beta" && (
-            <motion.div
-              key="doquarium-beta"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.5 }}
-            >
-              <DoquariumDocView docs={DOQUARIUM_BETA} basePath={BETA_PATH} onBack={() => setCurrentView("doquarium")} />
             </motion.div>
           )}
 

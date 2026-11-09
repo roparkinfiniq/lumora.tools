@@ -47,8 +47,8 @@ const PAGES: Record<string, Seo> = {
       "Code Tiara is a distraction-free to-do app with a built-in Pomodoro timer, floating desktop notes, and themes. Download for Mac and Windows.",
   },
 };
-// The Doquarium homepage (DoquariumView) and its privacy, account-deletion, and
-// beta pages (DoquariumDocView) set their own title in the chosen language.
+// The Doquarium homepage (DoquariumView) and its privacy and account-deletion
+// pages (DoquariumDocView) set their own title in the chosen language.
 
 export function seoForTool(tool: Tool): Seo {
   return {

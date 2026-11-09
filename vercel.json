@@ -1,4 +1,9 @@
 {
+  "redirects": [
+    { "source": "/doquarium/beta", "destination": "/doquarium", "permanent": true },
+    { "source": "/doquarium/beta/ko", "destination": "/doquarium/ko", "permanent": true },
+    { "source": "/doquarium/beta/:rest*", "destination": "/doquarium", "permanent": true }
+  ],
   "rewrites": [
     {
       "source": "/(.*)",

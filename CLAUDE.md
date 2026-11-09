@@ -13,7 +13,7 @@
 | **저널** | 쉼 · 고요함 · 종이 노트 · AI에 대한 개인 에세이 | `/journal`, `/journal/{id}` |
 | **소개** | "Less friction, More focus" 만드는 사람 | `/about` |
 | **두쿠아리움 문서** | 개인정보처리방침 · 계정 삭제 안내 (한 · 영) | `/doquarium/privacy(/ko)`, `/doquarium/delete-account(/ko)` |
-| **베타 테스터 모집** (잠시) | 안드로이드 비공개 테스트 참여 방법 (한 · 영) | `/doquarium/beta(/ko)` |
+| **웹에서 보는 두쿠아리움** | 로그인해서 할 일 보기 · 적기 · 끝내기 · 카테고리 · 마감일 · 한 달 달력 (한 · 영) | `/doquarium/app(/ko)` |
 
 - 사이트가 **"물고기 앱 사이트"는 아니다**. 홈 · 공통 문구는 "브라우저에서 도는 무료 도구 모음 + 래원의 앱 · 글"로 쓴다 (래원 2026-10-18)
 - **두쿠아리움이 맨 앞** (래원 결정 2026-10-10): 위 메뉴 첫 칸(청록 + 물고기 아이콘), 홈 카드는 Code Tiara 위, 도구 목록의 대표 칸 · 검색(Ctrl+K) 추천도 두쿠아리움 먼저
@@ -22,7 +22,7 @@
 ## 2. 언어
 
 - 화면에 보이는 글(버튼 · 제목 · 설명 · 알림 · `aria-label` · 블로그 글)은 **자연스러운 영어만** (`GEMINI.md`, `TOOL_GUIDELINES.md`)
-- 예외 (한국어판을 따로 둔 곳): 두쿠아리움 홈페이지 · 방침 · 계정 삭제 안내 · 베타 모집 `/ko` (한국 사용자 · 한국 법 · 한국 친구들), 운동 캔버스 `/utilities/workout-canvas/ko`
+- 예외 (한국어판을 따로 둔 곳): 두쿠아리움 홈페이지 · 방침 · 계정 삭제 안내 · 웹 할 일 `/ko` (한국 사용자 · 한국 법 · 한국 친구들), 운동 캔버스 `/utilities/workout-canvas/ko`
 - 코드 주석 · 래원에게 하는 설명은 한국어 가능. 커밋 메시지는 영어 (`feat:` `fix:` `perf:` `chore:` …)
 - 두쿠아리움 용어는 앱과 똑같이: 난이도 **Relaxed · Intense** (예전 Easy · Hard 아님), 등급 **Common · Rare · Mystic · Legendary**, 생물 이름은 앱 번역 파일(doquarium 레포 `lib/l10n/app_en.arb`) 기준
 
@@ -40,8 +40,9 @@
 | 웹에서 보는 두쿠아리움 (로그인 · 할 일) | `src/doquarium-app/` (`/doquarium/app(/ko)`, App에서 `lazy()`라 그 페이지를 열 때만 Firebase를 받는다): `firebase.ts`(웹 앱 "lumora.tools web" 설정 · 구글 · 애플 로그인 · 백업 실시간 읽기 · 우편함 쪽지 넣기 · `WEB_WRITES` 스위치, 사람마다는 `MIN_APP_BUILD`) · `backup.ts`(앱 백업 `backups/{uid}`를 어항 · 할 일 · 카테고리로 읽기 + 아직 안 간 쪽지 얹어 보기 `applyNotes` + 썩음 `rotLevel`(앱 rot.dart) + 느긋 어항 반복 새로고침 `refreshRepeats`(앱 repeat_refresh.dart), 앱의 todo.dart · tank.dart · inbox_service.dart와 같게) · `DoquariumAppView.tsx`(화면 · 한영 글) · `MonthView.tsx`(월별 달력) |
 | 홈 카드의 네온 어항 그림 | `src/components/NeonTank.tsx` (화면 밖에서 멈추기는 `src/lib/usePauseOffscreen.ts`) |
 | 영상 · 큰 파일 | `public/media/` (웹용으로 줄인 것만) |
-| 두쿠아리움 방침 · 삭제 안내 · 베타 모집 글 | `src/data/doquarium.ts` (원본) + 화면 `DoquariumDocView.tsx` (섹션에 `links`로 버튼) |
-| 베타 모집 켜고 끄기 | `src/data/doquarium.ts`의 `BETA.recruiting` (끄면 홈 · 두쿠아리움 · 푸터의 버튼과 "Testers Wanted" 배지가 사라지고 "Coming Soon"으로) |
+| 두쿠아리움 방침 · 삭제 안내 글 | `src/data/doquarium.ts` (원본) + 화면 `DoquariumDocView.tsx` (섹션에 `links`로 버튼) |
+| 스토어 주소 | `src/data/doquarium.ts`의 `PLAY_URL` (아이폰이 나오면 App Store 주소도 여기에 더하고 `DoquariumView`의 `StoreBadge`에 `href`) |
+| 옛 주소 넘기기 | `vercel.json`의 `redirects` (`/doquarium/beta(/ko)` → `/doquarium(/ko)`) |
 | 검색용 제목 · 설명 · 진짜 주소 | `src/seo.ts` |
 | 사이트맵 · 로봇 | `public/sitemap.xml` · `public/robots.txt` |
 
@@ -120,6 +121,7 @@
 | 2026-10-12 | 콕 알림 하루 1번 기록(pushLog) 2일 뒤 자동 삭제 |
 | 2026-10-18 | 방문자 분석 Vercel Web Analytics (쿠키 없음) · Search Console(raonepark@gmail.com) · 페이지마다 제목 · 설명 · 진짜 주소 |
 | 2026-10-18 | 두쿠아리움 홍보 영상(래원 `doquarium-reel-02-deep`, 세로 32초, 영어 자막)을 **두쿠아리움 페이지 맨 위에만** (홈은 가볍게 그대로). 13MB → 웹용 1.45MB |
+| 2026-11-09 | **두쿠아리움 Google Play 출시** (래원): 베타 모집 페이지 · 버튼 · 푸터 · 검색 항목을 빼고, 옛 `/doquarium/beta` 주소는 `/doquarium`으로 넘김 (`vercel.json`). 배지 "Now on Google Play · iPhone coming soon", Google Play 칸이 진짜 스토어 버튼(청록), App Store는 "준비 중". 래원 요청으로 **웹에서 할 수 있는 일을 강조**: 첫 화면에 "컴퓨터라면? 웹에서 내 할 일 열기" 버튼, "컴퓨터에서도 내 어항" 칸(할 일 · 카테고리 · 마감일 · 한 달 달력 · 단체 어항), 자주 묻는 질문 "컴퓨터에서도 쓸 수 있나요?", 푸터 "웹에서 할 일", 검색 창 "Doquarium on the Web". 웹 기능이 바뀌면 `doquariumHome.ts`의 `web` 글도 |
 | 2026-10-30 | **웹 할 일 3단계** (사용 피드백): 전체 보기는 **카테고리별 칸 + 색 점**(칩 · 칸 제목 · 할 일 왼쪽 띠, 색은 카테고리 순서대로 8가지 `CATEGORY_COLORS`, 웹에만) · **카테고리 이름 바꾸기 · 지우기**(고른 칩 옆 연필, 지우면 할 일은 카테고리 없음으로) · **마감일 정하기 · 바꾸기 · 없애기**(오늘 ~ 7일 뒤, 반복 할 일은 못 바꿈) · **월별 보기**(달력: 끝낸 일 ✓ · 마감 ○, 날짜를 누르면 목록. 끝낸 일은 30일 + 앱이 따로 남기는 1년 기록 `done_archive`). 새 쪽지(`due` · `renameCategory` · `deleteCategory`)는 폰 앱 **+24부터**만 켜짐(`EDIT_MORE_BUILD`), 그 전엔 업데이트 안내 |
 | 2026-10-24 | **전체 리그레션 (폰 375 · PC 1280, 페이지 38개 + 도구 15개 실제 사용)** 뒤 고침: 한국어는 단어 중간에서 줄을 안 바꿈(`body`에 `word-break: keep-all`, 사이트 전체) · 푸터를 `SiteFooter.tsx`로 빼고 한국어 페이지에선 한국어 + `/ko` 링크(페이지가 `<html lang>`을 바꾸면 따라감) · 없는 주소는 "404" 화면(`NotFoundView`, 검색 제외) · 도구 분류를 **PDF · Image · Design · Developer · Everyday**로(래원 "효율적으로") · 코드 티아라는 "Mac · Windows 지금, 안드로이드는 아직"(래원) · 운동 캔버스 `/ko`는 주소가 저장된 언어보다 우선 + 왼쪽 설명 카드도 한국어(`tools.ts`의 `ko`) · 폰에서 넘치던 곳(바코드 · 사이즈 · JSON · 운동 · 그라디언트 미리보기 높이 0) · 저널 표는 폰에서 줄마다 카드 · 저널 목차(PC 1280 잘림) · 읽는 시간은 글자 수로 · 마크다운 미리보기 스타일(`md-preview`) · 끝없이 깜빡이던 점 7곳 멈춤 · 영어 도구의 한국어 알림(복사됨 · PDF 받음) 영어로 · HEIC 라이브러리 버전 고정(`heic2any@0.0.4`) · 방침 · 삭제 안내에 Apple 로그인 |
 | 2026-10-24 | **느긋 어항의 반복 새로고침을 웹도** (래원 "웹도 느긋 반복 규칙 맞추기", 앱 908d834 `test-30`): 🌿 느긋 어항의 매일 · 요일 반복은 놓친 몫이 다음 반복 날 자정에 닫히고 오늘 몫만 → 웹도 그릴 때 같은 계산(`backup.ts` `refreshRepeats` · `repeatShareDay` = 앱 `lib/models/repeat_refresh.dart` `RepeatRefresh.shareDay`). 난이도는 백업 `fish_health(@어항)`의 `mode` ("hard"만 열정, 기록이 없거나 그 밖은 느긋 = 앱 `Difficulty.byName`). **서버에 아무것도 쓰지 않는다** (웹 "끝내기" 쪽지는 같은 할 일 id, 폰이 쪽지 전에 새로고침해서 보상 그대로). 하루치 찌꺼기(`residueAt`)는 물고기 건강에만 들어가 웹은 폰이 저장한 건강 그대로 보여 준다. 🔥 열정 어항 · N일마다는 그대로 썩음. 페이지를 켜 둔 채 자정이 지나면 한 번 다시 그림. **앱의 RepeatRefresh가 바뀌면 여기도 같이** |
