@@ -41,7 +41,7 @@
 | 홈 카드의 네온 어항 그림 | `src/components/NeonTank.tsx` (화면 밖에서 멈추기는 `src/lib/usePauseOffscreen.ts`) |
 | 영상 · 큰 파일 | `public/media/` (웹용으로 줄인 것만) |
 | 두쿠아리움 방침 · 삭제 안내 글 | `src/data/doquarium.ts` (원본) + 화면 `DoquariumDocView.tsx` (섹션에 `links`로 버튼) |
-| 스토어 주소 · 배지 | `src/data/doquarium.ts`의 `PLAY_URL` · `APP_STORE_URL`, 배지는 `src/components/StoreBadges.tsx` (공식 그림 `public/media/doquarium/badges/` 한 · 영, 색 · 비율 바꾸지 않기) |
+| 스토어 주소 · 배지 | `src/data/doquarium.ts`의 `PLAY_URL` · `APP_STORE_URL`, 버튼은 `src/components/StoreBadges.tsx` (흰 버튼 + 진짜 스토어 로고, 두 버튼 크기 같게, 한 · 영) |
 | 옛 주소 넘기기 | `vercel.json`의 `redirects` (`/doquarium/beta(/ko)` → `/doquarium(/ko)`) |
 | 검색용 제목 · 설명 · 진짜 주소 | `src/seo.ts` |
 | 사이트맵 · 로봇 | `public/sitemap.xml` · `public/robots.txt` |
@@ -121,6 +121,7 @@
 | 2026-10-12 | 콕 알림 하루 1번 기록(pushLog) 2일 뒤 자동 삭제 |
 | 2026-10-18 | 방문자 분석 Vercel Web Analytics (쿠키 없음) · Search Console(raonepark@gmail.com) · 페이지마다 제목 · 설명 · 진짜 주소 |
 | 2026-10-18 | 두쿠아리움 홍보 영상(래원 `doquarium-reel-02-deep`, 세로 32초, 영어 자막)을 **두쿠아리움 페이지 맨 위에만** (홈은 가볍게 그대로). 13MB → 웹용 1.45MB |
+| 2026-11-10 | 스토어 버튼을 공식 검정 배지 → **흰 버튼 + 진짜 로고**로 (래원: 배지가 검정 상자라 어둡고 화질이 흐려 보임 → 비교 그림 A~D 중 C 고름). 구글 PNG 배지는 흐릿했고 두 배지 글자 크기도 달랐다. 로고는 SVG로 코드 안에 (`StoreBadges.tsx`), 배지 그림 파일은 지움 |
 | 2026-11-09 | **아이폰도 출시** (App Store `id6821589383`): 스토어 버튼을 **공식 배지**로 (래원 요청: Google Play "다운로드" · App Store "다운로드" 그 배지). 공식 파일을 받아 둘레 빈칸만 잘라 `public/media/doquarium/badges/`에 (Google PNG · Apple SVG, 한 · 영), `StoreBadges.tsx` 하나로 두쿠아리움 첫 화면 · 홈 카드에 씀. 배지 "Out now · Android & iPhone" / "출시 · 안드로이드 · 아이폰", 자주 묻는 질문 · 가입 없이 칸에 "아이폰은 애플 로그인도" |
 | 2026-11-09 | **두쿠아리움 Google Play 출시** (래원): 베타 모집 페이지 · 버튼 · 푸터 · 검색 항목을 빼고, 옛 `/doquarium/beta` 주소는 `/doquarium`으로 넘김 (`vercel.json`). 배지 "Now on Google Play · iPhone coming soon", Google Play 칸이 진짜 스토어 버튼(청록), App Store는 "준비 중". 래원 요청으로 **웹에서 할 수 있는 일을 강조**: 첫 화면에 "컴퓨터라면? 웹에서 내 할 일 열기" 버튼, "컴퓨터에서도 내 어항" 칸(할 일 · 카테고리 · 마감일 · 한 달 달력 · 단체 어항), 자주 묻는 질문 "컴퓨터에서도 쓸 수 있나요?", 푸터 "웹에서 할 일", 검색 창 "Doquarium on the Web". 웹 기능이 바뀌면 `doquariumHome.ts`의 `web` 글도 |
 | 2026-10-30 | **웹 할 일 3단계** (사용 피드백): 전체 보기는 **카테고리별 칸 + 색 점**(칩 · 칸 제목 · 할 일 왼쪽 띠, 색은 카테고리 순서대로 8가지 `CATEGORY_COLORS`, 웹에만) · **카테고리 이름 바꾸기 · 지우기**(고른 칩 옆 연필, 지우면 할 일은 카테고리 없음으로) · **마감일 정하기 · 바꾸기 · 없애기**(오늘 ~ 7일 뒤, 반복 할 일은 못 바꿈) · **월별 보기**(달력: 끝낸 일 ✓ · 마감 ○, 날짜를 누르면 목록. 끝낸 일은 30일 + 앱이 따로 남기는 1년 기록 `done_archive`). 새 쪽지(`due` · `renameCategory` · `deleteCategory`)는 폰 앱 **+24부터**만 켜짐(`EDIT_MORE_BUILD`), 그 전엔 업데이트 안내 |
